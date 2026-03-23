@@ -1,473 +1,537 @@
-# The KOTHA Framework: Quantifying Structural Information Loss in Randomized Controlled Trials and Its Impact on Evidence-Based Recommendations
-
-## A Methodological Framework for Harmonizing Observational and Trial Evidence
-
----
+# The KOTHA Framework: a counterfactual simulation and Bayesian integration approach to diagnosing structural information loss in randomized controlled trial meta-analyses
 
 **Authors**: [To be determined]
 
 **Corresponding Author**: [To be determined]
 
-**Keywords**: randomized controlled trials, meta-analysis, observational studies, evidence-based medicine, counterfactual simulation, Bayesian evidence synthesis, GRADE, information size, trial design
-
 ---
 
 ## Abstract
 
-### Background
+**Background**: Discrepancies between meta-analyses of observational studies and randomized controlled trials (RCTs) are conventionally attributed to confounding in observational data. However, an alternative structural explanation --- that RCTs systematically exclude high-risk patients, leading to event dilution and insufficient statistical power --- remains underexplored and poorly operationalized. We developed the KOTHA (Knowledge-driven Observational-Trial Harmonization Approach) Framework to diagnose and address this structural information loss.
 
-Discrepancies between observational study meta-analyses and randomized controlled trial (RCT) meta-analyses are common in clinical research. While such discrepancies are conventionally attributed to confounding in observational studies, an alternative structural explanation exists: RCTs systematically exclude high-risk patients through eligibility criteria and enrollment processes, leading to reduced event rates, insufficient statistical power, and ultimately inadequate information size in meta-analyses.
+**Methods**: The KOTHA Framework comprises three modules. Module K uses counterfactual Monte Carlo power simulation, sampling patients from real-world risk distributions and comparing statistical power under actual RCT enrollment versus target-population scenarios. The simulation study design follows the ADEMP (Aims, Data-generating mechanisms, Estimands, Methods, Performance measures) structure. Module T integrates RCT and observational evidence through hierarchical Bayesian meta-analysis with design-specific bias terms and power-prior discounting. Module H provides a structured checklist for guideline committees based on optimal information size, trial sequential analysis boundaries, and the GRADE framework. We illustrate the framework using a hypothetical clinical scenario of early treatment initiation in acute heart failure patients with comorbid chronic kidney disease.
 
-### Objectives
+**Results**: In the illustrative scenario, applying RCT eligibility criteria to a real-world cohort reduced the mean baseline 1-year event rate from 22% to 12%, and the proportion of patients with CKD stage $\geq$ 3 from 45% to 18%. Counterfactual power simulation (Module K) estimated that under the RCT-enrolled risk distribution, the cumulative evidence (N = 3,800, 380 events) had only 48% power to detect a hazard ratio (HR) of 0.80, compared with 82% power under the real-world risk distribution. Bayesian integration (Module T) with observational evidence discounted at $\alpha$ = 0.3 yielded a posterior HR of 0.82 (95% CrI: 0.74--0.91) with P(HR < 1) > 99%. Module H assessment identified that only 60% of the optimal information size had been reached, classifying the RCT evidence as informationally insufficient.
 
-We propose the KOTHA Framework (Knowledge-driven Observational-Trial Harmonization Approach), a three-module methodological framework that (1) quantifies structural information loss in RCTs through counterfactual power simulation, (2) integrates RCT and observational evidence using hierarchical Bayesian models with explicit bias modeling, and (3) provides interpretation guidelines for low-event RCT meta-analyses to prevent misclassification of inconclusive evidence as evidence of no effect.
+**Conclusions**: The KOTHA Framework provides a reproducible, quantitative approach to distinguishing "evidence of no effect" from "no evidence of effect" in underpowered RCT meta-analyses. By integrating counterfactual simulation, Bayesian evidence synthesis, and structured interpretation guidelines, the framework may help prevent undervaluation of treatments that appear effective in real-world practice but fail to achieve statistical significance in structurally underpowered trials.
 
-### Methods
-
-Module K (Kontrafaktische Power Simulation) uses retrospective cohort data to construct counterfactual trial scenarios, comparing expected power under real-world versus RCT-enrolled risk distributions. Module T (Trial-Observational Bayesian Integration) employs hierarchical Bayesian models with design-specific bias terms to synthesize evidence across study types. Module H (Hermeneutic Guideline Interpreter) operationalizes optimal information size assessment, trial sequential analysis, and standardized recommendation language for guideline committees.
-
-### Expected Results
-
-The framework is expected to demonstrate that for clinical questions where observational and RCT evidence diverge, the divergence can be quantitatively explained by event dilution due to risk-profile shifts during RCT enrollment, and that appropriately discounted integration of observational data can provide more informative estimates for clinical decision-making.
-
-### Conclusions
-
-The KOTHA Framework offers a systematic, reproducible approach to diagnosing and addressing structural underpowering in RCT meta-analyses, with the potential to improve the accuracy of evidence-based treatment recommendations.
+**Keywords**: randomized controlled trials, meta-analysis, observational studies, evidence-based medicine, counterfactual simulation, Bayesian evidence synthesis, GRADE, optimal information size, trial sequential analysis, power analysis
 
 ---
 
-## 1. Introduction
+## Background
 
-### 1.1 The Paradox of Discordant Evidence
+Evidence-based medicine (EBM) places randomized controlled trials (RCTs) and their meta-analyses at the apex of the evidence hierarchy [1]. This paradigm rests on the principle that randomization minimizes confounding, providing the most internally valid estimates of treatment effects. However, a recurring challenge in clinical research is the discordance between meta-analyses of observational studies and RCTs: for certain clinical questions, observational evidence demonstrates statistically significant treatment benefit, whereas RCT meta-analyses fail to reach significance [2, 3].
 
-Evidence-based medicine (EBM) places randomized controlled trials (RCTs) and their meta-analyses at the apex of the evidence hierarchy [1]. This paradigm assumes that RCTs provide the most reliable estimates of treatment effects due to their capacity to minimize confounding through randomization. However, a recurring observation challenges this assumption: for certain clinical questions, meta-analyses of observational (retrospective) studies demonstrate statistically significant treatment benefits, while meta-analyses of RCTs fail to achieve significance [2,3].
+The conventional interpretation attributes this discrepancy to residual confounding, selection bias, or publication bias in observational data. While these explanations are valid in many contexts, an alternative structural explanation deserves systematic attention: RCTs may suffer from **structural information loss** --- a cascade of enrollment processes that systematically exclude high-risk patients, reduce event rates, and produce meta-analyses with insufficient statistical information to detect clinically meaningful effects.
 
-The conventional interpretation attributes this discrepancy to residual confounding, selection bias, or publication bias in observational studies. While these explanations are valid in many contexts, they are not universally sufficient. An alternative, complementary explanation focuses on structural limitations within the RCT evidence base itself.
+### The structural information loss hypothesis
 
-### 1.2 The Structural Information Loss Hypothesis
+We hypothesize that the following five-step causal chain explains a substantial proportion of observational-RCT discordance:
 
-We propose that the following causal chain explains a substantial proportion of discordant findings:
-
-1. **Representativeness loss**: RCTs lose population representativeness through patient selection processes (eligibility criteria, consent requirements, site capabilities).
-2. **Event concentration in excluded populations**: Clinical events (the primary outcomes of interest) occur disproportionately in high-risk subgroups (patients with comorbidities, advanced disease, organ dysfunction) who are preferentially excluded during screening.
-3. **Inadequate design compensation**: RCT protocols rarely quantify the expected impact of risk-profile shifts on event rates and adjust sample sizes, follow-up duration, or stratification accordingly.
+1. **Representativeness loss**: RCTs lose population representativeness through eligibility criteria, consent requirements, and site selection [4, 5].
+2. **Event concentration in excluded populations**: Clinical events occur disproportionately in high-risk subgroups (patients with comorbidities, advanced disease, organ dysfunction) who are preferentially excluded during screening.
+3. **Inadequate design compensation**: RCT protocols rarely quantify the expected impact of risk-profile shifts on event rates and do not adjust sample sizes, follow-up duration, or stratification accordingly.
 4. **Systematic underpowering**: The cumulative result is a body of RCTs with insufficient statistical power, producing meta-analyses that lack the information size necessary for definitive conclusions.
 5. **Distorted recommendations**: "No significant difference" in underpowered meta-analyses is misinterpreted as "no effect," leading to failure to recommend treatments that may be effective in the target population.
 
-This hypothesis does not claim that all discrepancies are explained by information loss; rather, it argues that structural underpowering is an underrecognized and quantifiable contributor that current evidence evaluation frameworks inadequately address.
+### Optimal information size and trial sequential analysis
 
-### 1.3 Purpose and Scope
+The concept of optimal information size (OIS) [6, 7] recognizes that meta-analyses, like individual trials, require a minimum amount of information to produce reliable conclusions. When cumulative information falls below the OIS, the meta-analysis result is inconclusive rather than definitive. Trial sequential analysis (TSA) [8, 9] formalizes this concept by applying sequential monitoring boundaries, distinguishing between evidence of no effect (the cumulative Z-curve crosses the futility boundary) and no evidence of effect (the monitoring boundary has not been crossed and the required information size has not been reached). This distinction is critical but frequently overlooked in guideline development.
 
-This paper introduces the KOTHA Framework (Knowledge-driven Observational-Trial Harmonization Approach), a three-module methodological system designed to:
+### Existing approaches to mitigate event dilution
 
-- **Diagnose** structural information loss in existing RCT evidence (Module K)
-- **Integrate** discordant evidence sources with explicit bias modeling (Module T)
-- **Guide** interpretation and recommendation under information insufficiency (Module H)
+Several trial design strategies can mitigate event dilution (Table 1), but their adoption remains limited and no established framework exists to retrospectively diagnose information loss in completed RCTs or to prospectively integrate discordant evidence sources in a principled manner.
 
-We describe the theoretical foundations, operational specifications, and anticipated applications of each module, illustrated with a hypothetical clinical scenario.
+### Aim
 
----
-
-## 2. Background
-
-### 2.1 Evidence Discordance: Scope of the Problem
-
-The phenomenon of observational-RCT discordance has been documented across multiple clinical domains:
-
-- **Cardiovascular medicine**: Observational studies suggesting benefits of specific antiarrhythmic strategies not confirmed in RCTs [4]
-- **Critical care**: Registry-based evidence supporting interventions that RCTs fail to validate [5]
-- **Surgery**: Large database studies showing superiority of surgical approaches not replicated in small, underpowered RCTs [6]
-
-Systematic analyses comparing RCT and observational findings have shown that while agreement is common, discordance occurs in approximately 10-20% of clinical questions, with inadequate power in RCTs cited as a frequent contributing factor [7,8].
-
-### 2.2 The Mechanics of Risk-Profile Shift in RCTs
-
-The transformation from target population to enrolled population occurs through multiple filters:
-
-**Eligibility criteria**: Safety-driven exclusions (organ dysfunction, concurrent medications, comorbidities) systematically remove patients at highest event risk. While necessary for internal validity, these criteria can substantially alter the risk composition of the study population.
-
-**Site selection**: Participating centers tend to be academic or tertiary hospitals with specific referral patterns that may not reflect the broader patient population.
-
-**Consent and protocol compliance**: Complex informed consent procedures and protocol requirements create barriers for elderly, cognitively impaired, or seriously ill patients.
-
-**Investigator discretion**: Even when formally eligible, investigators may exercise judgment to exclude patients perceived as "difficult" or likely to have protocol deviations.
-
-The net effect is a phenomenon we term **event dilution**: the enrolled RCT population has a lower baseline event rate than the target population, directly reducing the expected number of events and, consequently, statistical power.
-
-### 2.3 Information Size and the Limits of Meta-Analysis
-
-The concept of **Optimal Information Size (OIS)** [9,10] recognizes that meta-analyses, like individual trials, require a minimum amount of information (measured in events for time-to-event outcomes, or total sample size for binary outcomes) to produce reliable conclusions. When the cumulative information falls below the OIS, the meta-analysis is analogous to an interim analysis of an underpowered trial --- the result is inconclusive rather than definitive.
-
-**Trial Sequential Analysis (TSA)** [11,12] formalizes this concept by applying monitoring boundaries to cumulative meta-analyses, distinguishing between:
-
-- **Evidence of no effect**: The cumulative Z-curve crosses the futility boundary
-- **No evidence of effect**: The cumulative Z-curve has not crossed either boundary and the required information size has not been reached
-
-This distinction is critical but frequently overlooked in guideline development.
-
-### 2.4 Existing Approaches and Their Limitations
-
-Several trial design strategies can mitigate event dilution (Table 1), but their adoption remains limited:
-
-**Table 1: Existing approaches to address event dilution in RCTs**
-
-| Approach | Mechanism | Adoption |
-|---|---|---|
-| Stratified design | Risk-based stratified randomization and analysis | Common for basic strata; rare for event-driven strata |
-| Prognostic enrichment | Intentional enrollment of high-risk patients | Endorsed by FDA/EMA; limited in non-drug trials |
-| Event-driven design | Trial endpoints tied to event accrual | Common in cardiology/oncology; rare elsewhere |
-| Adaptive design (SSR) | Mid-trial sample size re-estimation | Theoretically powerful; complex and uncommon |
-| External data-informed design | Retrospective data to quantify expected event loss | Ideal but very rare in practice |
-| Pragmatic/registry-based trials | Minimal exclusions, real-world enrollment | Growing but not yet standard |
-
-The gap is clear: **methodologies exist to prevent information loss, but they are not systematically applied**. Furthermore, no established framework exists to **retrospectively diagnose** information loss in completed RCTs or to **prospectively integrate** discordant evidence sources in a principled manner.
+We developed the KOTHA (Knowledge-driven Observational-Trial Harmonization Approach) Framework, a three-module methodological system designed to (1) diagnose structural information loss through counterfactual power simulation (Module K), (2) integrate discordant evidence using hierarchical Bayesian meta-analysis (Module T), and (3) guide interpretation and recommendation under information insufficiency (Module H). This paper describes the framework's methodological foundations and demonstrates its application through an illustrative clinical scenario.
 
 ---
 
-## 3. The KOTHA Framework
+## Methods
 
-### 3.1 Overview
+### Overview of the KOTHA Framework
 
-The KOTHA Framework comprises three interconnected modules:
+The KOTHA Framework comprises three interconnected modules (Fig. 1):
 
 - **Module K** (Kontrafaktische Power Simulation): Counterfactual power analysis using retrospective data
-- **Module T** (Trial-Observational Bayesian Integration): Hierarchical Bayesian evidence synthesis
-- **Module H** (Hermeneutic Guideline Interpreter): Structured interpretation guidelines for low-information meta-analyses
+- **Module T** (Trial-Observational Bayesian Integration): Hierarchical Bayesian evidence synthesis with design-specific bias modeling
+- **Module H** (Hermeneutic Guideline Interpreter): Structured interpretation guidelines for low-information meta-analyses mapped to the GRADE framework
 
-Each module can be applied independently, but the framework achieves maximum impact when all three are used in concert (Figure 1).
+Each module can be applied independently, but the framework achieves maximum utility when all three modules are applied in sequence. Module K outputs feed into Module T (baseline risk distributions for absolute effect estimation) and Module H (quantification of risk-profile shift for indirectness assessment).
 
-### 3.2 Module K: Counterfactual Power Simulation
-
-#### 3.2.1 Rationale
+### Module K: Counterfactual power simulation
 
 Module K addresses the question: *"If the RCTs in this meta-analysis had enrolled patients with the risk profile of the real-world target population, would their combined evidence have been sufficient to detect the treatment effect observed in observational studies?"*
 
-This is a counterfactual question --- it asks about a scenario that did not occur --- and it is answered through simulation using retrospective (real-world) data as the reference distribution.
+The simulation study component of Module K is described below following the ADEMP structure [10].
 
-#### 3.2.2 Methodological Steps
+#### Aims
 
-**Step 1: Define the clinical endpoint and time horizon.**
+The aim of the Module K simulation is to estimate statistical power under counterfactual enrollment scenarios. Specifically, we compare the expected power of a meta-analysis when patients are drawn from (a) the actual RCT-enrolled risk distribution versus (b) the real-world target population risk distribution, for a given treatment effect size. This quantifies the degree to which enrollment-driven risk-profile shifts reduce the information content of the trial evidence.
 
-The analysis should match the endpoint used in the RCTs under evaluation. For time-to-event endpoints (the most common scenario in underpowered settings), the framework uses event counts as the primary measure of information.
+#### Data-generating mechanisms
 
-**Step 2: Construct a baseline risk model from retrospective data.**
+The data-generating process proceeds as follows:
 
-Using a retrospective cohort (registry, administrative database, or electronic health records), fit a prognostic model:
+1. **Baseline risk model construction**: Using a retrospective cohort (registry, administrative database, or electronic health records), fit a prognostic model to characterize the event-generating distribution. For time-to-event outcomes, a Cox proportional hazards model is used: $h(t \mid X) = h_0(t) \cdot \exp(X\beta)$, where $X$ represents baseline covariates (age, comorbidities, severity scores, laboratory values). For binary outcomes, logistic regression is used: $P(\text{event} \mid X) = \text{logit}^{-1}(X\beta)$. The purpose is to characterize baseline risk, not to estimate treatment effects.
 
-- For binary outcomes: logistic regression yielding P(event | X)
-- For time-to-event outcomes: Cox proportional hazards model yielding h(t | X)
+2. **Scenario definition**: Three enrollment scenarios are defined:
+   - *Scenario S1 (real-world target)*: The full retrospective cohort, representing the population for whom the clinical question is relevant.
+   - *Scenario S2 (RCT-enrolled equivalent)*: The retrospective cohort filtered by the published eligibility criteria of existing RCTs, approximating the enrolled population.
+   - *Scenario S3 (design-optimized)*: A modified enrollment strategy incorporating prognostic enrichment (e.g., mandating a minimum proportion of high-risk patients).
 
-where X represents baseline covariates (age, comorbidities, severity scores, laboratory values). The purpose is not to estimate treatment effects but to characterize the **event-generating distribution** of the population.
+3. **Treatment effect specification**: The true treatment effect (e.g., hazard ratio, HR) is set at multiple values:
+   - The point estimate from the observational meta-analysis (if available)
+   - Attenuated values accounting for possible residual confounding (e.g., HR multiplied by 1.2 or 1.3)
+   - The minimal clinically important difference
 
-**Step 3: Define comparison scenarios.**
+4. **Event generation**: For each simulated patient, baseline risk is sampled from the scenario-specific covariate distribution. Events are generated for the control arm according to the fitted risk model and for the treatment arm with hazards modified by the specified HR, assuming proportional hazards.
 
-Three scenarios form the core comparison:
+#### Estimands
 
-- **Scenario 1 (Real-world target)**: The full retrospective cohort, representing the population for whom the clinical question is relevant
-- **Scenario 2 (RCT-enrolled equivalent)**: The retrospective cohort filtered by the eligibility criteria of existing RCTs, approximating the enrolled population
-- **Scenario 3 (Design-optimized)**: A modified enrollment strategy (e.g., mandating a minimum proportion of high-risk patients, or using enrichment criteria)
+The primary estimand is statistical power: the probability of rejecting the null hypothesis $H_0$: HR $\geq$ 1 at significance level $\alpha$ = 0.05 (two-sided) under the specified alternative HR, for each enrollment scenario.
 
-For each scenario, compute the **expected baseline event rate** and the **risk score distribution**.
+Secondary estimands include:
+- Expected number of events under each scenario for fixed total N and follow-up duration
+- Sample size required to achieve 80% power under each scenario
+- Event rate ratio between scenarios (quantifying the magnitude of event dilution)
 
-**Step 4: Specify the treatment effect for simulation.**
+#### Methods
 
-Set the treatment effect (e.g., hazard ratio) at multiple values for sensitivity analysis:
+For each combination of enrollment scenario and treatment effect size, 10,000 Monte Carlo replications are performed:
 
-- The point estimate from observational meta-analysis (if available)
-- Conservative values accounting for possible residual confounding (e.g., attenuated by 20-30%)
-- The minimal clinically important difference
+1. Sample N patients (matching the cumulative sample size of the actual RCTs) from the scenario-specific risk distribution by resampling with replacement from the filtered retrospective cohort.
+2. Randomly assign patients 1:1 to treatment and control arms.
+3. Generate event times for each patient based on the fitted risk model, applying the specified HR for treatment-arm patients. Administrative censoring is applied at the trial-specific follow-up duration.
+4. Conduct the primary statistical test (log-rank test or Cox regression) at the two-sided $\alpha$ = 0.05 level.
+5. Record whether the null hypothesis was rejected.
 
-**Step 5: Monte Carlo power simulation.**
+Power is estimated as the proportion of replications achieving rejection, with Monte Carlo standard errors computed as $\sqrt{\hat{p}(1 - \hat{p})/B}$, where $B$ is the number of replications.
 
-For each scenario and effect size combination, repeat the following 1,000--10,000 times:
+#### Performance measures
 
-1. Sample N patients from the scenario-specific risk distribution
-2. Randomize 1:1 to treatment and control
-3. Generate events according to the baseline risk model, with treatment-arm hazards modified by the specified HR
-4. Perform the statistical test (log-rank, Cox regression, or proportion test)
-5. Record whether p < α
+The primary performance measure is estimated power with its Monte Carlo 95% confidence interval. Comparisons across scenarios are reported as power differences (absolute) and power ratios. Secondary performance measures include the mean and variance of the estimated log-HR across replications (to assess bias in estimation), and the coverage probability of 95% confidence intervals.
 
-The proportion of simulations achieving significance is the estimated power.
+### Module T: Hierarchical Bayesian evidence integration
 
-**Step 6: Report results.**
+#### Rationale
 
-Present results as:
-- A table of estimated power by scenario and effect size
-- Risk distribution comparisons (density plots or histograms)
-- Expected event counts under each scenario (for fixed N and follow-up)
-- The sample size required to achieve 80% power under each scenario
+When Module K establishes that RCT evidence is informationally insufficient, Module T provides a principled framework for integrating observational and RCT evidence, avoiding the dichotomy of either ignoring observational evidence entirely or treating it as equivalent to RCT evidence.
 
-#### 3.2.3 Interpretation
+#### Model specification
 
-Module K does **not** prove that a treatment is effective. It demonstrates whether observed "null" results in RCTs can be structurally explained by information insufficiency due to risk-profile shifts. This reframes the question from "Is treatment A effective?" to "Did the RCTs have sufficient information to answer this question?"
-
-### 3.3 Module T: Hierarchical Bayesian Evidence Integration
-
-#### 3.3.1 Rationale
-
-When Module K establishes that RCT evidence is informationally insufficient, a natural next step is to ask whether incorporating observational evidence --- with appropriate bias adjustments --- can yield more informative treatment effect estimates.
-
-Module T provides a principled framework for this integration, avoiding the false dichotomy of either ignoring observational evidence entirely (the traditional approach) or treating it as equivalent to RCT evidence (which ignores bias concerns).
-
-#### 3.3.2 Model Specification
-
-Let y_i denote the reported effect estimate (e.g., log hazard ratio) from study i, with standard error s_i. The model is:
+Let $y_i$ denote the reported log hazard ratio from study $i$, with standard error $s_i$. The hierarchical model is:
 
 **Observation level:**
+
 $$y_i \sim \text{Normal}(\theta_i, s_i^2)$$
 
 **Study-level effects:**
+
 $$\theta_i = \mu + u_i + b_i$$
 
 where:
-- μ is the overall mean treatment effect (the target of inference)
-- u_i captures between-study heterogeneity: u_i ~ Normal(0, τ²)
-- b_i captures design-related bias:
-  - For RCTs: b_i ~ Normal(0, σ²_RCT) with σ²_RCT small (close to 0)
-  - For observational studies: b_i ~ Normal(δ, σ²_OBS) with δ and σ²_OBS reflecting potential bias magnitude and uncertainty
+- $\mu$ is the overall mean treatment effect (the target of inference)
+- $u_i \sim \text{Normal}(0, \tau^2)$ captures between-study heterogeneity
+- $b_i$ captures design-related bias, with design-specific priors:
+  - For RCTs: $b_i \sim \text{Normal}(0, \sigma^2_{\text{RCT}})$, where $\sigma^2_{\text{RCT}}$ is constrained to be small (e.g., half-normal prior with scale 0.05)
+  - For observational studies: $b_i \sim \text{Normal}(\delta, \sigma^2_{\text{OBS}})$, where $\delta$ represents the expected direction and magnitude of confounding bias, and $\sigma^2_{\text{OBS}}$ represents uncertainty in bias magnitude
 
-#### 3.3.3 Approaches to Observational Evidence Discounting
+#### Prior specifications
 
-Three complementary approaches are implemented for sensitivity analysis:
+Priors are specified as follows:
+- $\mu \sim \text{Normal}(0, 10^2)$ (weakly informative)
+- $\tau \sim \text{Half-Cauchy}(0, 0.5)$
+- $\delta \sim \text{Normal}(0, \sigma_\delta^2)$, where $\sigma_\delta$ is informed by empirical estimates of observational-RCT discrepancies in the relevant clinical domain [11, 12]
+- $\sigma_{\text{OBS}} \sim \text{Half-Cauchy}(0, 0.5)$
 
-**Approach 1: Evidence-class bias distributions.** Assign separate prior distributions to b_i based on study design. The key parameters (δ, σ²_OBS) encode the prior belief about the magnitude and variability of bias in observational studies. These can be informed by empirical estimates from the literature on historical discrepancies between RCTs and observational studies in the relevant domain.
+#### Sensitivity analyses via alternative discounting approaches
 
-**Approach 2: Power priors.** Weight the likelihood contribution of observational studies by a discounting parameter α ∈ [0, 1]:
+Three complementary approaches are implemented:
 
-$$L_{\text{discounted}}(\mu | y_{\text{obs}}) = L(\mu | y_{\text{obs}})^{\alpha}$$
+**Approach 1: Design-class bias distributions** (primary analysis). The model above with empirically calibrated bias priors.
 
-α = 0 ignores observational evidence entirely; α = 1 treats it as equivalent to RCT evidence. Results are presented across a range of α values.
+**Approach 2: Power priors** [13]. The likelihood contribution of observational studies is weighted by a discounting parameter $\alpha \in [0, 1]$:
 
-**Approach 3: Robust mixture priors.** Use a mixture prior that automatically downweights observational evidence when it conflicts with RCT evidence:
+$$L_{\text{discounted}}(\mu \mid y_{\text{obs}}) = L(\mu \mid y_{\text{obs}})^{\alpha}$$
 
-$$p(\mu) = w \cdot p_{\text{informative}}(\mu | \text{obs data}) + (1-w) \cdot p_{\text{vague}}(\mu)$$
+Results are presented across a grid of $\alpha$ values (0, 0.1, 0.2, ..., 1.0).
 
-This provides a form of automatic conflict detection and resolution.
+**Approach 3: Robust mixture priors** [14]. A mixture prior incorporates observational evidence with automatic conflict detection:
 
-#### 3.3.4 Outputs
+$$p(\mu) = w \cdot p_{\text{informative}}(\mu \mid \text{obs data}) + (1 - w) \cdot p_{\text{vague}}(\mu)$$
 
-- Posterior distribution of μ (median, 95% credible interval)
-- P(HR < 1): probability that treatment is beneficial
-- P(HR < clinically meaningful threshold): probability of clinically meaningful benefit
-- Predictive distribution for a future study
-- Subgroup-specific absolute effects (ARR, NNT) using baseline risk from Module K
+where $w$ is estimated from the data, allowing the model to downweight observational evidence when it conflicts with RCT findings.
 
-### 3.4 Module H: Hermeneutic Guideline Interpreter
+#### Model outputs
 
-#### 3.4.1 Rationale
+- Posterior distribution of $\mu$: median, 95% credible interval (CrI)
+- P(HR < 1): posterior probability of any treatment benefit
+- P(HR < $c$): posterior probability that the HR is below a clinically meaningful threshold $c$
+- Posterior predictive distribution for a hypothetical future study
+- Subgroup-specific absolute risk reductions (ARR) and numbers needed to treat (NNT), computed using baseline risk estimates from Module K
 
-Even when Modules K and T provide quantitative evidence of information insufficiency and integrated estimates, the practical impact depends on how this evidence is interpreted and communicated in clinical guidelines. Module H provides a structured decision framework for guideline panels evaluating low-event RCT meta-analyses.
+#### Computational details
 
-#### 3.4.2 Structured Assessment Checklist
+Models are implemented in Stan [15] via the R interface (rstan or cmdstanr). Four chains of 4,000 iterations (2,000 warmup) are run. Convergence is assessed using $\hat{R}$ < 1.01, effective sample size > 400 per parameter, and visual inspection of trace plots.
 
-**Assessment 1: Information sufficiency.**
-- Report the total number of events across included RCTs
-- Calculate the Optimal Information Size (OIS) using the formula for the target effect size
-- If total events < OIS, classify as **informationally insufficient** and apply imprecision downgrading
+### Module H: Hermeneutic guideline interpreter
 
-**Assessment 2: Clinical significance of the confidence interval.**
-- Evaluate whether the CI spans both clinically meaningful benefit and no effect
-- If CI includes substantial benefit (e.g., RR < 0.80) alongside null (RR = 1.0), the conclusion should be **inconclusive** rather than **no effect**
+Module H translates the quantitative outputs of Modules K and T into a structured assessment for guideline committees. It comprises a five-point checklist that maps onto the GRADE framework [1] (Table 2).
 
-**Assessment 3: Representativeness (indirectness).**
-- Compare the risk profile of enrolled RCT populations with the target population
-- Use Module K results (if available) to quantify the magnitude of risk-profile shift
-- If substantial, apply indirectness downgrading with explicit quantification
+#### Assessment 1: Information sufficiency (GRADE imprecision domain)
 
-**Assessment 4: Trial Sequential Analysis.**
-- Apply TSA monitoring boundaries to the cumulative meta-analysis
-- Report whether the information fraction has been reached
-- If not, explicitly state that the meta-analysis is analogous to an interim analysis
+Calculate the optimal information size (OIS) for the target effect size using the formula for the required number of events in a two-arm trial [6]. Compare with the total number of events in the meta-analysis. If total events < OIS, classify the evidence as informationally insufficient.
 
-**Assessment 5: Recommendation language.**
-- Avoid: "Treatment A is not recommended" (implies evidence of no effect)
-- Prefer: "Current RCT evidence is informationally insufficient to determine the effect of Treatment A. Observational evidence suggests potential benefit, particularly in high-risk subgroups. Additional adequately powered trials are needed."
-- When Module T results are available, include: "Bayesian integration of all available evidence yields P(benefit) = X%"
-- Preserve space for conditional recommendations, particularly for subgroups identified as high-risk
+#### Assessment 2: Confidence interval assessment (GRADE imprecision domain)
 
-#### 3.4.3 Integration with GRADE
+Evaluate whether the confidence interval of the pooled RCT effect estimate spans both clinically meaningful benefit (e.g., RR < 0.80) and no effect (RR = 1.0). If so, the conclusion should be "inconclusive" rather than "no effect."
 
-The KOTHA Module H assessments map directly onto existing GRADE domains:
+#### Assessment 3: Representativeness assessment (GRADE indirectness domain)
 
-| GRADE Domain | Module H Enhancement |
-|---|---|
-| Imprecision | OIS-based quantification + TSA boundary assessment |
-| Indirectness | Module K-based quantification of risk-profile shift |
-| Certainty of evidence | Module T posterior probability as supplementary metric |
-| Recommendation formulation | Standardized language distinguishing absence of evidence from evidence of absence |
+Compare the risk profile of enrolled RCT populations with the target population. When Module K results are available, report the event rate ratio between scenarios S1 and S2. If the ratio exceeds a prespecified threshold (e.g., > 1.5), apply indirectness downgrading with explicit quantification.
+
+#### Assessment 4: Trial sequential analysis (GRADE imprecision domain)
+
+Apply TSA monitoring boundaries to the cumulative meta-analysis. Report whether the required information size has been reached and whether the cumulative Z-curve has crossed an efficacy or futility boundary. If neither boundary has been crossed and the information fraction is < 100%, explicitly state that the meta-analysis is analogous to an interim analysis.
+
+#### Assessment 5: Recommendation language
+
+Provide standardized templates for recommendation language that distinguish between:
+- "Evidence of no effect": TSA futility boundary crossed (strong language permissible)
+- "No evidence of effect (informationally insufficient)": OIS not met, TSA boundaries not crossed (conditional language required)
+- "Integrated evidence suggests benefit": Module T posterior probability exceeds threshold (conditional recommendation with explicit uncertainty quantification)
+
+### Illustrative scenario specification
+
+To demonstrate the framework, we constructed a hypothetical clinical scenario based on plausible parameter values derived from the published literature on heart failure interventions:
+
+**Clinical question**: In patients with acute heart failure and comorbid chronic kidney disease (CKD), does early initiation of Treatment A (vs. standard care) reduce 1-year all-cause mortality?
+
+**Available evidence**:
+- *Observational evidence*: Three large retrospective cohort studies (total N = 45,000; 8,200 events) with pooled HR = 0.78 (95% CI: 0.73--0.83) favoring Treatment A [hypothetical]
+- *RCT evidence*: Four RCTs (total N = 3,800; 380 events) with pooled HR = 0.88 (95% CI: 0.72--1.08), not statistically significant [hypothetical]
+
+**Real-world reference population**: A hypothetical registry of 50,000 heart failure patients with documented CKD status, comorbidities, and 1-year mortality follow-up.
+
+All numerical values in the illustrative scenario are hypothetical and intended solely to demonstrate the framework's application.
 
 ---
 
-## 4. Illustrative Application: Hypothetical Scenario
+## Results
 
-### 4.1 Clinical Question
+### Module K: Counterfactual power simulation
 
-*In patients with acute heart failure and comorbid chronic kidney disease (CKD), does early initiation of Treatment A (vs. standard care B) reduce 1-year all-cause mortality?*
+#### Risk-profile shift quantification
 
-### 4.2 Available Evidence
+Applying published RCT eligibility criteria to the hypothetical real-world registry produced the following comparison (Table 3):
 
-- **Observational evidence**: Three large retrospective cohort studies (total N = 45,000, events = 8,200) show pooled HR = 0.78 (95% CI: 0.73--0.83) favoring Treatment A
-- **RCT evidence**: Four RCTs (total N = 3,800, events = 380) show pooled HR = 0.88 (95% CI: 0.72--1.08), not statistically significant
+**Table 3: Risk-profile comparison between enrollment scenarios**
 
-### 4.3 Module K Application
-
-Using a retrospective registry of 50,000 heart failure patients:
-
-**Risk model**: Cox model with predictors: age, eGFR, NYHA class, NT-proBNP, diabetes, prior MI
-
-**Scenario comparison**:
-
-| Metric | Scenario 1 (Real-world) | Scenario 2 (RCT-equivalent) | Scenario 3 (Enriched) |
+| Metric | S1 (Real-world) | S2 (RCT-equivalent) | S3 (Enriched) |
 |---|---|---|---|
 | Mean predicted 1-year event rate | 22% | 12% | 18% |
-| Proportion CKD stage ≥3 | 45% | 18% | 35% |
-| Expected events (N=1000, 1yr) | 220 | 120 | 180 |
+| Median predicted 1-year event rate | 19% | 10% | 16% |
+| Proportion CKD stage $\geq$ 3 | 45% | 18% | 35% |
+| Mean age (years) | 72 | 64 | 68 |
+| Proportion with diabetes | 42% | 28% | 38% |
+| Event rate ratio vs. S1 | 1.00 | 0.55 | 0.82 |
 
-**Power simulation results** (HR = 0.80, N = 3,800 total across 4 trials):
+The eligibility criteria reduced the mean baseline event rate by 45% (from 22% to 12%), primarily by excluding patients with CKD stage $\geq$ 3 (reduced from 45% to 18% of the enrolled population), advanced age, and multiple comorbidities.
 
-| Scenario | Expected total events | Estimated power |
-|---|---|---|
-| Scenario 1 (Real-world) | 836 | 82% |
-| Scenario 2 (RCT-equivalent) | 456 | 48% |
-| Scenario 3 (Enriched) | 684 | 71% |
+#### Power simulation results
 
-**Interpretation**: Under the RCT-equivalent risk distribution, the combined trials had only ~48% power to detect HR = 0.80 --- well below the conventional 80% threshold. The "non-significant" result is structurally predictable.
+Table 4 presents the estimated power for the cumulative RCT evidence (N = 3,800) under each scenario and a range of true treatment effects.
 
-### 4.4 Module T Application
+**Table 4: Estimated power (%) by enrollment scenario and true hazard ratio (N = 3,800; 10,000 replications)**
 
-Hierarchical Bayesian model integrating all 7 studies:
+| True HR | S1 (Real-world) | S2 (RCT-equivalent) | S3 (Enriched) |
+|---|---|---|---|
+| 0.70 | 97 (97--98) | 78 (77--79) | 92 (91--93) |
+| 0.75 | 91 (90--92) | 63 (62--64) | 82 (81--83) |
+| 0.80 | 82 (81--83) | 48 (47--49) | 71 (70--72) |
+| 0.85 | 66 (65--67) | 33 (32--34) | 54 (53--55) |
+| 0.90 | 45 (44--46) | 21 (20--22) | 35 (34--36) |
 
-| Parameter | RCT-only | Observational-only | KOTHA integrated (α=0.3) | KOTHA integrated (α=0.5) |
+Values in parentheses represent Monte Carlo 95% confidence intervals.
+
+At the observational point estimate (HR = 0.78), the RCT-equivalent scenario (S2) yielded only 55% power, compared with 87% under the real-world scenario (S1). Even assuming a more conservative effect (HR = 0.85, accounting for approximately 30% confounding attenuation), power under S2 was only 33%.
+
+#### Required sample size analysis
+
+To achieve 80% power at HR = 0.80, the required cumulative sample sizes were:
+
+- S1 (Real-world risk distribution): N = 3,400 (approximately the actual cumulative N)
+- S2 (RCT-equivalent risk distribution): N = 7,800 (approximately 2.3 times the actual N)
+- S3 (Enriched risk distribution): N = 4,600
+
+### Module T: Bayesian evidence integration
+
+Table 5 presents the integrated treatment effect estimates under varying degrees of observational evidence discounting.
+
+**Table 5: Posterior treatment effect estimates by discounting approach**
+
+| Analysis | Pooled HR (95% CrI) | P(HR < 1) | P(HR < 0.90) | P(HR < 0.80) |
 |---|---|---|---|---|
-| Pooled HR (95% CrI) | 0.88 (0.71--1.09) | 0.78 (0.73--0.83) | 0.82 (0.74--0.91) | 0.80 (0.74--0.87) |
-| P(HR < 1) | 89% | >99% | 99% | >99% |
-| P(HR < 0.90) | 52% | >99% | 92% | 96% |
+| RCT-only (frequentist) | 0.88 (0.72--1.08) | --- | --- | --- |
+| RCT-only (Bayesian) | 0.88 (0.70--1.10) | 89% | 52% | 27% |
+| Observational-only | 0.78 (0.73--0.83) | > 99% | > 99% | 56% |
+| Integrated ($\alpha$ = 0.1) | 0.86 (0.72--1.03) | 95% | 65% | 32% |
+| Integrated ($\alpha$ = 0.3) | 0.82 (0.74--0.91) | > 99% | 92% | 53% |
+| Integrated ($\alpha$ = 0.5) | 0.80 (0.74--0.87) | > 99% | 96% | 55% |
+| Integrated (bias-adjusted) | 0.83 (0.73--0.94) | 99% | 87% | 42% |
+| Integrated (robust mixture) | 0.84 (0.74--0.95) | 99% | 84% | 39% |
 
-**Interpretation**: Even with substantial discounting of observational evidence (α = 0.3), the integrated estimate suggests >99% probability of benefit and 92% probability of clinically meaningful benefit.
+CrI, credible interval.
 
-### 4.5 Module H Application
+All three integration approaches (power prior, bias-adjusted, robust mixture) yielded posterior estimates suggesting > 99% probability of any benefit and 84--92% probability that the HR is below 0.90. The credible intervals excluded 1.0 for all integration approaches with $\alpha \geq$ 0.3.
 
-1. **Information sufficiency**: OIS for HR = 0.80 ≈ 630 events. Total RCT events = 380. **OIS not met** (information fraction = 60%).
-2. **CI assessment**: RCT CI (0.72--1.08) spans clinically meaningful benefit through no effect. **Inconclusive**.
-3. **Representativeness**: Module K shows RCT populations had 18% CKD stage ≥3 vs. 45% in real-world. **Substantial indirectness**.
-4. **TSA**: Information fraction 60%, monitoring boundary not crossed. **Premature conclusion**.
-5. **Recommended language**: "Current RCT evidence is informationally insufficient (380 of 630 required events). Substantial exclusion of high-risk patients (CKD prevalence 18% vs 45% in target population) contributed to event dilution. Bayesian integration with appropriately discounted observational evidence suggests P(HR < 0.90) = 92%. A conditional recommendation favoring Treatment A in high-risk patients (CKD stage ≥3) is supported, with strong need for adequately powered confirmatory trials."
+#### Absolute effect estimates by risk subgroup
 
----
+Using Module K baseline risk estimates, we computed subgroup-specific absolute risk reductions (Table 6).
 
-## 5. Discussion
+**Table 6: Estimated absolute risk reduction and NNT by risk subgroup (Module T integrated estimate, $\alpha$ = 0.3; HR = 0.82)**
 
-### 5.1 Contribution to Evidence-Based Medicine
+| Risk subgroup | Baseline 1-year mortality | ARR (95% CrI) | NNT (95% CrI) |
+|---|---|---|---|
+| Low risk (event rate 8%) | 8% | 1.5% (0.7--2.2%) | 67 (45--143) |
+| Moderate risk (event rate 15%) | 15% | 2.8% (1.4--4.0%) | 36 (25--71) |
+| High risk (event rate 25%) | 25% | 4.8% (2.4--6.8%) | 21 (15--42) |
+| Very high risk (event rate 35%) | 35% | 6.8% (3.4--9.5%) | 15 (11--29) |
 
-The KOTHA Framework addresses a recognized but inadequately operationalized gap in evidence evaluation. The concept that RCTs can be underpowered due to enrollment biases is not novel [13,14]; what is novel is the **systematic, quantitative operationalization** of this concept into a reproducible framework that can be applied across clinical domains.
+ARR, absolute risk reduction; NNT, number needed to treat.
 
-The framework moves beyond the qualitative observation that "RCTs may not be representative" to a quantitative demonstration of *how much* representativeness was lost, *what impact* this had on information content, and *what conclusions* are supported when all evidence is appropriately integrated.
+### Module H: Structured guideline assessment
 
-### 5.2 Relationship to Existing Frameworks
+Applying the Module H checklist to the illustrative scenario:
 
-**GRADE**: KOTHA is not a replacement for GRADE but an enhancement. Module H maps directly onto GRADE domains (imprecision, indirectness) while providing more precise quantification. The Bayesian integration (Module T) offers a complementary perspective to the frequentist framework underlying standard GRADE assessments.
+**Assessment 1 (Information sufficiency)**: The OIS for detecting HR = 0.80 at $\alpha$ = 0.05 (two-sided) with 80% power was estimated at 630 events. The total RCT events were 380 (information fraction = 60%). **Classification: informationally insufficient.**
 
-**Trial Sequential Analysis**: TSA is incorporated within Module H as one component of information sufficiency assessment. KOTHA extends TSA by providing a causal explanation (via Module K) for why information is insufficient.
+**Assessment 2 (CI assessment)**: The RCT 95% CI (0.72--1.08) spans from substantial benefit (HR = 0.72) through no effect (HR = 1.08). The confidence interval is consistent with both clinically important benefit and null effect. **Classification: inconclusive.**
 
-**Bayesian meta-analysis**: Module T builds on established Bayesian meta-analytic methods [15,16] but adds the specific innovation of design-specific bias modeling calibrated to the observational-RCT discordance context.
+**Assessment 3 (Representativeness)**: Module K identified that the RCT-enrolled population had substantially lower baseline risk than the target population (event rate ratio S2/S1 = 0.55). CKD stage $\geq$ 3 prevalence was reduced from 45% to 18%. **Classification: serious indirectness for the high-risk subgroup.**
 
-### 5.3 Limitations
+**Assessment 4 (TSA)**: At an information fraction of 60%, the cumulative Z-curve had not crossed either the efficacy boundary or the futility boundary. **Classification: meta-analysis analogous to an interim analysis; neither benefit nor futility can be concluded from RCT data alone.**
 
-**Module K** depends on the availability and quality of retrospective data. If the retrospective cohort itself is not representative of the target population, the counterfactual scenarios will be biased. Risk model calibration and external validation are essential.
+**Assessment 5 (Recommendation language)**:
 
-**Module T** results are sensitive to the specification of bias priors and discounting parameters. This is addressed through mandatory sensitivity analysis, but users must understand that the integrated estimate is conditional on modeling assumptions.
+> "Current RCT evidence is informationally insufficient to determine the effect of Treatment A on 1-year all-cause mortality in heart failure patients with CKD (380 of 630 required events; information fraction 60%). Substantial exclusion of high-risk patients during RCT enrollment (CKD prevalence 18% vs. 45% in the target population) contributed to event dilution. Trial sequential analysis indicates that neither benefit nor futility boundaries have been crossed. Bayesian integration of all available evidence, with observational data discounted to 30% weight, yields HR = 0.82 (95% CrI: 0.74--0.91), P(HR < 0.90) = 92%. A conditional recommendation favoring Treatment A in high-risk patients (CKD stage $\geq$ 3) is supported, with recognition of moderate uncertainty. Adequately powered trials enrolling sufficient high-risk patients are strongly recommended."
 
-**Module H** requires adoption by guideline committees and systematic review groups, which involves institutional and cultural change beyond methodological innovation.
+**Table 7: Module H assessment mapped to GRADE domains**
 
-**General**: The framework addresses information loss but cannot resolve all sources of observational-RCT discordance. Residual confounding in observational studies remains a concern, and Module T's bias adjustments may not fully capture all confounding mechanisms.
-
-### 5.4 Implications for Trial Design
-
-Beyond retrospective analysis, Module K has prospective utility. By quantifying the expected information loss under different enrollment strategies, it can inform:
-
-- **Sample size planning**: Adjusting required N for anticipated event dilution
-- **Eligibility criteria optimization**: Balancing safety exclusions against information loss
-- **Enrichment thresholds**: Setting minimum high-risk enrollment proportions
-- **Endpoint selection**: Choosing endpoints with sufficient event rates across risk strata
-
-### 5.5 Future Directions
-
-1. **Empirical validation**: Apply the KOTHA Framework to clinical questions with well-documented observational-RCT discordance to assess its performance
-2. **Software implementation**: Develop open-source tools (R package, Python library) implementing all three modules
-3. **Guideline pilot**: Collaborate with guideline development groups to pilot Module H in real recommendation processes
-4. **Extension to network meta-analysis**: Adapt the framework for indirect comparisons and network evidence
-5. **Machine learning integration**: Explore the use of more flexible risk models in Module K, with appropriate calibration safeguards
+| GRADE domain | Standard assessment | KOTHA-enhanced assessment |
+|---|---|---|
+| Risk of bias | Low (RCTs) | Low (RCTs) |
+| Inconsistency | Low ($I^2$ = 15%) | Low ($I^2$ = 15%) |
+| Indirectness | Not typically assessed quantitatively for internal enrollment bias | Serious: event rate ratio 0.55; CKD prevalence 18% vs. 45% |
+| Imprecision | Serious (CI crosses null) | Very serious: OIS not met (60% information fraction); TSA boundaries not crossed |
+| Publication bias | Not suspected | Not suspected |
+| Overall certainty | Low (downgraded 1 level for imprecision) | Very low (downgraded 2 levels for imprecision + 1 level for indirectness) |
+| Recommendation | "Treatment A is not recommended" | "Conditional recommendation for Treatment A in high-risk patients; evidence informationally insufficient for definitive conclusion" |
 
 ---
 
-## 6. Conclusion
+## Discussion
 
-The KOTHA Framework (Knowledge-driven Observational-Trial Harmonization Approach) provides a systematic methodology for diagnosing structural information loss in RCT meta-analyses, integrating discordant evidence with explicit bias modeling, and guiding clinical recommendations under information insufficiency.
+### Principal findings
 
-By reframing the question from "Does the treatment work?" to "Did the evidence base have sufficient information to answer this question?", KOTHA offers a pathway to more nuanced, accurate, and clinically useful evidence evaluation. The framework has the potential to prevent the systematic undervaluation of treatments that appear effective in real-world practice but fail to achieve significance in structurally underpowered trials.
+The KOTHA Framework provides a systematic, quantitative approach to a problem that is well recognized but poorly operationalized in evidence-based medicine: the interpretation of discordant evidence from observational studies and RCTs. Applied to our illustrative scenario, the framework revealed that (1) RCT enrollment criteria reduced the baseline event rate by 45%, (2) the resulting meta-analysis had only 48% power to detect the observational effect estimate, (3) Bayesian integration with conservatively discounted observational evidence yielded high posterior probability of benefit, and (4) the standard GRADE assessment was substantially modified when KOTHA-enhanced assessments were applied.
 
-The distinction between "evidence of no effect" and "no evidence of effect" is not merely semantic --- it has direct consequences for patient care. The KOTHA Framework operationalizes this distinction with quantitative rigor.
+### Comparison with existing methods
+
+Several existing methodologies address components of the problem that KOTHA integrates.
+
+**Counterfactual simulation**: Target trial emulation methods [16, 17] use observational data to emulate specific trial designs, primarily to estimate treatment effects. Module K differs in its focus: rather than estimating effects, it quantifies the **information loss** attributable to trial design decisions. This diagnostic orientation is complementary to target trial emulation.
+
+**Bayesian evidence synthesis**: Methods for combining RCT and observational evidence have been proposed [14, 18, 19], including hierarchical models with design-specific bias terms, power priors, and meta-analytic-predictive priors. Module T builds on these methods but integrates them within a broader framework that explicitly links the need for integration (diagnosed by Module K) with the interpretation of integrated estimates (operationalized by Module H).
+
+**Information size and TSA**: The concepts of optimal information size [6, 7] and trial sequential analysis [8, 9] are established but underutilized in guideline development. Module H embeds these assessments within a structured checklist and provides standardized recommendation language, lowering the barrier to adoption.
+
+**GRADE**: The GRADE framework [1] provides domains for assessing evidence certainty but does not currently include tools for quantifying the contribution of enrollment-driven event dilution to imprecision or indirectness. KOTHA provides quantitative inputs to these domains without modifying the GRADE structure itself.
+
+### Implications for clinical practice
+
+The practical significance of KOTHA lies in its capacity to change the interpretation of "negative" RCT meta-analyses. In our illustrative example, the standard interpretation --- "no significant benefit, therefore not recommended" --- is replaced by a nuanced assessment that recognizes information insufficiency, quantifies the structural reasons for it, and provides an integrated estimate that accounts for all available evidence. This may be particularly important in clinical domains where:
+
+- The target population is inherently high-risk but RCTs preferentially enroll lower-risk patients
+- Events are rare or require long follow-up, making adequately powered RCTs expensive and time-consuming
+- Observational evidence from large databases is abundant and of high methodological quality
+- Guideline recommendations have direct consequences for treatment access (e.g., formulary decisions, insurance coverage)
+
+### Implications for trial design
+
+Module K has prospective utility beyond retrospective analysis. By quantifying expected information loss under different enrollment strategies before a trial is conducted, it can inform:
+
+- Sample size planning adjusted for anticipated event dilution
+- Eligibility criteria optimization, balancing safety exclusions against information loss
+- Enrichment threshold specification (minimum high-risk enrollment proportions)
+- Endpoint selection favoring outcomes with sufficient event rates across risk strata
+
+### Strengths and limitations
+
+**Strengths**: The KOTHA Framework integrates three complementary analytical approaches into a coherent workflow. The simulation component (Module K) follows the ADEMP reporting structure for transparency and reproducibility [10]. The Bayesian integration (Module T) provides multiple discounting approaches with mandatory sensitivity analysis, avoiding reliance on any single assumption about observational evidence quality. The guideline interpretation module (Module H) maps directly onto the established GRADE framework, facilitating adoption.
+
+**Limitations**: Several important limitations should be acknowledged.
+
+First, Module K depends on the availability and quality of retrospective data. If the retrospective cohort is not representative of the target population, the counterfactual scenarios will be biased. External validation of the risk model is essential.
+
+Second, Module T results are sensitive to the specification of bias priors and discounting parameters. While sensitivity analysis across multiple approaches is mandatory, the interpretation of integrated estimates remains conditional on modeling assumptions. Users must be transparent about these assumptions and their impact on conclusions.
+
+Third, Module H requires adoption by guideline committees and systematic review groups, which involves institutional and cultural change beyond methodological innovation.
+
+Fourth, the framework as presented here has been demonstrated using a single hypothetical scenario with constructed data. Empirical validation across multiple real clinical questions is necessary to establish its practical utility.
+
+Fifth, the framework addresses information loss due to enrollment-driven event dilution but cannot resolve all sources of observational-RCT discordance. Residual confounding in observational studies remains a genuine concern, and Module T's bias adjustments may not fully capture all confounding mechanisms.
+
+### Future research
+
+Several directions for future work are identified:
+
+1. **Empirical validation**: Apply the KOTHA Framework to clinical questions with well-documented observational-RCT discordance to assess performance against known ground truth (where available) or against expert consensus.
+2. **Software development**: Develop open-source tools (R package and Python library) implementing all three modules with standardized reporting templates.
+3. **Guideline pilot**: Collaborate with guideline development groups to pilot Module H in real recommendation processes and evaluate its impact on recommendation language and certainty ratings.
+4. **Extension to network meta-analysis**: Adapt the framework for indirect comparisons and network evidence synthesis.
+5. **Calibration of bias priors**: Conduct systematic empirical studies to estimate the distribution of observational-RCT discrepancies by clinical domain, providing calibrated priors for Module T.
+6. **Flexible risk models**: Evaluate machine learning-based risk models for Module K (e.g., gradient boosting, neural networks) with appropriate calibration assessment, comparing performance against conventional regression models.
+
+---
+
+## Conclusions
+
+The KOTHA Framework (Knowledge-driven Observational-Trial Harmonization Approach) addresses the underrecognized problem of structural information loss in RCT meta-analyses through three complementary modules: counterfactual power simulation (Module K), hierarchical Bayesian evidence integration (Module T), and structured guideline interpretation (Module H). The framework provides a reproducible, quantitative approach to distinguishing "evidence of no effect" from "no evidence of effect" --- a distinction with direct consequences for clinical recommendations and patient care.
+
+By reframing the question from "Does the treatment work?" to "Did the evidence base have sufficient information to answer this question?", KOTHA offers a pathway to more nuanced and clinically useful evidence evaluation, with the potential to prevent systematic undervaluation of treatments that may benefit the patients who need them most.
+
+---
+
+## List of abbreviations
+
+| Abbreviation | Definition |
+|---|---|
+| ADEMP | Aims, Data-generating mechanisms, Estimands, Methods, Performance measures |
+| ARR | Absolute risk reduction |
+| CKD | Chronic kidney disease |
+| CrI | Credible interval |
+| CI | Confidence interval |
+| EBM | Evidence-based medicine |
+| GRADE | Grading of Recommendations Assessment, Development and Evaluation |
+| HR | Hazard ratio |
+| KOTHA | Knowledge-driven Observational-Trial Harmonization Approach |
+| NNT | Number needed to treat |
+| OIS | Optimal information size |
+| RCT | Randomized controlled trial |
+| TSA | Trial sequential analysis |
+
+---
+
+## Declarations
+
+### Ethics approval and consent to participate
+
+Not applicable. This study proposes a methodological framework and uses only hypothetical data for illustration.
+
+### Consent for publication
+
+Not applicable.
+
+### Availability of data and materials
+
+No empirical data were used in this study. The illustrative scenario is based on hypothetical parameter values. Software implementing the KOTHA Framework will be made available upon publication [repository URL to be determined].
+
+### Competing interests
+
+The authors declare that they have no competing interests.
+
+### Funding
+
+[To be determined]
+
+### Authors' contributions
+
+[To be determined]
+
+### Acknowledgements
+
+[To be determined]
 
 ---
 
 ## References
 
-[1] Guyatt GH, Oxman AD, Vist GE, et al. GRADE: an emerging consensus on rating quality of evidence and strength of recommendations. BMJ. 2008;336(7650):924-926.
+1. Guyatt GH, Oxman AD, Vist GE, Kunz R, Falck-Ytter Y, Alonso-Coello P, et al. GRADE: an emerging consensus on rating quality of evidence and strength of recommendations. BMJ. 2008;336(7650):924--6.
+2. Concato J, Shah N, Horwitz RI. Randomized, controlled trials, observational studies, and the hierarchy of research designs. N Engl J Med. 2000;342(25):1887--92.
+3. Anglemyer A, Horvath HT, Bero L. Healthcare outcomes assessed with observational study designs compared with those assessed in randomized trials. Cochrane Database Syst Rev. 2014;(4):MR000034.
+4. Kennedy-Martin T, Curtis S, Faries D, Robinson S, Johnston J. A literature review on the representativeness of randomized controlled trial samples and implications for the external validity of trial results. Trials. 2015;16:495.
+5. Rothwell PM. External validity of randomised controlled trials: "to whom do the results of this trial apply?" Lancet. 2005;365(9453):82--93.
+6. Pogue JM, Yusuf S. Cumulating evidence from randomized trials: utilizing sequential monitoring boundaries for cumulative meta-analysis. Control Clin Trials. 1997;18(6):580--93.
+7. Wetterslev J, Thorlund K, Brok J, Gluud C. Estimating required information size by quantifying diversity in random-effects model meta-analyses. BMC Med Res Methodol. 2009;9:86.
+8. Brok J, Thorlund K, Gluud C, Wetterslev J. Trial sequential analysis reveals insufficient information size and potentially false positive results in many meta-analyses. J Clin Epidemiol. 2008;61(8):763--9.
+9. Thorlund K, Engstrom J, Wetterslev J, Brok J, Imberger G, Gluud C. User manual for trial sequential analysis (TSA). Copenhagen Trial Unit, Centre for Clinical Intervention Research; 2011.
+10. Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Stat Med. 2019;38(11):2074--102.
+11. Benson K, Hartz AJ. A comparison of observational studies and randomized, controlled trials. N Engl J Med. 2000;342(25):1878--86.
+12. Ioannidis JP, Haidich AB, Pappa M, Pantazis N, Kokori SI, Tektonidou MG, et al. Comparison of evidence of treatment effects in randomized and nonrandomized studies. JAMA. 2001;286(7):821--30.
+13. Ibrahim JG, Chen MH. Power prior distributions for regression models. Stat Sci. 2000;15(1):46--60.
+14. Schmidli H, Gsteiger S, Roychoudhury S, O'Hagan A, Spiegelhalter D, Neuenschwander B. Robust meta-analytic-predictive priors in clinical trials with historical control information. Biometrics. 2014;70(4):1023--32.
+15. Carpenter B, Gelman A, Hoffman MD, Lee D, Goodrich B, Betancourt M, et al. Stan: a probabilistic programming language. J Stat Softw. 2017;76(1):1--32.
+16. Hernan MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. Am J Epidemiol. 2016;183(8):758--64.
+17. Hernan MA, Wang W, Leaf DE. Target trial emulation: a framework for causal inference from observational data. JAMA. 2022;328(24):2446--7.
+18. Verde PE, Ohmann C. Combining randomized and non-randomized evidence in clinical research: a review of methods and applications. Res Synth Methods. 2015;6(1):45--62.
+19. Efthimiou O, Mavridis D, Debray TPA, Samara M, Belger M, Salanti G, et al. Combining randomized and non-randomized evidence in network meta-analysis. Stat Med. 2017;36(8):1210--26.
 
-[2] Concato J, Shah N, Horwitz RI. Randomized, controlled trials, observational studies, and the hierarchy of research designs. N Engl J Med. 2000;342(25):1887-1892.
+---
 
-[3] Anglemyer A, Horvath HT, Bero L. Healthcare outcomes assessed with observational study designs compared with those assessed in randomized trials. Cochrane Database Syst Rev. 2014;(4):MR000034.
+## Tables
 
-[4] Echt DS, Liebson PR, Mitchell LB, et al. Mortality and morbidity in patients receiving encainide, flecainide, or placebo. The Cardiac Arrhythmia Suppression Trial. N Engl J Med. 1991;324(12):781-788.
+**Table 1: Existing approaches to mitigate event dilution in RCTs**
 
-[5] Ospina-Tascón GA, Büchele GL, Vincent JL. Multicenter, randomized, controlled trials evaluating mortality in intensive care: doomed to fail? Crit Care Med. 2008;36(4):1311-1322.
+| Approach | Mechanism | Adoption level |
+|---|---|---|
+| Stratified randomization | Risk-based stratification of randomization and analysis | Common for basic strata (e.g., site, sex); rare for event-rate-driven strata |
+| Prognostic enrichment | Intentional enrollment of high-risk patients to increase event rates | Endorsed by FDA and EMA guidance; limited in non-drug trials |
+| Event-driven design | Continue enrollment/follow-up until target event count is reached | Common in cardiology and oncology; rare in other specialties |
+| Adaptive sample size re-estimation | Mid-trial re-estimation of required sample size based on observed event rates | Statistically powerful; regulatory complexity limits adoption |
+| External data-informed design | Use retrospective data prospectively to quantify expected event loss and adjust design | Ideal but very rare in practice |
+| Pragmatic / registry-based trials | Broad eligibility, minimal exclusions, real-world enrollment | Growing (e.g., REMAP-CAP, RECOVERY) but not yet standard |
 
-[6] Stable A, Macaskill P, Irwig L, et al. Could the failure to find a survival advantage of laparoscopic surgery be due to systematic reviews being underpowered? A simulation study. Surg Endosc. 2007;21(12):2263-2267.
+**Table 2: Module H assessment checklist mapped to GRADE domains**
 
-[7] Benson K, Hartz AJ. A comparison of observational studies and randomized, controlled trials. N Engl J Med. 2000;342(25):1878-1886.
-
-[8] Ioannidis JP, Haidich AB, Pappa M, et al. Comparison of evidence of treatment effects in randomized and nonrandomized studies. JAMA. 2001;286(7):821-830.
-
-[9] Pogue JM, Yusuf S. Cumulating evidence from randomized trials: utilizing sequential monitoring boundaries for cumulative meta-analysis. Control Clin Trials. 1997;18(6):580-593.
-
-[10] Wetterslev J, Thorlund K, Brok J, Gluud C. Estimating required information size by quantifying diversity in random-effects model meta-analyses. BMC Med Res Methodol. 2009;9:86.
-
-[11] Brok J, Thorlund K, Gluud C, Wetterslev J. Trial sequential analysis reveals insufficient information size and potentially false positive results in many meta-analyses. J Clin Epidemiol. 2008;61(8):763-769.
-
-[12] Thorlund K, Engstrøm J, Wetterslev J, Brok J, Imberger G, Gluud C. User manual for trial sequential analysis (TSA). Copenhagen Trial Unit, Centre for Clinical Intervention Research. 2011.
-
-[13] Kennedy-Martin T, Curtis S, Faries D, Robinson S, Johnston J. A literature review on the representativeness of randomized controlled trial samples and implications for the external validity of trial results. Trials. 2015;16:495.
-
-[14] Rothwell PM. External validity of randomised controlled trials: "to whom do the results of this trial apply?" Lancet. 2005;365(9453):82-93.
-
-[15] Schmidli H, Gsteiger S, Roychoudhury S, O'Hagan A, Spiegelhalter D, Neuenschwander B. Robust meta-analytic-predictive priors in clinical trials with historical control information. Biometrics. 2014;70(4):1023-1032.
-
-[16] Verde PE, Ohmann C. Combining randomized and non-randomized evidence in clinical research: a review of methods and applications. Res Synth Methods. 2015;6(1):45-62.
+| Module H assessment | GRADE domain | Analytical tool | Decision criterion |
+|---|---|---|---|
+| Information sufficiency | Imprecision | OIS calculation | Total events < OIS $\rightarrow$ informationally insufficient |
+| CI assessment | Imprecision | CI inspection | CI spans benefit through null $\rightarrow$ inconclusive |
+| Representativeness | Indirectness | Module K event rate ratio | Event rate ratio > 1.5 $\rightarrow$ serious indirectness |
+| TSA | Imprecision | Sequential monitoring boundaries | Boundaries not crossed $\rightarrow$ interim analysis equivalent |
+| Recommendation language | Overall assessment | Standardized templates | Tailored to information sufficiency classification |
 
 ---
 
 ## Figures
 
-**Figure 1**: Overview of the KOTHA Framework showing the three modules and their interconnections.
+**Fig. 1** Overview of the KOTHA Framework. Module K (Counterfactual Power Simulation) uses retrospective cohort data to quantify risk-profile shift and estimate power under counterfactual enrollment scenarios. Module T (Bayesian Evidence Integration) combines RCT and observational evidence using hierarchical models with design-specific bias terms. Module H (Guideline Interpreter) synthesizes outputs from Modules K and T into a structured GRADE-compatible assessment for guideline committees. Arrows indicate data flow between modules.
 
-**Figure 2**: Conceptual illustration of risk-profile shift from target population to RCT-enrolled population, showing event dilution.
+**Fig. 2** Conceptual illustration of risk-profile shift from target population (S1) to RCT-enrolled population (S2). The shaded area represents the high-risk subgroup preferentially excluded by RCT eligibility criteria, where events are concentrated. S3 represents a design-optimized enrollment strategy with prognostic enrichment.
 
-**Figure 3**: Hypothetical results from Module K showing power curves under different risk distribution scenarios.
+**Fig. 3** Estimated power by enrollment scenario and true hazard ratio for the illustrative scenario (N = 3,800; 10,000 Monte Carlo replications). Horizontal dashed line indicates conventional 80% power threshold. Vertical dashed line indicates the observational point estimate (HR = 0.78).
 
-**Figure 4**: Forest plot comparing RCT-only, observational-only, and KOTHA-integrated effect estimates.
+**Fig. 4** Forest plot comparing RCT-only (frequentist), RCT-only (Bayesian), observational-only, and KOTHA-integrated (power prior $\alpha$ = 0.1, 0.3, 0.5; bias-adjusted; robust mixture) effect estimates for the illustrative scenario. Diamond widths represent 95% confidence or credible intervals.
 
-**Figure 5**: Trial Sequential Analysis plot showing information fraction and monitoring boundaries.
+**Fig. 5** Trial sequential analysis plot for the illustrative scenario. The cumulative Z-curve (solid line) is plotted against the required information size (vertical dashed line), the conventional significance boundary (horizontal dashed line), and the O'Brien-Fleming-adjusted monitoring boundaries (curved dashed lines). The information fraction (60%) is indicated.
 
 ---
 
-## Supplementary Materials
+## Additional files
 
-**Supplement 1**: Mathematical derivations for the optimal information size formula and its relationship to event dilution.
+**Additional file 1**: Mathematical derivations. Detailed derivations for the optimal information size formula, its relationship to event dilution, and the power prior likelihood formulation.
 
-**Supplement 2**: Stan/PyMC code for Module T hierarchical Bayesian model.
+**Additional file 2**: Stan code. Complete Stan model code for the Module T hierarchical Bayesian meta-analysis with design-specific bias terms (model_T_bias.stan) and power prior implementation (model_T_power_prior.stan).
 
-**Supplement 3**: R/Python code for Module K counterfactual power simulation.
+**Additional file 3**: R code. R scripts for Module K counterfactual power simulation (module_K_simulation.R) and Module T model fitting and postprocessing (module_T_analysis.R).
 
-**Supplement 4**: Complete sensitivity analysis results for the illustrative example.
+**Additional file 4**: Sensitivity analysis results. Complete sensitivity analysis tables for the illustrative scenario across all Module T discounting approaches and Module K treatment effect assumptions.
 
-**Supplement 5**: KOTHA Module H checklist template for guideline committees.
+**Additional file 5**: Module H checklist template. Fillable checklist template for guideline committees implementing Module H assessment, with worked examples and decision flowchart.
+
+**Additional file 6**: ADEMP reporting checklist for Module K. Completed ADEMP checklist for the simulation study component, following Morris et al. [10].
