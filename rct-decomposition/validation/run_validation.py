@@ -421,7 +421,7 @@ def bias_adjusted_normal(logY_rct, se_rct, logY_obs, se_obs, delta_grid):
     """Analytical normal approximation for bias-adjusted integration."""
     results = {}
     for delta in delta_grid:
-        logY_adj = logY_obs - delta
+        logY_adj = logY_obs + delta
         logY_all = np.concatenate([logY_rct, logY_adj])
         se_all = np.concatenate([se_rct, se_obs])
         pooled, se_p, tau2, I2 = random_effects_meta(logY_all, se_all)
@@ -1224,9 +1224,9 @@ def fig8_module_h_summary():
     
     rows = [
         ['Risk of bias', 'Low', 'Low', 'Low', 'Low'],
-        ['Inconsistency', 'High (I²=72%)', 'High (I²=72%)', 'Low (I²=0%)', 'Low (I²=0%)'],
-        ['Indirectness', 'Not assessed', 'Serious:\nevent rate ↓55%', 'Not assessed', 'Serious:\nevent rate ↓47%'],
-        ['Imprecision', 'Serious', 'Very serious:\nOIS not met', 'Serious', 'Very serious:\nOIS not met'],
+        ['Inconsistency', 'High (I²=62%)', 'High (I²=62%)', 'Low (I²=0%)', 'Low (I²=0%)'],
+        ['Indirectness', 'Not assessed', 'Moderate:\nevent rate ↓18%', 'Not assessed', 'Serious:\nevent rate ↓47%'],
+        ['Imprecision', 'Serious', 'Serious\n(heterogeneity-driven)', 'Serious', 'Serious'],
         ['Overall certainty', 'Low', 'Very low', 'Moderate', 'Low'],
         ['Recommendation', '"No benefit"', '"Inconclusive;\nconditional rec."', '"No benefit"', '"Inconclusive;\nconditional rec."'],
     ]
