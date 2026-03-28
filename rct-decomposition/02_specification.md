@@ -346,3 +346,355 @@ Module K ──→ Module T
 | 版 | 日付 | 変更内容 |
 |---|---|---|
 | 0.1 | 2026-03-23 | 初版作成（議論整理に基づく） |
+
+---
+
+# English Translation
+
+---
+
+# Specification: KOTHA Framework
+
+## Knowledge-driven Observational-Trial Harmonization Approach
+
+**A methodological framework for quantifying the lack of structural information in RCTs and realizing integrated evidence evaluation with observational studies**
+
+---
+
+## 1. Framework overview
+
+### 1.1 Names and abbreviations
+
+- **Official name**: KOTHA Framework (Knowledge-driven Observational-Trial Harmonization Approach)
+- **Japanese name**: KOTHA method - Knowledge-driven observational research/clinical trial harmonization approach
+
+### 1.2 Purpose
+
+We will quantitatively clarify the structural causes of the disparity in results between meta-analyses of RCTs (randomized controlled trials) and meta-analyses of observational studies, and support more appropriate evidence evaluation and formulation of clinical recommendations.
+
+### 1.3 Background issues
+
+| Assignment | Explanation |
+|---|---|
+| Loss of representativeness of RCT | High-risk groups are excluded in the case selection process, resulting in a discrepancy with the actual clinical population |
+| Insufficient number of events | Exclusion of high-risk groups reduces event rate and insufficient power |
+| Inaccuracy of meta-analysis | Even when underpowered RCTs are combined, the total amount of information can be less than the OIS |
+| Distortion of recommendations | “No significant difference” is misread as “no effect” and effective treatments are not recommended |
+
+### 1.4 Framework configuration
+
+KOTHA Framework consists of the following three modules:
+
+````
+┌──────────────────────────────────────────────────────────────┐
+│ KOTHA Framework │
+│ │
+│ ┌──────────────────┐ ┌────────────────────┐ ┌────────────────┐ │
+│ │ Module K │ │ Module T │ │ Module H │ │
+│ │ Kontrafaktische │ │ Trial-Obs │ │ Hermeneutic │
+│ │ Power │ │ Bayesian │ │ Guideline │
+│ │ Simulation │ │ Integration │ │ Interpreter │
+│ │ │ │ │ │ │ │
+│ │ Counterfactual Hypothesis │ │ Hierarchical Bayes │ │ Interpretation Guidelines │
+│ │ Power │ │ Evidence │ │ Module │
+│ │ Simulation │ │ Integration │ │ │ │
+│ └────────┬──────────┘ └────────┬──────────┘ └────────┬────────┘ │
+│ │ │ │ │
+│ └──────────────────────┼────────────────────┘ │
+│                                 │                               │
+│                    ┌────────────▼────────────┐                  │
+│                    │  統合的推奨判断         │                  │
+│                    │  Integrated Recommendation│                 │
+│                    └─────────────────────────┘                  │
+└──────────────────────────────────────────────────────────────┘
+````
+
+- **Module K** (Kontrafaktische Power Simulation): Quantitatively verify the lack of information in RCTs
+- **Module T** (Trial-Observational Bayesian Integration): Integrate RCTs and observational studies with hierarchical Bayesian integration
+- **Module H** (Hermeneutic Guideline Interpreter): Provides interpretive guidelines for low-event meta-analysis
+
+---
+
+## 2. Module K: Counterfactual virtual power simulation
+
+### 2.1 Purpose
+
+Using retrospective data, we will quantitatively evaluate the lack of detection power of existing RCTs by constructing a hypothetical counterfactual scenario of ``what if RCTs were conducted with a risk distribution close to that of actual clinical practice.''
+
+### 2.2 Input data specifications
+
+| Data Item | Required/Optional | Description |
+|---|---|---|
+| Retrospective cohort data | Required | Baseline covariates (age, comorbidities, severity, etc.), follow-up period, event occurrence/time point |
+| Baseline table of RCT | Recommended | Used to compare patient characteristics (equivalent to Table 1) and risk distribution of existing RCTs |
+| Eligibility criteria for RCTs | Recommendations | To simulate an “RCT-like population” by applying to retrospective data |
+| Expected treatment effect (HR, etc.) | Required | Multiple settings for sensitivity analysis (e.g. HR = 0.75, 0.80, 0.85) |
+
+### 2.3 Processing flow
+
+````
+Step A: Define endpoints and timeframes
+    ↓
+Step B: Build a baseline risk model using retrospective data
+│ ├── Binary outcome → Logistic regression P(event|X)
+    │ └── time-to-event → Cox proportional hazard model hazard(t|X)
+    ↓
+Step C: Define risk distribution scenario
+    │ ├── Scenario 1 (actual clinical practice): Entire population of retrospective data
+    │ ├── Scenario 2 (RCT simulation): Population applying RCT eligibility criteria
+    │ └── Scenario 3 (improvement proposal): Population that includes a certain percentage of high-risk groups
+    ↓
+Step D: Setting the treatment effect (sensitivity analysis)
+    │ └── HR = 0.75 / 0.80 / 0.85 (or a reasonable range depending on the area)
+    ↓
+Step E: Monte Carlo simulation (1,000 to 10,000 times)
+    │ ├── Sampling N people from the distribution of each scenario
+    │ ├── 1:1 randomization
+    │ ├── Event occurrence based on predicted risk (HR applied for treatment group)
+    │ ├── Statistical test (log-rank / Cox / proportion difference)
+    │ └── Proportion that satisfies p < α = estimated power
+    ↓
+Step F: Visualize and report results
+````
+
+### 2.4 Output specifications
+| Output items | Format | Purpose |
+|---|---|---|
+| Risk score distribution by scenario | Histogram/density plot | Visualize deviations in risk distribution |
+| Expected event rate by scenario | Table | Quantification of event rate reduction |
+| Expected number of events by scenario | Table (N, fixed tracking period) | Quantification of lack of information |
+| Estimated power by scenario x effect size | Table + heat map | Comprehensive evaluation of insufficient power |
+| Required number of cases (N required to achieve 80% power) | Table | Suggestions for appropriate study design |
+
+### 2.5 Validation
+
+- Calibration of risk models (calibration plots, Hosmer-Lemeshow test)
+- Evaluation of discrimination ability (C-statistic / AUC)
+- External calibration with RCT baseline table (if available)
+- Sensitivity analysis with multiple risk models (logistic regression, random forest, etc.)
+
+---
+
+## 3. Module T: Hierarchical Bayesian Evidence Integration
+
+### 3.1 Purpose
+
+It integrates RCTs (high internal validity, low information content) and observational studies (high information content, bias concerns) after explicitly modeling the bias structure to provide decision-proof effect estimates.
+
+### 3.2 Basic model
+
+Let y_i be the effect estimate reported by each study *i* (e.g. log(HR)), and let s_i be the standard error.
+````
+[Observation model]
+    y_i ~ Normal(θ_i, s_i²)
+
+[Structural model]
+    θ_i = μ + u_i + b_i
+
+    μ: Overall average treatment effect (estimated core parameter)
+    u_i : true variation between studies (heterogeneity)
+          u_i ~ Normal(0, τ²)
+    b_i : Bias term derived from research design
+          - RCT: b_i ~ Normal(0, σ_RCT²) [σ_RCT is small]
+          - Observational study: b_i ~ Normal(δ, σ_OBS²) [δ, σ_OBS is large]
+````
+
+### 3.3 Discounting methods for observational studies
+
+We will implement the following three methods and compare them in sensitivity analysis:
+
+| Method | Overview | Parameters |
+|---|---|---|
+| **Bias distribution by evidence class** | Changing the prior distribution of b_i in RCTs and observational studies | δ, σ_RCT, σ_OBS |
+| **Power prior / Discounting** | Assign weight α (0 to 1) to the likelihood of observational studies | α (ignored if α=0, equivalent if α=1) |
+| **Robust mixture prior** | Incorporates information from observational studies, but automatically weakens influence in case of discrepancies | Mixture ratio, variance of each component |
+
+### 3.4 Input data specifications
+
+| Data item | Format | Description |
+|---|---|---|
+| RCT effect estimate | log(HR) or log(OR) + SE | Point estimate and standard error for each RCT |
+| Observational study effect estimates | Same as above | Point estimates and standard errors for each observational study |
+| Research design classification | Categories (RCT / Cohort / Case-control, etc.) | Used for prior distribution assignment of bias terms |
+| (Optional) Risk of bias assessment | Score or category | Used to adjust the degree of discount for observational studies |
+
+### 3.5 Output specifications
+
+| Output items | Format | Purpose |
+|---|---|---|
+| Posterior distribution of μ | Distribution (median, 95% CrI) | Estimation of pooled treatment effect |
+| P(HR < 1) | Probability value | Treatment effectiveness probability |
+| P(HR < clinical threshold) | Probability value | Probability of clinically meaningful effect |
+| Prediction distribution | Distribution | Prediction when new research comes out |
+| Absolute effect by risk stratification | ARR / NNT | Absolute effect including baseline risk |
+| Sensitivity analysis results | Comparison of estimates by discounting method | Robustness evaluation of conclusions |
+
+### 3.6 Implementation specifications
+
+- **Estimation method**: Markov Chain Monte Carlo (MCMC) - Stan / JAGS / PyMC
+- **Convergence diagnostic**: Rhat < 1.05, effective sample size > 1000
+- **Prior distribution selection**: Based on weak information prior distribution, informative prior distribution is also considered in sensitivity analysis
+- **Model comparison**: Goodness of fit evaluation by WAIC / LOO-CV
+
+---
+
+## 4. Module H: Interpretation guidelines for low-event meta-analysis
+
+### 4.1 Purpose
+
+We provide guideline committees and systematic review authors with a checklist of guidelines for appropriately interpreting the results of low-event RCT meta-analyses.
+
+### 4.2 Checklist specifications
+
+````
+CHECK 1: Evaluate the amount of information
+├── Specify the total number of events
+├── Calculate OIS (Optimal Information Size)
+│ └── OIS = Calculate the required number of events (D) using the same formula as for normal RCT design
+├── Total number of events < OIS → Downgraded as “imprecision”
+└── Treat the conclusion as “unconfirmed”
+
+CHECK 2: Clinical evaluation of confidence intervals
+├── Evaluate whether CI straddles the line between “clinically important benefit” and “futility”
+├── Example: RR 0.75~1.05 → Possibility of profit remains
+└── The width of the CI itself indicates the certainty of the conclusion
+
+CHECK 3: Evaluation of representativeness (indirectness)
+├── Evaluate the discrepancy between the included patient group and the recommended target population
+├── Check whether high-risk groups are excluded
+├── You can refer to the results of Module K
+└── If there is a discrepancy, clarify it as a directness issue
+
+CHECK 4: Test sequential analysis (TSA)
+├── Applying TSA boundaries to cumulative meta-analysis
+├── Calculate information fraction
+├── TSA border not reached → Judgment that “conclusion is premature”
+└── Quantifying the risk of “no significant difference” in low events
+
+CHECK 5: Standardization of recommended expressions
+├── “Not recommended” → Avoid
+├── Recommended phrase: “The current RCT is inconclusive due to insufficient information.
+│ Possible benefit in high-risk groups; additional research required.”
+├── At least leave room for conditional recommendations
+└── Bayesian estimation results are also included if results of Module T are available.
+````
+
+### 4.3 GRADE cooperation
+
+Consistency with existing GRADE framework:
+
+| GRADE domain | Additional evaluation with KOTHA Module H |
+|---|---|
+| Imprecision | Quantifying lack of information using OIS evaluation + TSA |
+| Indirectness | Quantitative basis of risk distribution deviation using Module K |
+| Overall certainty | Combined estimation with Module T (auxiliary evidence) |
+
+### 4.4 Output format
+
+- For guideline committees: Structured Evidence Profile table (GRADE extension)
+- For SR authors: Report template with checklist
+- For clinicians: summary with certainty and conditions for recommendations
+
+---
+
+## 5. Cooperation between modules
+
+### 5.1 Integrated Workflow
+
+````
+Phase 1: Data collection/preparation
+├── Definition of the target clinical question
+├── Systematic search of existing RCTs/observational studies
+├── Retrospective cohort data acquisition
+└── Risk of bias assessment for each study
+
+Phase 2: Module K execution
+├── Risk model construction
+├── Scenario definition
+├── Power simulation execution
+└── Output: Quantitative basis for insufficient information in RCTs
+
+Phase 3: Module T execution
+├── Extraction of effect estimates
+├── Construction and estimation of hierarchical Bayesian models
+├── Sensitivity analysis
+└── Output: Integrated effect estimation and treatment effectiveness probability
+Phase 4: Module H application
+├── Evaluation based on checklist
+├── Combined results of Module K・T
+├── Formulation of recommended expressions
+└── Output: Evidence profile and recommendations
+
+Phase 5: Integrated recommendation judgment
+├── Combined results of 3 modules
+├── Validity evaluation of conditional recommendations
+└── Design proposal for additional research (suggestions for optimal design using Module K)
+````
+
+### 5.2 Data flow between modules
+
+````
+Module K ──→ Module H
+ │ Quantitative basis for risk distribution deviation (used for CHECK 3)
+ │ Quantitative basis for power shortage (used for CHECK 1, 4)
+ │
+Module T ──→ Module H
+ │ Integrated effect estimation (used for CHECK 5 recommendation expression)
+ │ Probability of treatment effectiveness (used as basis for conditional recommendation)
+ │
+Module K ──→ Module T
+    Baseline event rate by risk stratification (used to calculate absolute effect)
+````
+
+---
+
+## 6. Scope and restrictions
+
+### 6.1 Clinical situations where application is expected
+
+- Retrospective studies show significant treatment effects, but RCT meta-analyses show no significant difference
+- When it is suspected that the target population of the RCT deviates from the actual clinical population
+- If there are many RCTs with low event rates (rare outcomes, short follow-up period)
+- Re-evaluation of treatments that are likely to be judged as having “insufficient evidence” in guideline creation
+
+### 6.2 Restrictions
+
+- Module K depends on the quality and accessibility of retrospective data
+- Module T results are sensitive to bias structure assumptions of observational studies and sensitivity analysis is required
+- Module H requires consensus building with existing guideline creation process
+- This framework is not ``proof that the treatment is effective'' but ``verification of the lack of information in RCTs''
+
+### 6.3 Ethical considerations
+
+- To ensure that the use of this framework does not lead to inappropriate recommendations for treatments with low-quality evidence, we recommend a conservative stance when setting discount parameters for Module T.
+- Transparent discussion at the guideline committee and disclosure of methodology is essential
+
+---
+
+## 7. Technical requirements
+
+### 7.1 Software environment
+
+| Components | Recommended tools |
+|---|---|
+| Risk model construction (Module K) | R (survival, rms) / Python (lifelines, scikit-learn) |
+| Power simulation (Module K) | R / Python (NumPy, SciPy) |
+| Hierarchical Bayesian Model (Module T) | Stan (rstan/cmdstanpy) / PyMC / JAGS |
+| TSA (Module H) | R (rtsa) / TSA software |
+| Meta-analysis (common) | R (meta, metafor) / Python (pymare) |
+| Visualization | R (ggplot2) / Python (matplotlib, seaborn) |
+
+### 7.2 Reproducibility requirements
+
+- Keep all analysis code under version control
+- Fixed random number seed to ensure reproducibility
+- Document the basis for selecting prior distributions, discount parameters, etc.
+- Full results of sensitivity analysis published as a supplement
+
+---
+
+## 8. Revision history
+
+| Edition | Date | Changes |
+|---|---|---|
+| 0.1 | 2026-03-23 | First edition created (based on discussion) |

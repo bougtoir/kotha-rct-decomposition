@@ -119,3 +119,129 @@ RCTが実臨床の母集団から乖離する主な経路：
 1. 上記3本柱を統合した方法論フレームワークの命名と定式化 → **仕様書**
 2. 仮想的な臨床シナリオでの数値例の構築
 3. 論文としての執筆 → **ドラフト**
+
+---
+
+# English Translation
+
+---
+
+# Arranging the discussion: RCT decomposition - Discrepancy between retrospective research and RCT
+
+## 1. Big picture of the problem
+
+### 1.1 Clinical observations as a starting point
+
+The following discrepancies arise regarding treatment A (vs. standard treatment B):
+
+| Type of evidence | Results |
+|---|---|
+| Meta-analysis of retrospective studies (observational studies) | Treatment A is **significantly superior** |
+| Meta-analysis of RCTs | **No significant difference** |
+
+This discrepancy is not uncommon in clinical research and has traditionally been dismissed as ``observational study bias.'' However, in this discussion, we propose the hypothesis that the structural cause of this discrepancy lies in the lack of information in the design of the RCT.
+
+### 1.2 Structure of causal chain (5-step hypothesis)
+
+````
+① Representativeness of the population is lost during the RCT case selection process
+        ↓
+② Events (main outcomes) are concentrated in high-risk groups (comorbidities, etc.);
+    These patients will be excluded at the screening, exclusion criteria, and consent stages.
+        ↓
+③ Originally, ② was included in the estimate at the RCT planning stage.
+    It is necessary to establish risk stratification and increase the number of cases.
+        ↓
+④ Currently, ③ is not being carried out sufficiently.
+    A large number of underpowered RCTs have been produced, and even their meta-analyses do not show significant differences.
+        ↓
+⑤ As a result, treatment A that should have been recommended was
+Not recommended due to “insufficient evidence”
+````
+
+---
+
+## 2. Organizing the points at issue
+
+### 2.1 Mechanism of RCT loss of representativeness (①②)
+
+Main ways RCTs deviate from real-world populations:
+
+- **Exclusion based on exclusion criteria**: Exclude high-risk patients to ensure safety and homogeneity
+- **Facility selection bias**: Participating facilities are biased toward university hospitals, etc., and the patient population is limited
+- **Consent Obtaining Bias**: Obtaining consent is difficult for elderly, severely ill, and cognitively impaired patients.
+- **Feasibility filter**: Preliminary exclusion of patients who have difficulty complying with the protocol
+
+As a result, the RCT population tends to be a "clean population with low to moderate risk."
+
+### 2.2 Relationship between event rate decline and power shortage (③④)
+
+- Formula for required number of events (D) in time-to-event analysis:
+  - **D ≈ 4 × (Z_{α/2} + Z_β)² / (log(HR))²**
+- Example: HR=0.80, α=0.05 (both sides), β=0.20 → **Approximately 630 events required**
+- Example: HR=0.85 → **Approximately 1,190 events required**
+
+When the expected event rate decreases due to exclusion of high-risk groups:
+- The number of events achieved with the same number of cases has decreased
+- Extended follow-up period required
+- As a result, **insufficient information size** occurs.
+### 2.3 Impact on meta-analysis (④⑤)
+
+Insufficient information from individual RCTs → Even if combined through meta-analysis:
+- The estimated value has a wide CI even in the favorable direction
+- Total number of events is less than OIS (Optimal Information Size)
+- "No significant difference" is misread as "no effect"
+
+---
+
+## 3. Existing countermeasure methods and their prevalence
+
+| Method | Overview | Effectiveness for ③ | Popularity |
+|---|---|---|---|
+| Stratified design | Stratification and randomization by risk factors | Medium | Mild stratification is common, event-driven stratification is rare |
+| Enrichment design | Intentionally includes many high-risk groups | High | Recommended by FDA/EMA, but limited in real-world RCTs |
+| Event-driven design | Reaching the required number of events as a termination condition | High | Common in cardiovascular systems and oncology, rare in other fields |
+| Adaptive design | Adjust sample size, etc. through interim analysis | High | Theoretically powerful, but complex and not widely used |
+| External data informed | Quantifying design with retrospective data | Very high | Ideal but extremely rare in practice |
+| Pragmatic trial | Minimize exclusion criteria, design close to actual clinical practice | High | Direction is recommended but cannot be said to be the standard |
+
+**Common conclusion**: Methodologies exist, but are generally not well-practiced.
+
+---
+
+## 4. Three proposed approaches
+
+The three pillars proposed in the original discussion are summarized below:
+
+### Pillar 1: Counterfactual Power Simulation
+- Quantify "what if RCT was the actual clinical risk distribution" using retrospective data
+- Verify the lack of information in RCTs through both pre-planning and post-evaluation
+- Output: Expected event rate, estimated power, and required number of cases by scenario
+
+### Pillar 2: Evidence synthesis with hierarchical Bayesian models
+- Integrating RCT (high internal validity, low information content) and observational studies (high information content, concerns about bias)
+- Introducing bias terms and discounting into observational studies to provide decision-proof estimates
+- Output: Treatment effectiveness probability P(HR<1), predicted distribution, absolute effect by risk stratification
+
+### Pillar 3: Interpretation guidelines for low-event RCT meta-analyses
+- Systematically guarantees “no significant difference ≠ no effect”
+- Improved OIS evaluation, TSA (Test Sequential Analysis), and recommendation expressions
+- Provide operational format for guideline creation committee
+
+---
+
+## 5. Positioning of the discussion
+
+This discussion is situated in the following academic context:
+- **Limitations of Evidence-Based Medicine (EBM)**: The problem that RCT meta-analyses at the top of the evidence pyramid provide incomplete information due to structural biases in their design.
+- **Evidence-Biased Medicine**: Criticism that over-reliance on RCTs hinders the recommendation of effective treatments in actual clinical practice.
+- **Trial Design Methodology**: A new paradigm that quantitatively utilizes external data during the RCT planning stage
+- **Bayesian Evidence Synthesis**: A statistical framework that appropriately weights and integrates different sources of evidence.
+
+---
+
+## 6. Next steps
+
+1. Naming and formulation of a methodological framework that integrates the above three pillars → **Specification**
+2. Construction of numerical examples in hypothetical clinical scenarios
+3. Writing as a paper → **Draft**
