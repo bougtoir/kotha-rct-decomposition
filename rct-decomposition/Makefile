@@ -14,6 +14,8 @@ generic: build
 
 cct:
 	python build_paper_cct.py
+	python build_figures_pptx.py
+	python build_tables_docx.py
 
 clean:
 	rm -f 04_paper_rsm.md KOTHA_Framework_RSM.docx
