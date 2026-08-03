@@ -10,11 +10,11 @@
 
 **Background**: Discrepancies between meta-analyses of observational studies and randomized controlled trials (RCTs) are conventionally attributed to confounding in observational data. However, an alternative structural explanation --- that RCTs systematically exclude high-risk patients, leading to event dilution and insufficient statistical power --- remains underexplored and poorly operationalized. We developed the KOTHA (Knowledge-driven Observational-Trial Harmonization Approach) Framework to diagnose and address this structural information loss.
 
-**Methods**: The KOTHA Framework comprises three modules. Module K uses counterfactual power simulation comparing statistical power under actual RCT enrollment versus target-population scenarios. Module T integrates RCT and observational evidence through hierarchical Bayesian meta-analysis with power-prior discounting. Module H provides a structured checklist for guideline committees based on optimal information size (OIS), trial sequential analysis (TSA) boundaries, and the GRADE framework. We validated the framework using published data from two well-documented cases of observational-RCT divergence: (1) intravenous magnesium in acute myocardial infarction (12 trials, 1984--1995) and (2) statins in heart failure (5 observational studies, 2 RCTs).
+**Methods**: The KOTHA Framework comprises three modules. Module K uses counterfactual power simulation comparing statistical power under actual RCT enrollment versus target-population scenarios. Module T integrates RCT and observational evidence through hierarchical Bayesian meta-analysis with power-prior discounting. Module H provides a structured checklist for guideline committees based on optimal information size (OIS), trial sequential analysis (TSA) boundaries, and the GRADE framework. We illustrated the framework using published data from two well-documented cases of observational-RCT divergence: (1) intravenous magnesium in acute myocardial infarction (12 trials, 1984--1995) and (2) statins in heart failure (5 observational studies, 2 RCTs).
 
 **Results**: In the magnesium case, control event rates declined from 8.9% (pre-thrombolysis era) to 7.2% (ISIS-4), reflecting temporal event dilution. The pre-ISIS-4 meta-analysis yielded OR = 0.54 (95% CI: 0.40--0.75), while the all-trials estimate was OR = 0.56 (0.38--0.83) with I$^2$ = 62%. Bayesian integration with power prior discounting ($\alpha$ = 0.3) yielded OR = 0.73 (95% CrI: 0.28--2.09), P(OR < 1) = 77%. In the statins case, observational studies showed HR = 0.72 (0.64--0.80) while RCTs showed HR = 0.97 (0.90--1.05), with event rate ratio of 0.53 (RCT/observational). Module H assessment identified that standard GRADE evaluation would conclude "no benefit demonstrated," whereas KOTHA-enhanced assessment classified both cases as informationally inconclusive with serious indirectness due to event dilution.
 
-**Conclusions**: The KOTHA Framework provides a reproducible, quantitative approach to distinguishing "evidence of no effect" from "no evidence of effect." Empirical validation using two canonical cases of observational-RCT divergence demonstrates that the framework can identify structural information loss and produce more nuanced evidence assessments than standard approaches.
+**Conclusions**: The KOTHA Framework provides a reproducible, quantitative approach to distinguishing "evidence of no effect" from "no evidence of effect." Empirical illustration using two canonical cases of observational-RCT divergence demonstrates that the framework can identify structural information loss and produce more nuanced evidence assessments than standard approaches.
 
 **Keywords**: randomized controlled trials, meta-analysis, observational studies, evidence-based medicine, counterfactual simulation, Bayesian evidence synthesis, GRADE, optimal information size, trial sequential analysis, power analysis, magnesium, statins, heart failure
 
@@ -28,7 +28,7 @@ The conventional interpretation attributes this discrepancy to residual confound
 
 ### The structural information loss hypothesis
 
-We hypothesize that the following five-step causal chain explains a substantial proportion of observational-RCT discordance:
+We hypothesize that the following five-step causal chain explains a non-negligible and under-recognized proportion of observational-RCT discordance, alongside the well-established sources of confounding, selection bias, and publication bias in observational studies:
 
 1. **Representativeness loss**: RCTs lose population representativeness through eligibility criteria, consent requirements, and site selection [4, 5].
 2. **Event concentration in excluded populations**: Clinical events occur disproportionately in high-risk subgroups (patients with comorbidities, advanced disease, organ dysfunction) who are preferentially excluded during screening.
@@ -57,7 +57,7 @@ We developed the KOTHA (Knowledge-driven Observational-Trial Harmonization Appro
 
 The KOTHA Framework comprises three interconnected modules (Fig. 1):
 
-- **Module K** (Kontrafaktische Power Simulation): Counterfactual power analysis using retrospective data
+- **Module K** (Counterfactual Power Simulation): Counterfactual power analysis using retrospective data
 - **Module T** (Trial-Observational Bayesian Integration): Hierarchical Bayesian evidence synthesis with design-specific bias modeling
 - **Module H** (Hermeneutic Guideline Interpreter): Structured interpretation guidelines for low-information meta-analyses mapped to the GRADE framework
 
@@ -97,6 +97,8 @@ Secondary estimands include:
 - Sample size required to achieve 80% power under each scenario
 - Event rate ratio between scenarios (quantifying the magnitude of event dilution)
 
+For time-to-event outcomes, the hazard ratio (HR) is the default effect measure in the empirical applications. The HR has a clear interpretation under the proportional hazards assumption; when this assumption is violated, the Cox-model HR depends on the censoring distribution and its clinical interpretation becomes ambiguous. Alternative estimands such as the restricted mean survival time (RMST) difference do not require proportional hazards and can be used whenever reconstructed survival curves or patient-level data are available [11, 12]. The KOTHA power calculations are not tied to the HR and can be adapted to any effect measure for which the expected number of events or the precision of the estimate can be projected.
+
 #### Methods
 
 For each combination of enrollment scenario and treatment effect size, 10,000 Monte Carlo replications are performed:
@@ -112,6 +114,10 @@ Power is estimated as the proportion of replications achieving rejection, with M
 #### Performance measures
 
 The primary performance measure is estimated power with its Monte Carlo 95% confidence interval. Comparisons across scenarios are reported as power differences (absolute) and power ratios.
+
+#### Practical implementation note
+
+The counterfactual simulation described above is an ideal workflow that assumes a representative retrospective cohort with individual-level covariates is available. When such data are unavailable---as in the empirical cases used here---the scenario-specific control event rates can be approximated from published aggregate data. In those cases, the analyses should be interpreted as sensitivity analyses of statistical power under alternative assumed event rates, not as true individual-level counterfactual simulations.
 
 ### Module T: Hierarchical Bayesian evidence integration
 
@@ -143,14 +149,16 @@ where:
 Priors are specified as follows:
 - $\mu \sim \text{Normal}(0, 10^2)$ (weakly informative)
 - $\tau \sim \text{Half-Cauchy}(0, 0.5)$
-- $\delta \sim \text{Normal}(0, \sigma_\delta^2)$, where $\sigma_\delta$ is informed by empirical estimates of observational-RCT discrepancies [11, 12]
+- $\delta \sim \text{Normal}(0, \sigma_\delta^2)$, where $\sigma_\delta$ is informed by empirical estimates of observational-RCT discrepancies [13, 14]
 - $\sigma_{\text{OBS}} \sim \text{Half-Cauchy}(0, 0.5)$
+
+The weakly informative prior for $\mu$ is a default. When domain-specific empirical priors are available---for example, a prior derived from a large set of previous randomized trials in the same clinical domain [15]---they can be used to contextualize the RCT evidence before observational data are introduced. In the empirical cases below, such a cardiology-specific empirical prior was not available, so we retain the default prior and present sensitivity to discounting and bias adjustment across a transparency grid.
 
 #### Sensitivity analyses via alternative discounting approaches
 
 Two complementary approaches are implemented:
 
-**Approach 1: Power priors** [13]. The likelihood contribution of observational (or prior-era) studies is weighted by a discounting parameter $\alpha \in [0, 1]$:
+**Approach 1: Power priors** [16]. The likelihood contribution of observational (or prior-era) studies is weighted by a discounting parameter $\alpha \in [0, 1]$:
 
 $$L_{\text{discounted}}(\mu \mid y_{\text{prior}}) = L(\mu \mid y_{\text{prior}})^{\alpha}$$
 
@@ -161,6 +169,8 @@ Results are presented across a grid of $\alpha$ values (0, 0.1, 0.2, 0.3, 0.5, 0
 $$y_i^{\text{adj}} = y_i - \delta \quad \text{for observational studies}$$
 
 Results are presented across a grid of $\delta$ values (0, 0.1, 0.2, 0.3), representing increasing assumed confounding bias.
+
+We emphasize that power-prior discounting (varying $\alpha$) attenuates the influence of observational or prior-era data but does not, by itself, correct for systematic confounding or guarantee exchangeability between evidence sources. The bias-adjustment parameter $\delta$ is the mechanism for addressing suspected confounding, and sensitivity to both parameters is required. At the limit $\alpha = 0$, the model attempts to estimate a heterogeneity parameter from a single primary study; this is not identifiable from the data and the resulting interval is heavily influenced by the heterogeneity prior. In that case, we report the fixed-effect or single-study estimate alongside the Bayesian result and treat the Bayesian $\alpha = 0$ row as the limiting mathematical case rather than the primary inference.
 
 #### Model outputs
 
@@ -191,13 +201,14 @@ Compare the risk profile of enrolled RCT populations with the target population.
 
 #### Assessment 4: Trial sequential analysis (GRADE imprecision domain)
 
-Apply TSA monitoring boundaries to the cumulative meta-analysis. Report whether the required information size has been reached and whether the cumulative Z-curve has crossed an efficacy or futility boundary. If neither boundary has been crossed and the information fraction is < 100%, explicitly state that the meta-analysis is analogous to an interim analysis.
+Apply TSA monitoring boundaries to the cumulative meta-analysis. Report whether the required information size has been reached and whether the cumulative Z-curve has crossed an efficacy boundary (upper) or a futility boundary (lower). If neither boundary has been crossed, the evidence is inconclusive regardless of whether the OIS has been reached; crossing the OIS alone does not establish evidence of no effect. If the information fraction is < 100% and neither boundary has been crossed, explicitly state that the meta-analysis is analogous to an interim analysis.
 
 #### Assessment 5: Recommendation language
 
 Provide standardized templates for recommendation language that distinguish between:
+- "Evidence of effect": TSA efficacy boundary crossed (strong language permissible only if heterogeneity is low)
 - "Evidence of no effect": TSA futility boundary crossed (strong language permissible)
-- "No evidence of effect (informationally insufficient)": OIS not met, TSA boundaries not crossed (conditional language required)
+- "No evidence of effect (inconclusive)": OIS not met, or OIS met but neither efficacy nor futility boundary crossed (conditional language required)
 - "Integrated evidence suggests benefit": Module T posterior probability exceeds threshold (conditional recommendation with explicit uncertainty quantification)
 
 
@@ -217,7 +228,7 @@ The total expected number of events in a trial of $N$ patients (equally randomiz
 
 $$D = \frac{N}{2}(p_c + p_t)$$
 
-The standard error of the log-OR estimate is approximately $\text{SE}(\log\text{OR}) \approx 2/\sqrt{D}$ (Schoenfeld formula [14]), yielding the power function:
+The standard error of the log-OR estimate is approximately $\text{SE}(\log\text{OR}) \approx 2/\sqrt{D}$ (Schoenfeld formula [17]), yielding the power function:
 
 $$\text{Power} = \Phi\left(\frac{|\log(\text{OR})| \cdot \sqrt{D}}{2} - z_{\alpha/2}\right)$$
 
@@ -233,7 +244,7 @@ Module K computes power across a grid of true effect sizes and enrollment scenar
 
 ### Module T: Power prior formulation
 
-The power prior approach [13] provides a principled method for discounting historical or observational evidence. Let $y_{\text{RCT}} = (y_1, \ldots, y_m)$ denote the log-effect estimates from $m$ RCT studies with standard errors $s_1, \ldots, s_m$, and let $y_{\text{prior}} = (y_{m+1}, \ldots, y_{m+n})$ denote the log-effect estimates from $n$ prior (observational or earlier-era) studies with standard errors $s_{m+1}, \ldots, s_{m+n}$.
+The power prior approach [16] provides a principled method for discounting historical or observational evidence. Let $y_{\text{RCT}} = (y_1, \ldots, y_m)$ denote the log-effect estimates from $m$ RCT studies with standard errors $s_1, \ldots, s_m$, and let $y_{\text{prior}} = (y_{m+1}, \ldots, y_{m+n})$ denote the log-effect estimates from $n$ prior (observational or earlier-era) studies with standard errors $s_{m+1}, \ldots, s_{m+n}$.
 
 The power prior likelihood is:
 
@@ -293,23 +304,23 @@ The KOTHA Framework maps onto the GRADE domains as follows:
 
 ---
 
-## Empirical validation
+## Empirical illustration
 
-To validate the KOTHA Framework, we applied all three modules to two well-documented cases where observational evidence and RCT evidence diverged, and where the reasons for divergence have been extensively discussed in the literature.
+To illustrate the KOTHA Framework, we applied all three modules to two well-documented cases where observational evidence and RCT evidence diverged, and where the reasons for divergence have been extensively discussed in the literature.
 
-### Validation case selection
+### Illustrative case selection
 
 We selected two cases based on the following criteria: (1) well-documented observational-RCT discordance, (2) availability of study-level data from published meta-analyses, (3) extensive prior discussion of the reasons for divergence, and (4) relevance to the structural information loss hypothesis.
 
-**Case 1: Intravenous magnesium in acute myocardial infarction (AMI)**. Between 1984 and 1995, multiple small RCTs suggested that intravenous magnesium reduced mortality in AMI (pooled OR approximately 0.54). The large ISIS-4 trial (N = 58,050) found no benefit (OR approximately 1.05). This discordance has been attributed to temporal changes in background therapy (introduction of thrombolysis), which reduced control-group event rates and potentially diluted the treatment effect [15, 16].
+**Case 1: Intravenous magnesium in acute myocardial infarction (AMI)**. Between 1984 and 1995, multiple small RCTs suggested that intravenous magnesium reduced mortality in AMI (pooled OR approximately 0.54). The large ISIS-4 trial (N = 58,050) found no benefit (OR approximately 1.05). This discordance has been attributed to temporal changes in background therapy (introduction of thrombolysis), which reduced control-group event rates and potentially diluted the treatment effect [18, 19].
 
-**Case 2: Statins in heart failure (HF)**. Multiple large observational studies reported substantial mortality reduction with statins in HF patients (pooled HR approximately 0.72). Two large RCTs (CORONA, GISSI-HF) found no significant benefit (pooled HR approximately 0.97). The discordance has been attributed to both confounding in observational studies and selection of lower-risk RCT populations [17, 18, 19].
+**Case 2: Statins in heart failure (HF)**. Multiple large observational studies reported substantial mortality reduction with statins in HF patients (pooled HR approximately 0.72). Two large RCTs (CORONA, GISSI-HF) found no significant benefit (pooled HR approximately 0.97). The discordance has been attributed to both confounding in observational studies and selection of lower-risk RCT populations [20, 21, 22].
 
 ### Data sources
 
 #### Case 1: Magnesium in AMI
 
-Study-level data were extracted from published meta-analyses [15, 16] for 12 trials (Table 3). Trials were classified by era: pre-thrombolysis (1984--1990, 7 trials), transition (1991, 2 trials), and thrombolysis (1992--1995, 3 trials including ISIS-4).
+Study-level data were extracted from published meta-analyses [18, 19] for 12 trials (Table 3). Trials were classified by era: pre-thrombolysis (1984--1990, 7 trials), transition (1991, 2 trials), and thrombolysis (1992--1995, 3 trials including ISIS-4).
 
 **Table 3: Magnesium in AMI --- study-level data**
 
@@ -330,7 +341,7 @@ Study-level data were extracted from published meta-analyses [15, 16] for 12 tri
 
 #### Case 2: Statins in heart failure
 
-Observational study data were extracted from five published cohort studies [17, 20, 21, 22, 23]. RCT data were from CORONA [18] and GISSI-HF [19] (Table 4).
+Observational study data were extracted from five published cohort studies [20, 23, 24, 25, 26]. RCT data were from CORONA [21] and GISSI-HF [22] (Table 4).
 
 **Table 4: Statins in HF --- study-level data**
 
@@ -420,7 +431,7 @@ At $\alpha = 0$ (RCTs only), the posterior probability of any benefit was only 6
 
 **Assessment 3 (Representativeness)**: The event rate ratio (ISIS-4 / pre-thrombolysis) was 0.82. While this does not exceed the 1.5 threshold for serious indirectness, it reflects a temporal shift in background therapy rather than enrollment-driven event dilution per se.
 
-**Assessment 4 (TSA)**: The cumulative Z-curve (Fig. 7) showed that the Z-statistic reached significance after the early small trials but was pulled back toward the null by ISIS-4. The final cumulative Z was 0.80, below the conventional boundary of 1.96. The O'Brien-Fleming boundary at the observed information fraction was 0.27, which was exceeded, but this reflects the overwhelming dominance of ISIS-4 in the cumulative analysis.
+**Assessment 4 (TSA)**: We present the cumulative Z-curve using both fixed-effect and random-effects accumulation because the two models give different results in this case. Under a fixed-effect accumulation, the Z-statistic reached significance after the early small trials but was pulled back to 0.80 by ISIS-4 (below the conventional boundary of 1.96). Under a random-effects accumulation---the same model used for the pooled all-trials estimate---the final Z was -2.90, crossing both the conventional boundary and the O'Brien-Fleming boundary. This divergence is a direct consequence of the high between-study heterogeneity (I$^2$ = 62%) driven by the ISIS-4 result; it underscores that the magnesium evidence base contains a genuine shift in treatment effect across eras and should not be summarized by a single pooled estimate.
 
 #### Case 2: Statins in HF
 
@@ -430,7 +441,7 @@ At $\alpha = 0$ (RCTs only), the posterior probability of any benefit was only 6
 
 **Assessment 3 (Representativeness)**: The event rate ratio (RCT / observational) was 0.53, well below the 0.67 threshold. **Classification: serious indirectness.** The RCT populations had substantially lower event rates than the observational cohorts, consistent with selection of lower-risk patients.
 
-**Assessment 4 (TSA)**: With an information fraction of 496%, the RCT evidence was informationally sufficient. The cumulative Z-statistic did not cross the efficacy boundary, supporting the conclusion of no benefit at the RCT-enrolled risk level.
+**Assessment 4 (TSA)**: With an information fraction of 496%, the RCT evidence reached the OIS. The cumulative Z-statistic did not cross the efficacy boundary. Because the futility boundary was also not crossed, the appropriate TSA conclusion is **inconclusive** rather than evidence of no benefit at the RCT-enrolled risk level.
 
 #### Comparative GRADE assessment
 
@@ -442,7 +453,7 @@ Fig. 8 presents the comparative GRADE assessment for both cases under standard a
 |---|---|---|---|---|
 | Risk of bias | Low | Low | Low | Low |
 | Inconsistency | High ($I^2$ = 62%) | High ($I^2$ = 62%) | Low ($I^2$ = 0%) | Low ($I^2$ = 0%) |
-| Indirectness | Not assessed | Moderate: event rate down 18% | Not assessed | Serious: event rate down 47% |
+| Indirectness | Not assessed | Moderate: event rate decreased by 18% | Not assessed | Serious: event rate decreased by 47% |
 | Imprecision | Serious | Serious (heterogeneity-driven) | Serious | Serious |
 | Overall certainty | Low | Very low | Moderate | Low |
 | Recommendation | "No benefit demonstrated" | "Inconclusive; conditional recommendation" | "No benefit demonstrated" | "Inconclusive; conditional recommendation" |
@@ -456,7 +467,7 @@ The key difference is in the **indirectness** domain: standard GRADE assessment 
 
 ### Principal findings
 
-The KOTHA Framework was validated using two canonical cases of observational-RCT divergence. In both cases, the framework identified structural features --- temporal event dilution (magnesium) and population risk-profile differences (statins) --- that contributed to the apparent discordance between observational and RCT evidence.
+The KOTHA Framework was illustrated using two canonical cases of observational-RCT divergence. In both cases, the framework identified structural features --- temporal event dilution (magnesium) and population risk-profile differences (statins) --- that contributed to the apparent discordance between observational and RCT evidence.
 
 For the magnesium case, Module K demonstrated that the shift from pre-thrombolysis to thrombolysis-era background therapy reduced control event rates by 18%, though the ISIS-4 trial was sufficiently powered to detect the large effect suggested by earlier trials. The divergence in this case is more attributable to heterogeneity across eras (reflected in $I^2$ = 62%) than to simple underpowering. Module T showed that the posterior estimate depends critically on the weight assigned to pre-ISIS-4 evidence, with the discounting parameter $\alpha$ serving as a transparent sensitivity parameter.
 
@@ -466,13 +477,15 @@ For the statins case, Module K revealed a more dramatic event dilution: RCT popu
 
 Several existing methodologies address components of the problem that KOTHA integrates.
 
-**Counterfactual simulation**: Target trial emulation methods [24, 25] use observational data to emulate specific trial designs, primarily to estimate treatment effects. Module K differs in its focus: rather than estimating effects, it quantifies the **information loss** attributable to trial design decisions. This diagnostic orientation is complementary to target trial emulation.
+**Counterfactual simulation**: Target trial emulation methods [27, 28] use observational data to emulate specific trial designs, primarily to estimate treatment effects. Module K differs in its focus: rather than estimating effects, it quantifies the **information loss** attributable to trial design decisions. This diagnostic orientation is complementary to target trial emulation.
 
-**Bayesian evidence synthesis**: Methods for combining RCT and observational evidence have been proposed [26, 27, 28], including hierarchical models with design-specific bias terms, power priors, and meta-analytic-predictive priors. Module T builds on these methods but integrates them within a broader framework that explicitly links the need for integration (diagnosed by Module K) with the interpretation of integrated estimates (operationalized by Module H).
+**Bayesian evidence synthesis**: Methods for combining RCT and observational evidence have been proposed [29, 30, 31], including hierarchical models with design-specific bias terms, power priors, and meta-analytic-predictive priors. Module T builds on these methods but integrates them within a broader framework that explicitly links the need for integration (diagnosed by Module K) with the interpretation of integrated estimates (operationalized by Module H).
 
 **Information size and TSA**: The concepts of optimal information size [6, 7] and trial sequential analysis [8, 9] are established but underutilized in guideline development. Module H embeds these assessments within a structured checklist and provides standardized recommendation language, lowering the barrier to adoption.
 
 **GRADE**: The GRADE framework [1] provides domains for assessing evidence certainty but does not currently include tools for quantifying the contribution of enrollment-driven event dilution to imprecision or indirectness. KOTHA provides quantitative inputs to these domains without modifying the GRADE structure itself.
+
+**Relationship to the design strategies in Table 1**. The approaches listed in Table 1 (stratified randomization, prognostic enrichment, event-driven design, adaptive sample-size re-estimation, external-data-informed design, and pragmatic/registry-based trials) are primarily prospective trial-design strategies. Each can prevent or mitigate event dilution at the design stage, but none offers a retrospective diagnostic once a trial or meta-analysis has been completed. KOTHA is complementary rather than competitive: it can quantify the information loss that remains after these design strategies have been applied, and it can integrate observational evidence when trial evidence alone is informationally insufficient. For example, an event-driven design may reach its target number of events in an enriched population, but Module K can still ask whether the same number of events would have been observed in the broader target population, and Module T can incorporate real-world evidence to inform the recommendation for that broader population.
 
 ### Implications for clinical practice
 
@@ -494,11 +507,11 @@ Module K has prospective utility beyond retrospective analysis. By quantifying e
 
 ### Strengths and limitations
 
-**Strengths**: The KOTHA Framework integrates three complementary analytical approaches into a coherent workflow. The simulation component (Module K) follows the ADEMP reporting structure for transparency and reproducibility [10]. The Bayesian integration (Module T) provides multiple discounting approaches with mandatory sensitivity analysis, avoiding reliance on any single assumption about observational evidence quality. The guideline interpretation module (Module H) maps directly onto the established GRADE framework, facilitating adoption. Critically, the framework has been validated using real published data from two well-known cases, moving beyond hypothetical illustration.
+**Strengths**: The KOTHA Framework integrates three complementary analytical approaches into a coherent workflow. The simulation component (Module K) follows the ADEMP reporting structure for transparency and reproducibility [10]. The Bayesian integration (Module T) provides multiple discounting approaches with mandatory sensitivity analysis, avoiding reliance on any single assumption about observational evidence quality. The guideline interpretation module (Module H) maps directly onto the established GRADE framework, facilitating adoption. Critically, the framework has been illustrated using real published data from two well-known cases, moving beyond purely hypothetical examples.
 
 **Limitations**: Several important limitations should be acknowledged.
 
-First, the validation cases, while well-documented, represent retrospective application of the framework. Prospective validation --- applying KOTHA before the results of a large trial are known --- would provide stronger evidence of utility.
+First, the illustrative cases, while well-documented, represent retrospective application of the framework. Prospective validation --- applying KOTHA before the results of a large trial are known --- would provide stronger evidence of utility.
 
 Second, Module T results are sensitive to the specification of the discounting parameter $\alpha$. While sensitivity analysis across multiple values is mandatory, the choice of a "preferred" $\alpha$ for decision-making remains subjective. Future work should develop empirically calibrated guidelines for $\alpha$ selection based on the quality and relevance of prior evidence.
 
@@ -507,6 +520,8 @@ Third, the magnesium case illustrates a limitation: the divergence between pre-I
 Fourth, the statins case involves observational studies with potential residual confounding. While Module T's discounting approach addresses this, the true magnitude of confounding bias is unknown. The framework provides a range of estimates under different assumptions but cannot eliminate this fundamental uncertainty.
 
 Fifth, the framework requires adoption by guideline committees and systematic review groups, which involves institutional and cultural change beyond methodological innovation.
+
+Sixth, each module has prerequisites that will not always be met in practice. Module K requires either a representative retrospective cohort or reliable aggregate event-rate data; when neither is available, the indirectness assessment in Module H must rely on qualitative judgment. Module T requires study-level estimates from both RCT and observational sources and a transparent choice of discounting and bias-adjustment parameters. Module H requires an OIS/TSA calculation and a GRADE assessment. When a prerequisite is not met, the corresponding module should be omitted or downgraded, and the final certainty rating should reflect the missing quantitative input.
 
 ### Future research
 
@@ -517,14 +532,14 @@ Several directions for future work are identified:
 3. **Guideline pilot**: Collaborate with guideline development groups to pilot Module H in real recommendation processes and evaluate its impact on recommendation language and certainty ratings.
 4. **Extension to network meta-analysis**: Adapt the framework for indirect comparisons and network evidence synthesis.
 5. **Calibration of $\alpha$**: Conduct systematic empirical studies to estimate appropriate discounting parameters by clinical domain, providing calibrated guidelines for Module T application.
-6. **Additional validation cases**: Apply the framework to other well-documented cases of observational-RCT divergence (e.g., hormone replacement therapy and cardiovascular outcomes, vitamin E supplementation).
+6. **Additional illustrative cases**: Apply the framework to other well-documented cases of observational-RCT divergence (e.g., hormone replacement therapy and cardiovascular outcomes, vitamin E supplementation).
 
 
 ---
 
 ## Conclusions
 
-The KOTHA Framework (Knowledge-driven Observational-Trial Harmonization Approach) addresses the underrecognized problem of structural information loss in RCT meta-analyses through three complementary modules: counterfactual power simulation (Module K), hierarchical Bayesian evidence integration (Module T), and structured guideline interpretation (Module H). Empirical validation using two canonical cases --- intravenous magnesium in AMI and statins in heart failure --- demonstrates that the framework can identify structural features contributing to observational-RCT divergence and produce more nuanced evidence assessments than standard approaches.
+The KOTHA Framework (Knowledge-driven Observational-Trial Harmonization Approach) addresses the underrecognized problem of structural information loss in RCT meta-analyses through three complementary modules: counterfactual power simulation (Module K), hierarchical Bayesian evidence integration (Module T), and structured guideline interpretation (Module H). Empirical illustration using two canonical cases --- intravenous magnesium in AMI and statins in heart failure --- demonstrates that the framework can identify structural features contributing to observational-RCT divergence and produce more nuanced evidence assessments than standard approaches.
 
 By reframing the question from "Does the treatment work?" to "Did the evidence base have sufficient information to answer this question?", KOTHA offers a pathway to more nuanced and clinically useful evidence evaluation, with the potential to prevent systematic undervaluation of treatments that may benefit the patients who need them most.
 
@@ -555,7 +570,7 @@ By reframing the question from "Does the treatment work?" to "Did the evidence b
 
 ### Ethics approval and consent to participate
 
-Not applicable. This study proposes a methodological framework and uses only published aggregate data for validation.
+Not applicable. This study proposes a methodological framework and uses only published aggregate data for illustration.
 
 ### Consent for publication
 
@@ -584,7 +599,6 @@ The authors declare that they have no competing interests.
 ---
 
 ## References
-
 1. Guyatt GH, Oxman AD, Vist GE, Kunz R, Falck-Ytter Y, Alonso-Coello P, et al. GRADE: an emerging consensus on rating quality of evidence and strength of recommendations. BMJ. 2008;336(7650):924--6.
 2. Concato J, Shah N, Horwitz RI. Randomized, controlled trials, observational studies, and the hierarchy of research designs. N Engl J Med. 2000;342(25):1887--92.
 3. Anglemyer A, Horvath HT, Bero L. Healthcare outcomes assessed with observational study designs compared with those assessed in randomized trials. Cochrane Database Syst Rev. 2014;(4):MR000034.
@@ -595,24 +609,28 @@ The authors declare that they have no competing interests.
 8. Brok J, Thorlund K, Gluud C, Wetterslev J. Trial sequential analysis reveals insufficient information size and potentially false positive results in many meta-analyses. J Clin Epidemiol. 2008;61(8):763--9.
 9. Thorlund K, Engstrom J, Wetterslev J, Brok J, Imberger G, Gluud C. User manual for trial sequential analysis (TSA). Copenhagen Trial Unit, Centre for Clinical Intervention Research; 2011.
 10. Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Stat Med. 2019;38(11):2074--102.
-11. Benson K, Hartz AJ. A comparison of observational studies and randomized, controlled trials. N Engl J Med. 2000;342(25):1878--86.
-12. Ioannidis JP, Haidich AB, Pappa M, Pantazis N, Kokori SI, Tektonidou MG, et al. Comparison of evidence of treatment effects in randomized and nonrandomized studies. JAMA. 2001;286(7):821--30.
-13. Ibrahim JG, Chen MH. Power prior distributions for regression models. Stat Sci. 2000;15(1):46--60.
-14. Schoenfeld DA. Sample-size formula for the proportional-hazards regression model. Biometrics. 1983;39(2):499--503.
-15. Teo KK, Yusuf S, Collins R, Held PH, Peto R. Effects of intravenous magnesium in suspected acute myocardial infarction: overview of randomised trials. BMJ. 1991;303(6816):1499--503.
-16. Li J, Zhang Q, Zhang M, Egger M. Intravenous magnesium for acute myocardial infarction. Cochrane Database Syst Rev. 2007;(2):CD002755.
-17. Anker SD, Clark AL, Winkler R, Zugck C, Cicoira M, Haehling S, et al. Statin use and survival in patients with chronic heart failure --- results from two observational studies with 5200 patients. Int J Cardiol. 2006;112(2):234--42.
-18. Kjekshus J, Apetrei E, Barrios V, Bohm M, Cleland JG, Cornel JH, et al. Rosuvastatin in older patients with systolic heart failure. N Engl J Med. 2007;357(22):2248--61.
-19. GISSI-HF Investigators. Effect of rosuvastatin in patients with chronic heart failure (the GISSI-HF trial): a randomised, double-blind, placebo-controlled trial. Lancet. 2008;372(9645):1231--9.
-20. Mozaffarian D, Nye R, Levy WC. Statin therapy is associated with lower mortality among patients with severe heart failure. Am J Cardiol. 2004;93(9):1124--9.
-21. Horwich TB, MacLellan WR, Fonarow GC. Statin therapy is associated with improved survival in ischemic and non-ischemic heart failure. J Am Coll Cardiol. 2004;43(4):642--8.
-22. Go AS, Lee WY, Yang J, Lo JC, Gurwitz JH. Statin therapy and risks for death and hospitalization in chronic heart failure. JAMA. 2006;296(17):2105--11.
-23. Foody JM, Shah R, Galusha D, Masoudi FA, Havranek EP, Krumholz HM. Statins and mortality among elderly patients hospitalized with heart failure. Circulation. 2006;113(8):1086--92.
-24. Hernan MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. Am J Epidemiol. 2016;183(8):758--64.
-25. Hernan MA, Wang W, Leaf DE. Target trial emulation: a framework for causal inference from observational data. JAMA. 2022;328(24):2446--7.
-26. Schmidli H, Gsteiger S, Roychoudhury S, O'Hagan A, Spiegelhalter D, Neuenschwander B. Robust meta-analytic-predictive priors in clinical trials with historical control information. Biometrics. 2014;70(4):1023--32.
-27. Verde PE, Ohmann C. Combining randomized and non-randomized evidence in clinical research: a review of methods and applications. Res Synth Methods. 2015;6(1):45--62.
-28. Efthimiou O, Mavridis D, Debray TPA, Samara M, Belger M, Salanti G, et al. Combining randomized and non-randomized evidence in network meta-analysis. Stat Med. 2017;36(8):1210--26.
+11. McCaw ZR, Yin G, Wei LJ. Using the restricted mean survival time difference as an alternative to the hazard ratio for analyzing clinical cardiovascular studies. Circulation. 2019;140(17):1366--8. doi:10.1161/CIRCULATIONAHA.119.040680.
+12. Boyd AP, Kittelson JM, Gillen DL. Estimation of treatment effect under non-proportional hazards and conditionally independent censoring. Stat Med. 2012;31(28):3504--15. doi:10.1002/sim.5440.
+13. Benson K, Hartz AJ. A comparison of observational studies and randomized, controlled trials. N Engl J Med. 2000;342(25):1878--86.
+14. Ioannidis JP, Haidich AB, Pappa M, Pantazis N, Kokori SI, Tektonidou MG, et al. Comparison of evidence of treatment effects in randomized and nonrandomized studies. JAMA. 2001;286(7):821--30.
+15. Sherry AD, Msaouel P, Kupferman GS, Lin TA, Abi Jaoude J, Kouzy R, et al. Evidence-based prior for estimating the treatment effect of phase III randomized trials in oncology. JCO Precis Oncol. 2024;8:e2400363. doi:10.1200/PO.24.00363.
+16. Ibrahim JG, Chen MH. Power prior distributions for regression models. Stat Sci. 2000;15(1):46--60.
+17. Schoenfeld DA. Sample-size formula for the proportional-hazards regression model. Biometrics. 1983;39(2):499--503.
+18. Teo KK, Yusuf S, Collins R, Held PH, Peto R. Effects of intravenous magnesium in suspected acute myocardial infarction: overview of randomised trials. BMJ. 1991;303(6816):1499--503.
+19. Li J, Zhang Q, Zhang M, Egger M. Intravenous magnesium for acute myocardial infarction. Cochrane Database Syst Rev. 2007;(2):CD002755.
+20. Anker SD, Clark AL, Winkler R, Zugck C, Cicoira M, Haehling S, et al. Statin use and survival in patients with chronic heart failure --- results from two observational studies with 5200 patients. Int J Cardiol. 2006;112(2):234--42.
+21. Kjekshus J, Apetrei E, Barrios V, Bohm M, Cleland JG, Cornel JH, et al. Rosuvastatin in older patients with systolic heart failure. N Engl J Med. 2007;357(22):2248--61.
+22. GISSI-HF Investigators. Effect of rosuvastatin in patients with chronic heart failure (the GISSI-HF trial): a randomised, double-blind, placebo-controlled trial. Lancet. 2008;372(9645):1231--9.
+23. Mozaffarian D, Nye R, Levy WC. Statin therapy is associated with lower mortality among patients with severe heart failure. Am J Cardiol. 2004;93(9):1124--9.
+24. Horwich TB, MacLellan WR, Fonarow GC. Statin therapy is associated with improved survival in ischemic and non-ischemic heart failure. J Am Coll Cardiol. 2004;43(4):642--8.
+25. Go AS, Lee WY, Yang J, Lo JC, Gurwitz JH. Statin therapy and risks for death and hospitalization in chronic heart failure. JAMA. 2006;296(17):2105--11.
+26. Foody JM, Shah R, Galusha D, Masoudi FA, Havranek EP, Krumholz HM. Statins and mortality among elderly patients hospitalized with heart failure. Circulation. 2006;113(8):1086--92.
+27. Hernan MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. Am J Epidemiol. 2016;183(8):758--64.
+28. Hernan MA, Wang W, Leaf DE. Target trial emulation: a framework for causal inference from observational data. JAMA. 2022;328(24):2446--7.
+29. Schmidli H, Gsteiger S, Roychoudhury S, O'Hagan A, Spiegelhalter D, Neuenschwander B. Robust meta-analytic-predictive priors in clinical trials with historical control information. Biometrics. 2014;70(4):1023--32.
+30. Verde PE, Ohmann C. Combining randomized and non-randomized evidence in clinical research: a review of methods and applications. Res Synth Methods. 2015;6(1):45--62.
+31. Efthimiou O, Mavridis D, Debray TPA, Samara M, Belger M, Salanti G, et al. Combining randomized and non-randomized evidence in network meta-analysis. Stat Med. 2017;36(8):1210--26.
+
 ## Tables
 
 **Table 1: Existing approaches to mitigate event dilution in RCTs**
@@ -668,13 +686,13 @@ The authors declare that they have no competing interests.
 
 ![Fig. 7](validation/figures/fig5_tsa_magnesium.png)
 
-**Fig. 8** Module H assessment comparison: standard GRADE vs. KOTHA-enhanced evaluation for both validation cases. Color coding indicates severity of concern (green = no concern, yellow = moderate, red = serious).
+**Fig. 8** Module H assessment comparison: standard GRADE vs. KOTHA-enhanced evaluation for both illustrative cases. Color coding indicates severity of concern (green = no concern, yellow = moderate, red = serious).
 
 ![Fig. 8](validation/figures/fig8_module_h_comparison.png)
 
 ## Additional files
 
-**Additional file 1**: Study-level data tables for both validation cases (Tables S1--S2), including trial characteristics, event counts, and era classification.
+**Additional file 1**: Study-level data tables for both illustrative cases (Tables S1--S2), including trial characteristics, event counts, and era classification.
 
 **Additional file 2**: Python validation code implementing all three modules with figure generation.
 
