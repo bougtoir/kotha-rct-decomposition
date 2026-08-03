@@ -2,6 +2,7 @@
 """Convert corrected RSM markdown (04_paper_rsm.md) to formatted docx."""
 import re
 import os
+from datetime import datetime, timezone
 from docx import Document
 from docx.shared import Pt, Inches, RGBColor, Cm
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -13,6 +14,10 @@ FIG_DIR = os.path.join(BASE, 'validation', 'figures')
 OUTPUT = os.path.join(BASE, 'KOTHA_Framework_RSM.docx')
 
 doc = Document()
+
+# Fixed document properties for reproducible docx output
+doc.core_properties.created = datetime(2025, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
+doc.core_properties.modified = datetime(2025, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
 
 # --- Page setup ---
 for section in doc.sections:
