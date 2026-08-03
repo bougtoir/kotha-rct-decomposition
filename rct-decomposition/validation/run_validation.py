@@ -9,6 +9,8 @@ This script implements Modules K, T, and H using real study-level data
 from published meta-analyses and generates all color figures.
 """
 
+import os
+
 import numpy as np
 import pandas as pd
 import matplotlib
@@ -46,36 +48,18 @@ plt.rcParams.update({
     'font.family': 'sans-serif',
 })
 
-OUTDIR = '/home/ubuntu/repos/wip/rct-decomposition/validation/figures'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(os.path.dirname(BASE_DIR), 'data')
+OUTDIR = os.path.join(BASE_DIR, 'figures')
 
-import os
 os.makedirs(OUTDIR, exist_ok=True)
 
 # ============================================================
 # CASE 1: Intravenous Magnesium in Acute Myocardial Infarction
 # ============================================================
-# Data from: Teo et al. 1991 (Lancet), Li et al. 2007 (Cochrane),
-# ISIS-4 Collaborative Group 1995 (Lancet)
+# Data sources documented in data/SOURCES.md
 
-mg_data = pd.DataFrame({
-    'study': [
-        'Morton 1984', 'Rasmussen 1986', 'Smith 1986',
-        'Abraham 1987', 'Ceremuzynski 1989', 'Shechter 1990',
-        'Singh 1990', 'Feldstedt 1991', 'Schechter 1991',
-        'LIMIT-2 1992', 'Shechter 1995',
-        'ISIS-4 1995'
-    ],
-    'year': [1984, 1986, 1986, 1987, 1989, 1990, 1990, 1991, 1991, 1992, 1995, 1995],
-    'e_treat': [1, 1, 2, 1, 1, 1, 6, 4, 1, 90, 4, 2216],
-    'n_treat': [40, 56, 200, 48, 25, 50, 39, 100, 59, 1159, 107, 29011],
-    'e_ctrl':  [2, 9, 7, 1, 3, 9, 11, 7, 2, 118, 17, 2103],
-    'n_ctrl':  [36, 79, 200, 46, 23, 53, 37, 100, 57, 1157, 108, 29039],
-    'design': ['RCT']*12,
-    'era': ['pre-thrombolysis', 'pre-thrombolysis', 'pre-thrombolysis',
-            'pre-thrombolysis', 'pre-thrombolysis', 'pre-thrombolysis',
-            'pre-thrombolysis', 'transition', 'transition',
-            'thrombolysis', 'thrombolysis', 'thrombolysis'],
-})
+mg_data = pd.read_csv(os.path.join(DATA_DIR, 'magnesium_ami.csv'))
 
 # ============================================================
 # CASE 2: Statins in Heart Failure
@@ -83,30 +67,17 @@ mg_data = pd.DataFrame({
 # Observational data from published cohort studies
 # RCT data from CORONA and GISSI-HF
 
-statin_obs = pd.DataFrame({
-    'study': [
-        'Mozaffarian 2004', 'Horwich 2004', 'Go 2006',
-        'Foody 2006', 'Anker 2006 (pooled)'
-    ],
-    'logHR': np.log([0.62, 0.59, 0.69, 0.82, 0.75]),
-    'logHR_lo': np.log([0.49, 0.44, 0.63, 0.79, 0.66]),
-    'logHR_hi': np.log([0.78, 0.78, 0.75, 0.85, 0.85]),
-    'design': ['OBS']*5,
-    'N': [1153, 551, 24598, 54960, 10510],
-    'events': [356, 189, 5765, 16573, 2890],
-})
-statin_obs['se'] = (statin_obs['logHR_hi'] - statin_obs['logHR_lo']) / (2 * 1.96)
+def _load_statin_hr(path, design):
+    df = pd.read_csv(path)
+    df['logHR'] = np.log(df['HR'])
+    df['logHR_lo'] = np.log(df['HR_lo'])
+    df['logHR_hi'] = np.log(df['HR_hi'])
+    df['se'] = (df['logHR_hi'] - df['logHR_lo']) / (2 * 1.96)
+    df['design'] = design
+    return df
 
-statin_rct = pd.DataFrame({
-    'study': ['CORONA 2007', 'GISSI-HF 2008'],
-    'logHR': np.log([0.95, 1.00]),
-    'logHR_lo': np.log([0.86, 0.90]),
-    'logHR_hi': np.log([1.05, 1.12]),
-    'design': ['RCT', 'RCT'],
-    'N': [5011, 4574],
-    'events': [728, 657],
-})
-statin_rct['se'] = (statin_rct['logHR_hi'] - statin_rct['logHR_lo']) / (2 * 1.96)
+statin_obs = _load_statin_hr(os.path.join(DATA_DIR, 'statins_hf_obs.csv'), 'OBS')
+statin_rct = _load_statin_hr(os.path.join(DATA_DIR, 'statins_hf_rct.csv'), 'RCT')
 
 
 # ============================================================
@@ -1325,21 +1296,32 @@ def fig8_module_h_summary():
 # MAIN
 # ============================================================
 
+def compute_results():
+    """Run all analyses and return a dictionary of computed results."""
+    mk_mg = run_module_k_magnesium(mg_data)
+    mk_st = run_module_k_statins(statin_obs, statin_rct)
+    mt_mg = run_module_t_magnesium(mk_mg['mg_data'])
+    mt_st = run_module_t_statins(statin_obs, statin_rct)
+    mh_mg = run_module_h_magnesium(mk_mg['mg_data'], mk_mg)
+    mh_st = run_module_h_statins(statin_obs, statin_rct, mk_st)
+    return {
+        'mk_mg': mk_mg, 'mk_st': mk_st,
+        'mt_mg': mt_mg, 'mt_st': mt_st,
+        'mh_mg': mh_mg, 'mh_st': mh_st,
+    }
+
+
 def main():
     print("KOTHA Framework — Empirical Validation")
     print("=" * 60)
     
-    # --- Module K ---
-    mk_mg = run_module_k_magnesium(mg_data)
-    mk_st = run_module_k_statins(statin_obs, statin_rct)
-    
-    # --- Module T ---
-    mt_mg = run_module_t_magnesium(mk_mg['mg_data'])
-    mt_st = run_module_t_statins(statin_obs, statin_rct)
-    
-    # --- Module H ---
-    mh_mg = run_module_h_magnesium(mk_mg['mg_data'], mk_mg)
-    mh_st = run_module_h_statins(statin_obs, statin_rct, mk_st)
+    results = compute_results()
+    mk_mg = results['mk_mg']
+    mk_st = results['mk_st']
+    mt_mg = results['mt_mg']
+    mt_st = results['mt_st']
+    mh_mg = results['mh_mg']
+    mh_st = results['mh_st']
     
     # --- Generate Figures ---
     print("\n" + "=" * 60)
@@ -1360,7 +1342,7 @@ def main():
     print("=" * 60)
     
     # Save numerical results summary
-    with open(f'{OUTDIR}/../results_summary.txt', 'w') as f:
+    with open(os.path.join(OUTDIR, '..', 'results_summary.txt'), 'w') as f:
         f.write("KOTHA Framework Validation — Numerical Results Summary\n")
         f.write("=" * 60 + "\n\n")
         
