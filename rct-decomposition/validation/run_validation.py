@@ -209,7 +209,7 @@ def ois_calculation(OR, alpha=0.05, power=0.80):
 
 
 def cumulative_z(logOR_arr, se_arr):
-    """Compute cumulative Z-statistic for TSA."""
+    """Compute cumulative Z-statistic for TSA under a fixed-effect model."""
     z_values = []
     pooled_list = []
     info_list = []
@@ -221,6 +221,24 @@ def cumulative_z(logOR_arr, se_arr):
         z_values.append(z)
         pooled_list.append(pooled)
         info_list.append(np.sum(w))
+    return np.array(z_values), np.array(pooled_list), np.array(info_list)
+
+
+def cumulative_random_effects_z(logOR_arr, se_arr):
+    """Compute cumulative Z-statistic for TSA under a random-effects model."""
+    z_values = []
+    pooled_list = []
+    info_list = []
+    for k in range(1, len(logOR_arr) + 1):
+        if k == 1:
+            pooled = logOR_arr[0]
+            se_pooled = se_arr[0]
+        else:
+            pooled, se_pooled, _, _ = random_effects_meta(logOR_arr[:k], se_arr[:k])
+        z = pooled / se_pooled
+        z_values.append(z)
+        pooled_list.append(pooled)
+        info_list.append(1 / se_pooled**2)
     return np.array(z_values), np.array(pooled_list), np.array(info_list)
 
 
@@ -620,11 +638,13 @@ def run_module_h_magnesium(mg_data, mk_results):
     # Assessment 4: TSA
     # Sort by year for cumulative analysis
     mg_sorted = mg_data.sort_values('year')
-    cum_z, cum_pooled, cum_info = cumulative_z(mg_sorted['logOR'].values, mg_sorted['se'].values)
+    cum_z_fe, cum_pooled_fe, cum_info_fe = cumulative_z(mg_sorted['logOR'].values, mg_sorted['se'].values)
+    cum_z_re, cum_pooled_re, cum_info_re = cumulative_random_effects_z(mg_sorted['logOR'].values, mg_sorted['se'].values)
     
     print(f"\nAssessment 4: Trial Sequential Analysis")
     print(f"  Required information size: {ois:.0f} events")
-    print(f"  Cumulative Z at final analysis: {cum_z[-1]:.2f}")
+    print(f"  Final cumulative Z (fixed-effect):   {cum_z_fe[-1]:.2f}")
+    print(f"  Final cumulative Z (random-effects): {cum_z_re[-1]:.2f}")
     
     z_alpha = stats.norm.ppf(0.975)
     # O'Brien-Fleming boundary at information fraction
@@ -634,16 +654,22 @@ def run_module_h_magnesium(mg_data, mk_results):
     
     # Assessment 5: Recommendation
     print(f"\nAssessment 5: Recommendation Language")
-    if info_fraction >= 1.0 and abs(cum_z[-1]) > z_alpha:
-        print("  → Evidence of effect (or no effect if Z crosses futility)")
-    elif info_fraction < 1.0:
+    final_z = cum_z_re[-1]
+    if info_fraction >= 1.0 and final_z < -z_alpha:
+        print("  → Evidence of effect (efficacy boundary crossed; negative Z corresponds to OR < 1)")
+    elif info_fraction >= 1.0 and final_z > z_alpha:
+        print("  → Evidence of harm / no benefit (efficacy boundary crossed in opposite direction)")
+    elif info_fraction >= 1.0:
+        print("  → Inconclusive (OIS reached but neither efficacy nor futility boundary crossed)")
+    else:
         print("  → No evidence of effect (informationally insufficient)")
         print("    The meta-analysis is analogous to an interim analysis.")
     
     return {
         'ois': ois, 'total_events': total_events, 'total_events_pre': total_events_pre,
         'info_fraction': info_fraction, 'info_fraction_pre': info_fraction_pre,
-        'cum_z': cum_z, 'cum_pooled': cum_pooled, 'cum_info': cum_info,
+        'cum_z_fe': cum_z_fe, 'cum_pooled_fe': cum_pooled_fe, 'cum_info_fe': cum_info_fe,
+        'cum_z_re': cum_z_re, 'cum_pooled_re': cum_pooled_re, 'cum_info_re': cum_info_re,
         'mg_sorted': mg_sorted,
     }
 
@@ -675,13 +701,33 @@ def run_module_h_statins(statin_obs, statin_rct, mk_results):
     print(f"\nAssessment 3: Representativeness")
     print(f"  Event rate ratio (RCT / observational) = {rate_ratio:.2f}")
     
-    print(f"\nAssessment 4: TSA")
+    # Assessment 4: TSA
+    st_sorted = statin_rct.sort_values('N')
+    cum_z_fe, _, _ = cumulative_z(st_sorted['logHR'].values, st_sorted['se'].values)
+    cum_z_re, _, _ = cumulative_random_effects_z(st_sorted['logHR'].values, st_sorted['se'].values)
+    final_z_re = cum_z_re[-1]
+    
+    print(f"\nAssessment 4: Trial Sequential Analysis")
     print(f"  Information fraction = {info_fraction:.0%}")
-    if info_fraction < 1.0:
-        print("  → Informationally insufficient: meta-analysis = interim analysis")
+    print(f"  Final cumulative Z (fixed-effect):   {cum_z_fe[-1]:.2f}")
+    print(f"  Final cumulative Z (random-effects): {final_z_re:.2f}")
+    
+    z_alpha = stats.norm.ppf(0.975)
+    print(f"  Conventional efficacy boundary: Z = {z_alpha:.2f}")
+    print(f"  Conventional futility boundary: Z = {-z_alpha:.2f}")
+    
+    if info_fraction >= 1.0 and final_z_re < -z_alpha:
+        print("  → Efficacy boundary crossed: evidence of benefit (negative Z corresponds to HR < 1)")
+    elif info_fraction >= 1.0 and final_z_re > z_alpha:
+        print("  → Efficacy boundary crossed: evidence of harm / no benefit")
+    elif info_fraction >= 1.0:
+        print("  → Inconclusive: OIS reached but neither efficacy nor futility boundary crossed")
+    else:
+        print("  → Informationally insufficient: meta-analysis analogous to an interim analysis")
     
     return {
         'ois': ois, 'total_events': total_events, 'info_fraction': info_fraction,
+        'cum_z_fe': cum_z_fe, 'cum_z_re': cum_z_re,
     }
 
 
@@ -722,7 +768,7 @@ def fig1_framework_overview():
     
     # Module boxes
     modules = [
-        ('Module K', 'Kontrafaktische\nPower Simulation', C_BLUE, 1.5),
+        ('Module K', 'Counterfactual\nPower Simulation', C_BLUE, 1.5),
         ('Module T', 'Trial-Observational\nBayesian Integration', C_ORANGE, 5.0),
         ('Module H', 'Hermeneutic\nGuideline Interpreter', C_GREEN, 8.5),
     ]
@@ -981,7 +1027,8 @@ def fig4_forest_plot(mg_data, mt_results_mg):
 def fig5_tsa_plot(mh_results_mg):
     """Fig 5: Trial Sequential Analysis plot."""
     mg_sorted = mh_results_mg['mg_sorted']
-    cum_z = mh_results_mg['cum_z']
+    cum_z_fe = mh_results_mg['cum_z_fe']
+    cum_z_re = mh_results_mg['cum_z_re']
     ois = mh_results_mg['ois']
     
     # Cumulative events
@@ -990,16 +1037,17 @@ def fig5_tsa_plot(mh_results_mg):
     
     fig, ax = plt.subplots(1, 1, figsize=(10, 6))
     
-    # Z-curve
-    ax.plot(cum_events, cum_z, '-o', color=C_BLUE, lw=2.5, ms=6, zorder=5, label='Cumulative Z-statistic')
+    # Z-curves
+    ax.plot(cum_events, cum_z_fe, '-o', color=C_BLUE, lw=2.5, ms=6, zorder=5, label='Cumulative Z (fixed-effect)')
+    ax.plot(cum_events, cum_z_re, '-s', color=C_PURPLE, lw=2.5, ms=6, zorder=5, label='Cumulative Z (random-effects)')
     
     # Label key studies
     studies_to_label = ['LIMIT-2 1992', 'ISIS-4 1995']
     for i, (_, row) in enumerate(mg_sorted.iterrows()):
         if row['study'] in studies_to_label:
             ax.annotate(row['study'],
-                       xy=(cum_events[i], cum_z[i]),
-                       xytext=(cum_events[i] + 200, cum_z[i] + 0.5),
+                       xy=(cum_events[i], cum_z_fe[i]),
+                       xytext=(cum_events[i] + 200, cum_z_fe[i] + 0.5),
                        fontsize=9, color=C_BLUE,
                        arrowprops=dict(arrowstyle='->', color=C_BLUE, lw=1))
     
@@ -1225,7 +1273,7 @@ def fig8_module_h_summary():
     rows = [
         ['Risk of bias', 'Low', 'Low', 'Low', 'Low'],
         ['Inconsistency', 'High (I²=62%)', 'High (I²=62%)', 'Low (I²=0%)', 'Low (I²=0%)'],
-        ['Indirectness', 'Not assessed', 'Moderate:\nevent rate ↓18%', 'Not assessed', 'Serious:\nevent rate ↓47%'],
+        ['Indirectness', 'Not assessed', 'Moderate:\nEvent rate\ndecreased by 18%', 'Not assessed', 'Serious:\nEvent rate\ndecreased by 47%'],
         ['Imprecision', 'Serious', 'Serious\n(heterogeneity-driven)', 'Serious', 'Serious'],
         ['Overall certainty', 'Low', 'Very low', 'Moderate', 'Low'],
         ['Recommendation', '"No benefit"', '"Inconclusive;\nconditional rec."', '"No benefit"', '"Inconclusive;\nconditional rec."'],
