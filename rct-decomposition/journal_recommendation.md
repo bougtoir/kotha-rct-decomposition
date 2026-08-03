@@ -23,6 +23,9 @@
 | 3 | EP Europace | Oxford University Press (ESC/EHRA) | ~7.9–10.2 | ~$3,625 (OA) | 完全OA。心血管領域。ただし領域はarrhythmia/electrophysiology寄り。 |
 | 4 | European Heart Journal - Digital Health | Oxford University Press (ESC) | ~4.4–5.3 | ~$3,225 / €3,169 | 完全OA。digital health/methodology歓迎。デジタル・レジストリ応用を追加すると強い。 |
 | 5 | International Journal of Epidemiology | Oxford University Press | ~5.9 | ~$3,845 | 方法論も扱うが、今回のような患者レベルデータなし純 method は弱い。 |
+| 6 | Systematic Reviews | BMC / Springer Nature | ~3.9–5.7 | ~$2,790–$3,190 | systematic review / evidence synthesis 方法論を扱う。フレームワークが SR プロセスに組み込めるなら部分的フィット。 |
+| 7 | Contemporary Clinical Trials | Elsevier | ~1.9–2.2 | ~$3,450 | 臨床試験の design/conduct/analysis。meta-analysis 方法論への興味は限定的。フルペーパー 4,000 語制限に注意。 |
+| 8 | Trials | BMC / Springer Nature | ~2.0 | ~$1,925 | RCT design/conduct/reporting 専門。試験レベルではなくエビデンス統合レベルの話なので、部分的フィット。 |
 | — | Journal of Clinical Epidemiology | Elsevier | ~5.2–7.3 | ~$4,370 | **KOTHA で reject 済み**（4/9）。大幅リライト後のみ再検討。 |
 | — | Research Synthesis Methods | Cambridge University Press | ~6.1–8.0 | ~$2,740 | **KOTHA (4/14)・ONISHI で reject または審査中**。再投稿は推奨しない。 |
 | — | BMC Medical Research Methodology | BMC/Springer Nature | — | — | **editorial reject 済み**。再投稿不可。 |
@@ -93,22 +96,45 @@
 - 同じ内容の軽微な修正では editor が門戸を閉じている可能性が高い。
 - 大幅な再構成（臨床応用軸や新規追加データ）がない限り、同系統ジャーナルへの再投稿は避ける。
 
-### 5. その他候補
+### 5. Systematic Reviews（追加検討誌）
+
+- **出版社**: BMC / Springer Nature
+- **IF**: ~3.9–5.7
+- **APC**: ~$2,790–$3,190（fully OA）
+- **スコープ**: systematic review / evidence synthesis methods, protocols, reporting.
+- **適合性**: KOTHA が「SR プロセス内で RCT 証拠を診断するための輔助フレームワーク」として再構成できるなら面白い。ただし本稿は 1 つの meta-analysis method 提案であり、SR そのものの方法論ではないので部分的フィット。
+
+### 6. Contemporary Clinical Trials（追加検討誌）
+
+- **出版社**: Elsevier
+- **IF**: ~1.9–2.2
+- **APC**: ~$3,450（hybrid OA）
+- **スコープ**: clinical trial design, conduct, analysis, regulation, ethics.
+- **適合性**: 臨床試験のデザインを対象とするため、meta-analysis / evidence synthesis への興味は限定的。加えて **full-length papers は 4,000 語** に制限があり、現行稿（~7,600 語）を収録するには大幅なリライトが必要。
+
+### 7. Trials（追加検討誌）
+
+- **出版社**: BMC / Springer Nature
+- **IF**: ~2.0
+- **APC**: ~$1,925（fully OA）
+- **スコープ**: randomized controlled trials の design, conduct, reporting, analysis.
+- **適合性**: 個別試験の方法論が中心で、RCT 集合体の meta-analysis / synthesis 方法論はメインではない。試験の代わりにエビデンス統合を対象とするため、部分的フィットに留まる。
+
+### 8. その他候補（上記以外）
 
 | ジャーナル | 評価 |
 |---|---|
 | **Biostatistics** | 方法論的に洗練しているが、実例重視よりも数学的革新性を重視。2症例の proof-of-concept では不釣り合い。 |
-| **Systematic Reviews** | systematic review の方法論は扱うが、本稿は1つのフレームワーク提案。部分的フィット。 |
-| **Trials / Contemporary Clinical Trials** | 試験デザイン重視。meta-analysis 方法論への興味は低め。 |
 | **BMJ Open / PLOS ONE** | 広範受理だが、専門性・impact が限定。方法論の可視性を狙うなら避ける。 |
-| **International Journal of Epidemiology** | 方法論論文も扱うが、今回のように患者レベルデータを使わない純粋 method 提案は弱い。 |
 
 ## 推奨方針
 
-1. **今回の修正版を Statistics in Medicine に投稿する**（第一優先）。方法論専門誌を回った後の「まだ試していない」主要統計 method 誌であり、実例を評価する姿勢が強い。
-2. **並行して Circulation: Cardiovascular Quality and Outcomes 向けの臨床応用版リライトを検討する**。ONISHI フレームワーク全体の一部として位置づけ、KOTHA の心血管臨床での有用性を前面に出す。
-3. Research Square のプレプリントを v2 に更新し、修正内容と次投稿先を透明にする。
-4. BMC Medical Research Methodology、JCE、RSM への再投稿は推奨しない。
+1. **今回の修正版を Statistics in Medicine または Statistical Methods in Medical Research に投稿する**（第一優先）。両誌とも medical statistics 専門誌で、実例を評価する姿勢が強く、KOTHA がまだ未挑戦の method 誌にあたる。
+2. **臨床応用軸を強めたい場合は Circulation: Cardiovascular Quality and Outcomes を検討する**。心血管領域の 2 症例を活かし、方法を Appendix にまとめて臨床意思決定への影響を前面に出す。
+3. **Systematic Reviews** は、KOTHA を「systematic review / evidence synthesis フロー内の診断ツール」として再構成できる場合に低コスト・高影響係数の候補となる。
+4. **Contemporary Clinical Trials / Trials** は、個別試験設計・実施がメインで meta-analysis synthesis への興味は限定的。word limit（CCT は 4,000 語）も重なるため、現行稿のままでは不適。
+5. Research Square のプレプリントを v2 に更新し、修正内容と次投稿先を透明にする。
+6. BMC Medical Research Methodology、JCE、RSM への再投稿は推奨しない。
 
 ## 投稿前に必須の対応（どのジャーナルでも共通）
 
