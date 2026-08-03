@@ -2,6 +2,8 @@
 """Convert corrected RSM markdown (04_paper_rsm.md) to formatted docx."""
 import re
 import os
+import shutil
+import zipfile
 from datetime import datetime, timezone
 from docx import Document
 from docx.shared import Pt, Inches, RGBColor, Cm
@@ -434,6 +436,19 @@ if in_table:
 
 # Save
 doc.save(OUTPUT)
+
+# Rewrite the zip with fixed timestamps so the docx is byte-for-byte reproducible
+_fixed_time = (2025, 1, 1, 0, 0, 0)
+_tmp = OUTPUT + '.tmp'
+shutil.move(OUTPUT, _tmp)
+with zipfile.ZipFile(_tmp, 'r') as zin:
+    with zipfile.ZipFile(OUTPUT, 'w', zipfile.ZIP_DEFLATED) as zout:
+        for info in zin.infolist():
+            data = zin.read(info.filename)
+            info.date_time = _fixed_time
+            zout.writestr(info, data)
+os.remove(_tmp)
+
 print(f'\nSaved RSM docx to {OUTPUT}')
 
 # Word count
