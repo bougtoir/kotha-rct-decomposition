@@ -127,14 +127,15 @@
 | **Biostatistics** | 方法論的に洗練しているが、実例重視よりも数学的革新性を重視。2症例の proof-of-concept では不釣り合い。 |
 | **BMJ Open / PLOS ONE** | 広範受理だが、専門性・impact が限定。方法論の可視性を狙うなら避ける。 |
 
-## 推奨方針
+## 推奨方針（更新：Contemporary Clinical Trials を最終ターゲットとする）
 
-1. **今回の修正版を Statistics in Medicine または Statistical Methods in Medical Research に投稿する**（第一優先）。両誌とも medical statistics 専門誌で、実例を評価する姿勢が強く、KOTHA がまだ未挑戦の method 誌にあたる。
-2. **臨床応用軸を強めたい場合は Circulation: Cardiovascular Quality and Outcomes を検討する**。心血管領域の 2 症例を活かし、方法を Appendix にまとめて臨床意思決定への影響を前面に出す。
-3. **Systematic Reviews** は、KOTHA を「systematic review / evidence synthesis フロー内の診断ツール」として再構成できる場合に低コスト・高影響係数の候補となる。
-4. **Contemporary Clinical Trials / Trials** は、個別試験設計・実施がメインで meta-analysis synthesis への興味は限定的。word limit（CCT は 4,000 語）も重なるため、現行稿のままでは不適。
-5. Research Square のプレプリントを v2 に更新し、修正内容と次投稿先を透明にする。
-6. BMC Medical Research Methodology、JCE、RSM への再投稿は推奨しない。
+1. **Contemporary Clinical Trials への投稿準備**（最終決定）。
+   - ただし **full-length papers は 4,000 語制限** があり、現行稿は ~7,600 語なので大幅な凝縮・リフレームが必須。
+   - スコープは臨床試験の design/conduct/analysis/reporting が中心であるため、KOTHA を「試験設計の選択がエビデンス統合に与える影響を診断する枠組み」として再構成する。
+2. **SMMR / SIM / Circulation: CQO** は CCT reject 時の代替候補として保持する。
+3. **Systematic Reviews** は、KOTHA を「systematic review / evidence synthesis フロー内の診断ツール」として再構成できる場合の低コスト候補。
+4. Research Square のプレプリントを v2 に更新し、修正内容と次投稿先を透明にする。
+5. BMC Medical Research Methodology、JCE、RSM への再投稿は推奨しない。
 
 ## 投稿前に必須の対応（どのジャーナルでも共通）
 
