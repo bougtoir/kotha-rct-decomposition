@@ -15,9 +15,24 @@
 
 ## 投稿先候補（優先順）
 
+| 優先 | ジャーナル | 出版社 | IF (2024/2025)* | APC (USD, 参考)** | 推奨理由 / 注意 |
+|---|---|---|---|---|---|
+| 1 | Statistics in Medicine | Wiley | ~1.8–2.0 | ~$4,940 | 方法論専門誌を回った後、まだ試していない統計 method 誌。実例評価が強い。 |
+| 2 | Circulation: Cardiovascular Quality and Outcomes | Lippincott Williams & Wilkins (AHA) | ~6.7–6.9 | ~$5,400 (OA) / CTA可 | 心血管臨床＋methodology。2症例が直接響く。方法をAppendixにまとめ臨床応用を前面へ。 |
+| 3 | EP Europace | Oxford University Press (ESC/EHRA) | ~7.9–10.2 | ~$3,625 (OA) | 完全OA。心血管領域。ただし領域はarrhythmia/electrophysiology寄り。 |
+| 4 | European Heart Journal - Digital Health | Oxford University Press (ESC) | ~4.4–5.3 | ~$3,225 / €3,169 | 完全OA。digital health/methodology歓迎。デジタル・レジストリ応用を追加すると強い。 |
+| 5 | International Journal of Epidemiology | Oxford University Press | ~5.9 | ~$3,845 | 方法論も扱うが、今回のような患者レベルデータなし純 method は弱い。 |
+| — | Journal of Clinical Epidemiology | Elsevier | ~5.2–7.3 | ~$4,370 | **KOTHA で reject 済み**（4/9）。大幅リライト後のみ再検討。 |
+| — | Research Synthesis Methods | Cambridge University Press | ~6.1–8.0 | ~$2,740 | **KOTHA (4/14)・ONISHI で reject または審査中**。再投稿は推奨しない。 |
+| — | BMC Medical Research Methodology | BMC/Springer Nature | — | — | **editorial reject 済み**。再投稿不可。 |
+
+\* IF は複数ソースの直近年値。JCR 2024/2025 等。\** APC は hybrid/fully OA の場合の推定；institutional agreements・waivers・CTA により実額は変動。
+
 ### 1. Statistics in Medicine（SIM）— 第一推奨
 
 - **出版社**: Wiley
+- **IF**: ~1.8–2.0（2024/2025 想定）
+- **APC**: ~$4,940（hybrid OA）
 - **スコープ**: “appropriateness of the statistical methods to a particular medical problem and clarity of exposition”；new methods motivated by real examples; case studies.
 - **適合理由**:
   - JCE/RSM/BMC MRM/AJE という方法論専門誌を回った後、まだ試していない主要 method ジャーナル。
@@ -30,7 +45,9 @@
 
 ### 2. Circulation: Cardiovascular Quality and Outcomes（Circulation: CQO）— 臨床系第一候補
 
-- **出版社**: American Heart Association / Wolters Kluwer
+- **出版社**: Lippincott Williams & Wilkins（American Heart Association 公式誌）
+- **IF**: ~6.7–6.9
+- **APC**: ~$5,400（hybrid OA；CTA 可、会員割引あり）
 - **スコープ**: “cardiovascular and stroke quality of care, outcomes research, methodology, prevention, health services research, and clinical decision-making.”
 - **適合理由**:
   - 2つの実例がいずれも心血管領域（AMI、HF）であり、同誌の読者に直接響く。
@@ -43,7 +60,9 @@
 
 ### 3. EP Europace / European Heart Journal — Digital Health / Methods 欄
 
-- **出版社**: Oxford / ESC
+- **出版社**: Oxford University Press（ESC/EHRA 公式誌）
+- **IF**: EP Europace ~7.9–10.2；EHJ-Digital Health ~4.4–5.3
+- **APC**: EP Europace ~$3,625；EHJ-Digital Health ~$3,225 / €3,169（両誌とも fully OA）
 - **スコープ**: cardiovascular research, including methodology, digital health, outcomes.
 - **適合理由**:
   - 欧州心臓病学会系誌は心不全・梗塞の実例に親和性が高い。
