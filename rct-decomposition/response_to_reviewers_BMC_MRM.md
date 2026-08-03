@@ -4,7 +4,7 @@
 **Submission ID**: eb141294-29bb-4747-86a7-5c5bf45bd1e4  
 **Decision**: Editorial rejection (uninvited for revision)
 
-We thank the Editor and the Reviewers for their careful assessment. Although the manuscript was rejected, Reviewer 2 noted that the issues raised were addressable, and we believe the conceptual contribution is still valuable. We have therefore prepared the following point-by-point response and a concrete revision plan. The planned changes will be implemented in the manuscript (`04_paper_rsm.md`) and the validation pipeline (`run_validation.py`) before the next submission.
+We thank the Editor and the Reviewers for their careful assessment. Although the manuscript was rejected, Reviewer 2 noted that the issues raised were addressable, and we believe the conceptual contribution is still valuable. We have therefore prepared the following point-by-point response and implemented the corresponding revisions in the manuscript (`04_paper_rsm.md`), validation pipeline (`run_validation.py`), figures, and supplementary files. The revised docx and editable figure pptx are also generated.
 
 ---
 
@@ -118,25 +118,26 @@ We thank the Editor and the Reviewers for their careful assessment. Although the
 
 ## Summary of planned manuscript changes
 
-| Section | Change |
-|---|---|
-| Abstract & Background | Temper claims; acknowledge other causes of observational-RCT discordance. |
-| Methods / Module K | Distinguish ideal individual-level workflow from realized aggregate-rate sensitivity analysis. Add RMST/HR discussion. |
-| Methods / Module T | Add fixed-effect α = 0 comparison; discuss empirical priors; clarify that discounting does not remove confounding. |
-| Methods / Module H | Add futility boundary; define three TSA outcomes (efficacy / futility / inconclusive). |
-| Results / Module H | Reconcile magnesium TSA using random-effects cumulative model; revise statin interpretation to “inconclusive.” |
-| Discussion | Consolidate narrative; add Table 1 comparison; add prerequisites/applicability subsection; temper validation claims. |
-| Figures & Tables | Translate “Kontrafaktische Power Simulation”; update Table 7/Figure 8 wording. |
-| Validation code | Update `run_validation.py` to compute fixed-effect and random-effects cumulative TSA; regenerate figures and `results_summary.txt`. |
+| Section | Change | Status |
+|---|---|---|
+| Abstract & Background | Temper claims; acknowledge other causes of observational-RCT discordance. | Done |
+| Methods / Module K | Distinguish ideal individual-level workflow from realized aggregate-rate sensitivity analysis. Add RMST/HR discussion. | Done |
+| Methods / Module T | Clarify α = 0 as single-study/fixed-effect limiting case; discuss empirical priors; clarify discounting does not remove confounding. | Done |
+| Methods / Module H | Add futility boundary; define three TSA outcomes (efficacy / futility / inconclusive). | Done |
+| Results / Module H | Reconcile magnesium TSA using fixed-effect and random-effects cumulative models; revise statin interpretation to “inconclusive.” | Done |
+| Discussion | Consolidate narrative; add Table 1 comparison; add prerequisites/applicability subsection; temper validation claims. | Done |
+| Figures & Tables | Translate “Kontrafaktische Power Simulation”; update Table 7/Figure 8 wording. | Done |
+| Validation code | Update `run_validation.py` to compute fixed-effect and random-effects cumulative TSA; regenerate figures and `results_summary.txt`. | Done |
 
 ---
 
-## Files that will be updated
+## Files updated in this revision
 
 - `rct-decomposition/04_paper_rsm.md` — revised manuscript
 - `rct-decomposition/response_to_reviewers_BMC_MRM.md` — this document
-- `rct-decomposition/journal_recommendation.md` — next-journal strategy (separate file)
+- `rct-decomposition/journal_recommendation.md` — next-journal strategy
 - `rct-decomposition/validation/run_validation.py` — corrected TSA and Module T outputs
 - `rct-decomposition/validation/figures/*` — regenerated figures
 - `rct-decomposition/validation/results_summary.txt` — regenerated numerical summary
-- `rct-decomposition/generate_rsm_docx_final.py` — if path or formatting adjustments are needed
+- `rct-decomposition/KOTHA_Framework_RSM.docx` — formatted manuscript
+- `rct-decomposition/KOTHA_Framework_RSM_figures.pptx` — editable figures
