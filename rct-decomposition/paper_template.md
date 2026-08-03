@@ -10,9 +10,9 @@
 
 **Background**: Discrepancies between meta-analyses of observational studies and randomized controlled trials (RCTs) are conventionally attributed to confounding in observational data. However, an alternative structural explanation --- that RCTs systematically exclude high-risk patients, leading to event dilution and insufficient statistical power --- remains underexplored and poorly operationalized. We developed the KOTHA (Knowledge-driven Observational-Trial Harmonization Approach) Framework to diagnose and address this structural information loss.
 
-**Methods**: The KOTHA Framework comprises three modules. Module K uses counterfactual power simulation comparing statistical power under actual RCT enrollment versus target-population scenarios. Module T integrates RCT and observational evidence through hierarchical Bayesian meta-analysis with power-prior discounting. Module H provides a structured checklist for guideline committees based on optimal information size (OIS), trial sequential analysis (TSA) boundaries, and the GRADE framework. We illustrated the framework using published data from two well-documented cases of observational-RCT divergence: (1) intravenous magnesium in acute myocardial infarction (12 trials, 1984--1995) and (2) statins in heart failure (5 observational studies, 2 RCTs).
+**Methods**: The KOTHA Framework comprises three modules. Module K uses counterfactual power simulation comparing statistical power under actual RCT enrollment versus target-population scenarios. Module T integrates RCT and observational evidence through hierarchical Bayesian meta-analysis with power-prior discounting. Module H provides a structured checklist for guideline committees based on optimal information size (OIS), trial sequential analysis (TSA) boundaries, and the GRADE framework. We illustrated the framework using published data from two well-documented cases of observational-RCT divergence: (1) intravenous magnesium in acute myocardial infarction (<<MG_N_TRIALS>> trials, <<MG_YEAR_MIN>>--<<MG_YEAR_MAX>>) and (2) statins in heart failure (<<ST_N_OBS>> observational studies, <<ST_N_RCT>> RCTs).
 
-**Results**: In the magnesium case, control event rates declined from 8.9% (pre-thrombolysis era) to 7.2% (ISIS-4), reflecting temporal event dilution. The pre-ISIS-4 meta-analysis yielded OR = 0.54 (95% CI: 0.40--0.75), while the all-trials estimate was OR = 0.56 (0.38--0.83) with $I^2$ = 62%. Bayesian integration with power prior discounting ($\alpha$ = 0.3) yielded OR = 0.73 (95% CrI: 0.28--2.09), P(OR < 1) = 77%. In the statins case, observational studies showed HR = 0.72 (0.64--0.80) while RCTs showed HR = 0.97 (0.90--1.05), with event rate ratio of 0.53 (RCT/observational). Module H assessment identified that standard GRADE evaluation would conclude "no benefit demonstrated," whereas KOTHA-enhanced assessment classified both cases as informationally inconclusive with serious indirectness due to event dilution.
+<!-- DYNAMIC: ABSTRACT_RESULTS -->
 
 **Conclusions**: The KOTHA Framework provides a reproducible, quantitative approach to distinguishing "evidence of no effect" from "no evidence of effect." Empirical illustration using two canonical cases of observational-RCT divergence demonstrates that the framework can identify structural information loss and produce more nuanced evidence assessments than standard approaches.
 
@@ -277,7 +277,7 @@ where $z_{\alpha/2}$ and $z_\beta$ are the standard normal quantiles. This formu
 
 For example, to detect OR = 0.75 with $\alpha = 0.05$ and power = 80%:
 
-$$D_{\text{OIS}} = \frac{4(1.96 + 0.84)^2}{[\log(0.75)]^2} = \frac{4 \times 7.84}{0.0827} \approx 379 \text{ events}$$
+$$D_{\text{OIS}} = \frac{4(1.96 + 0.84)^2}{[\log(0.75)]^2} = \frac{4 \times 7.84}{0.0827} \approx <<OIS_075>> \text{ events}$$
 
 The **information fraction** $\text{IF} = D_{\text{observed}} / D_{\text{OIS}}$ indicates the proportion of required information that has been accumulated. When IF < 1, the meta-analysis is analogous to an interim analysis and cannot provide definitive conclusions.
 
@@ -304,158 +304,10 @@ The KOTHA Framework maps onto the GRADE domains as follows:
 
 ---
 
-## Empirical illustration
-
-### Illustrative case selection
-
-To illustrate the KOTHA Framework, we applied all three modules to two well-documented cases where observational evidence and RCT evidence diverged, and where the reasons for divergence have been extensively discussed in the literature.
-
-**Case 1: Intravenous magnesium in acute myocardial infarction (AMI)**. Between 1984 and 1995, multiple small RCTs suggested that intravenous magnesium reduced mortality in AMI (pooled OR approximately 0.54). The large ISIS-4 trial (N = 58,050) found no benefit (OR approximately 1.05). This discordance has been attributed to temporal changes in background therapy (introduction of thrombolysis), which reduced control-group event rates and potentially diluted the treatment effect [18, 19].
-
-**Case 2: Statins in heart failure (HF)**. Observational cohort studies consistently reported reduced mortality with statin use (pooled HR approximately 0.72), whereas the two largest RCTs in this population---CORONA and GISSI-HF---found no significant benefit (pooled HR approximately 0.97). This discrepancy has been attributed to differences between RCT-enrolled and real-world patient populations, with RCT participants having lower baseline risk [20, 21].
-
-### Data sources
-
-**Table 3: Study-level data for magnesium in AMI**
-
-| Study | Year | Era | Events (Mg) | N (Mg) | Events (Ctrl) | N (Ctrl) | Control rate |
-|---|---|---|---|---|---|---|---|
-| Morton 1984 | 1984 | Pre-thrombolysis | 1 | 40 | 2 | 36 | 5.6% |
-| Rasmussen 1986 | 1986 | Pre-thrombolysis | 1 | 56 | 9 | 79 | 11.4% |
-| Smith 1986 | 1986 | Pre-thrombolysis | 2 | 200 | 7 | 200 | 3.5% |
-| Abraham 1987 | 1987 | Pre-thrombolysis | 1 | 48 | 1 | 46 | 2.2% |
-| Ceremuzynski 1989 | 1989 | Pre-thrombolysis | 1 | 25 | 3 | 23 | 13.0% |
-| Shechter 1990 | 1990 | Pre-thrombolysis | 1 | 50 | 9 | 53 | 17.0% |
-| Singh 1990 | 1990 | Pre-thrombolysis | 6 | 39 | 11 | 37 | 29.7% |
-| Feldstedt 1991 | 1991 | Transition | 4 | 100 | 7 | 100 | 7.0% |
-| Schechter 1991 | 1991 | Transition | 1 | 59 | 2 | 57 | 3.5% |
-| LIMIT-2 1992 | 1992 | Thrombolysis | 90 | 1,159 | 118 | 1,157 | 10.2% |
-| Shechter 1995 | 1995 | Thrombolysis | 4 | 107 | 17 | 108 | 15.7% |
-| ISIS-4 1995 | 1995 | Thrombolysis | 2216 | 29,011 | 2103 | 29,039 | 7.2% |
-
-**Table 4: Study-level data for statins in heart failure**
-
-| Study | Design | HR (95% CI) | N | Events |
-|---|---|---|---|---|
-| Mozaffarian 2004 | OBS | 0.62 (0.49--0.78) | 1,153 | 356 |
-| Horwich 2004 | OBS | 0.59 (0.44--0.78) | 551 | 189 |
-| Go 2006 | OBS | 0.69 (0.63--0.75) | 24,598 | 5,765 |
-| Foody 2006 | OBS | 0.82 (0.79--0.85) | 54,960 | 16,573 |
-| Anker 2006 | OBS | 0.75 (0.66--0.85) | 10,510 | 2,890 |
-| CORONA 2007 | RCT | 0.95 (0.86--1.05) | 5,011 | 728 |
-| GISSI-HF 2008 | RCT | 1.00 (0.90--1.12) | 4,574 | 657 |
-
-### Module K results
-
-#### Magnesium in AMI
-
-Control-group event rates were computed for each era:
-
-- Pre-thrombolysis era (1984--1990): weighted mean = 8.9%
-- ISIS-4 (1995): 7.2%
-- LIMIT-2 (1992): 10.2%
-
-The event rate ratio (ISIS-4 / pre-thrombolysis) was 0.82, indicating a 18% reduction in control event rates in the thrombolysis era (Fig. 2).
-
-Random-effects meta-analysis yielded:
-
-- **Pre-ISIS-4 trials** (11 trials): OR = 0.54 (95% CI: 0.40--0.75), $I^2$ = 6%
-- **All trials** (12 trials): OR = 0.56 (95% CI: 0.38--0.83), $I^2$ = 62%
-
-Power analysis at the ISIS-4 sample size (N = 58,050) showed that for the pre-ISIS-4 pooled effect (OR = 0.54), power exceeded 99% under all scenarios---the ISIS-4 trial was sufficiently large to detect an effect of this magnitude regardless of event rate. However, for more modest effects (OR = 0.85--0.95), the event rate reduction produced meaningful power differences between scenarios (Fig. 3A). At OR = 0.90, power was 95.8% under the pre-thrombolysis rate (S1) but 91.5% under the ISIS-4 rate (S2).
-
-#### Statins in heart failure
-
-Random-effects meta-analysis yielded:
-
-- **Observational studies**: HR = 0.72 (95% CI: 0.64--0.80), $I^2$ = 82%
-- **RCTs**: HR = 0.97 (95% CI: 0.90--1.05), $I^2$ = 0%
-
-The event rate ratio (RCT / observational) was estimated at 0.53, indicating that RCT populations had approximately half the event rate of observational cohorts.
-
-Power analysis at the combined RCT sample size (N = 9,585) revealed substantial power differences (Fig. 3B). At the observational effect estimate (HR = 0.72), power was >99% under the observational event rate (15%) but 99.1% under the RCT event rate (8%). At more modest effects (HR = 0.85), power was 84.6% under the observational rate but only 58.3% under the RCT rate---a 26 percentage-point reduction attributable to event dilution.
-
-### Module T results
-
-#### Bayesian integration --- Magnesium in AMI
-
-**Table 5: Bayesian integration --- Magnesium in AMI (power prior)**
-
-| $\alpha$ | OR (95% CrI) | P(OR < 1) | P(OR < 0.90) | P(OR < 0.80) |
-|---|---|---|---|---|
-| 0.0 (ISIS-4 only) | 1.11 (0.43--7.03) | 30.6% | 22.2% | 16.2% |
-| 0.1 | 1.00 (0.31--3.51) | 50.7% | 36.6% | 27.9% |
-| 0.2 | 0.85 (0.31--2.50) | 66.5% | 55.0% | 45.8% |
-| 0.3 | 0.73 (0.28--2.09) | 77.0% | 66.3% | 56.9% |
-| 0.5 | 0.61 (0.28--1.30) | 92.6% | 87.3% | 77.1% |
-| 0.7 | 0.57 (0.29--1.05) | 96.6% | 94.1% | 87.4% |
-| 1.0 (full weight) | 0.54 (0.32--0.91) | 98.7% | 97.2% | 93.5% |
-
-At $\alpha$ = 0 (ISIS-4 only), the posterior median OR was 1.11 with only 30.6% probability of benefit. As $\alpha$ increased, incorporating pre-ISIS-4 evidence progressively shifted the posterior toward benefit. At $\alpha$ = 0.3 (moderate discounting), the posterior OR was 0.73 with 77% probability of benefit. The sensitivity analysis demonstrates that conclusions about magnesium efficacy depend critically on the weight assigned to pre-ISIS-4 evidence (Fig. 5A).
-
-#### Bayesian integration --- Statins in HF
-
-**Table 6: Bayesian integration --- Statins in HF (power prior)**
-
-| $\alpha$ | HR (95% CrI) | P(HR < 1) | P(HR < 0.90) | P(HR < 0.80) |
-|---|---|---|---|---|
-| 0.0 (RCTs only) | 0.98 (0.63--2.35) | 60.9% | 17.7% | 9.1% |
-| 0.1 | 0.92 (0.63--2.19) | 70.4% | 43.5% | 17.7% |
-| 0.2 | 0.88 (0.60--1.80) | 78.4% | 57.0% | 26.0% |
-| 0.3 | 0.85 (0.59--1.57) | 83.7% | 65.7% | 32.8% |
-| 0.5 | 0.82 (0.62--1.15) | 91.9% | 79.2% | 42.5% |
-| 0.7 | 0.79 (0.63--1.02) | 96.8% | 88.7% | 53.4% |
-| 1.0 (full weight) | 0.78 (0.65--0.95) | 99.1% | 94.8% | 64.1% |
-
-At $\alpha$ = 0 (RCTs only), the posterior probability of any benefit was only 60.9%, and the probability of clinically meaningful benefit (HR < 0.90) was 17.7%. Even modest incorporation of observational evidence ($\alpha$ = 0.3) increased P(HR < 1) to 83.7% and P(HR < 0.90) to 65.7%. The sensitivity analysis (Fig. 5B) shows a monotonic increase in posterior probability of benefit with increasing $\alpha$, but conclusions remain uncertain across the full range of discounting.
-
-### Module H results
-
-#### Magnesium in AMI
-
-**Assessment 1 (Information sufficiency)**: The OIS for detecting OR = 0.54 at $\alpha$ = 0.05 with 80% power was 85 events. The total events across all 12 trials were 4,617 (information fraction = 5426%). By this criterion, the meta-analysis was informationally sufficient. However, this assessment assumes the pre-ISIS-4 effect estimate is the true effect; if the true effect is more modest (e.g., OR = 0.75), the OIS would be 379 events, still exceeded by the available evidence.
-
-**Assessment 2 (CI assessment)**: The all-trials pooled OR = 0.56 (95% CI: 0.38--0.83) excluded 1.0, suggesting benefit. However, the high $I^2$ (62%) indicates substantial heterogeneity driven by the ISIS-4 result.
-
-**Assessment 3 (Representativeness)**: The event rate ratio (ISIS-4 / pre-thrombolysis) was 0.82. While this does not exceed the 1.5 threshold for serious indirectness, it reflects a temporal shift in background therapy rather than enrollment-driven event dilution per se.
-
-**Assessment 4 (TSA)**: We present the cumulative Z-curve using both fixed-effect and random-effects accumulation because the two models give different results in this case. Under a fixed-effect accumulation, the Z-statistic reached significance after the early small trials but was pulled back to 0.80 by ISIS-4 (below the conventional boundary of 1.96). Under a random-effects accumulation---the same model used for the pooled all-trials estimate---the final Z was -2.90, crossing both the conventional boundary and the O'Brien-Fleming boundary (0.27). This divergence is a direct consequence of the high between-study heterogeneity ($I^2$ = 62%) driven by the ISIS-4 result; it underscores that the magnesium evidence base contains a genuine shift in treatment effect across eras and should not be summarized by a single pooled estimate.
-
-#### Statins in heart failure
-
-**Assessment 1 (Information sufficiency)**: The OIS for detecting HR = 0.72 at $\alpha$ = 0.05 with 80% power was 279 events. The total RCT events were 1,385 (information fraction = 496%). The RCT evidence was informationally sufficient for the observational effect estimate.
-
-**Assessment 2 (CI assessment)**: The RCT pooled HR = 0.97 (95% CI: 0.90--1.05) included 1.0 but excluded 0.80, suggesting that a large benefit is unlikely based on RCT evidence alone.
-
-**Assessment 3 (Representativeness)**: The event rate ratio (RCT / observational) was 0.53, well below the 0.67 threshold. **Classification: serious indirectness.** The RCT populations had substantially lower event rates than the observational cohorts, consistent with selection of lower-risk patients.
-
-**Assessment 4 (TSA)**: With an information fraction of 496%, the RCT evidence reached the OIS. The cumulative Z-statistic did not cross the efficacy boundary. Because the futility boundary was also not crossed, the appropriate TSA conclusion is **inconclusive** rather than evidence of no benefit at the RCT-enrolled risk level.
-
-#### Comparative GRADE assessment
-
-Fig. 8 presents the comparative GRADE assessment for both cases under standard and KOTHA-enhanced evaluation.
-
-**Table 7: Module H assessment --- Standard GRADE vs. KOTHA-enhanced**
-
-| GRADE domain | Standard (Mg in AMI) | KOTHA (Mg in AMI) | Standard (Statins HF) | KOTHA (Statins HF) |
-|---|---|---|---|---|
-| Risk of bias | Low | Low | Low | Low |
-| Inconsistency | High ($I^2$ = 62%) | High ($I^2$ = 62%) | Low ($I^2$ = 0%) | Low ($I^2$ = 0%) |
-| Indirectness | Not assessed | Moderate: event rate decreased by 18% | Not assessed | Serious: event rate decreased by 47% |
-| Imprecision | Serious | Serious (heterogeneity-driven) | Serious | Serious |
-| Overall certainty | Low | Very low | Moderate | Low |
-| Recommendation | "No benefit demonstrated" | "Inconclusive; conditional recommendation" | "No benefit demonstrated" | "Inconclusive; conditional recommendation" |
-
-The key difference is in the **indirectness** domain: standard GRADE assessment does not typically evaluate whether enrollment-driven event dilution has reduced the informativeness of the evidence. KOTHA-enhanced assessment explicitly quantifies this through the event rate ratio and adjusts the certainty rating accordingly.
+<!-- DYNAMIC: EMPIRICAL_ILLUSTRATION -->
 ## Discussion
 
-### Principal findings
-
-The KOTHA Framework was illustrated using two canonical cases of observational-RCT divergence. In both cases, the framework identified structural features---temporal event dilution (magnesium) and population risk-profile differences (statins)---that contributed to the apparent discordance between observational and RCT evidence.
-
-For the magnesium case, Module K demonstrated that the shift from pre-thrombolysis to thrombolysis-era background therapy reduced control event rates by 18%, though the ISIS-4 trial was sufficiently powered to detect the large effect suggested by earlier trials. The divergence in this case is more attributable to heterogeneity across eras (reflected in $I^2$ = 62%) than to simple underpowering. Module T showed that the posterior estimate depends critically on the weight assigned to pre-ISIS-4 evidence, with the discounting parameter $\alpha$ serving as a transparent sensitivity parameter.
-
-For the statins case, Module K revealed a more dramatic event dilution: RCT populations had approximately half the event rate of observational cohorts (ratio = 0.53). At the observational effect estimate (HR = 0.72), the RCTs had adequate power, but at more modest effects (HR = 0.85), power under the RCT event rate dropped to 58% compared with 85% under the observational rate. Module T demonstrated that even modest incorporation of observational evidence ($\alpha$ = 0.3) shifted the posterior substantially toward benefit.
+<!-- DYNAMIC: PRINCIPAL_FINDINGS -->
 ### Comparison with existing methods
 
 Several existing methodologies address components of the problem that KOTHA integrates.
@@ -649,7 +501,7 @@ The authors declare that they have no competing interests.
 
 ![Fig. 2](validation/figures/fig2_risk_profile_shift.png)
 
-**Fig. 3** Estimated power by enrollment scenario and true effect size. (A) Magnesium in AMI at the ISIS-4 sample size (N = 58,050). (B) Statins in HF at the combined RCT sample size (N = 9,585). Horizontal dashed lines indicate 80% power threshold. S1 = real-world/observational event rate; S2 = RCT event rate; S3 = intermediate/enriched rate.
+**Fig. 3** Estimated power by enrollment scenario and true effect size. (A) Magnesium in AMI at the ISIS-4 sample size (N = <<N_ISIS4>>). (B) Statins in HF at the combined RCT sample size (N = <<N_STATIN_RCT>>). Horizontal dashed lines indicate 80% power threshold. S1 = real-world/observational event rate; S2 = RCT event rate; S3 = intermediate/enriched rate.
 
 ![Fig. 3](validation/figures/fig3_power_curves.png)
 

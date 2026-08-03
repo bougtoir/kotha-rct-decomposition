@@ -7,10 +7,10 @@ from docx.shared import Pt, Inches, RGBColor, Cm
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT
 
-BASE = '/home/ubuntu/repos/wip/rct-decomposition'
+BASE = os.path.dirname(os.path.abspath(__file__))
 MD_FILE = os.path.join(BASE, '04_paper_rsm.md')
 FIG_DIR = os.path.join(BASE, 'validation', 'figures')
-OUTPUT = '/home/ubuntu/KOTHA_Framework_RSM.docx'
+OUTPUT = os.path.join(BASE, 'KOTHA_Framework_RSM.docx')
 
 doc = Document()
 

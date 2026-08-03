@@ -1,2 +1,5 @@
 medical_sapir_whorf/scripts/__pycache__/
 canonical_curves_reexamination/scripts/__pycache__/
+__pycache__/
+*.pyc
+beyond-gdp-national-power/.venv/

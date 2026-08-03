@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """Generate corrected RSM markdown with proper numbering."""
+import os
 import re
 
-with open('/home/ubuntu/repos/wip/rct-decomposition/03_paper_draft.md', 'r') as f:
+BASE = os.path.dirname(os.path.abspath(__file__))
+
+with open(os.path.join(BASE, '03_paper_draft.md'), 'r') as f:
     text = f.read()
 
 # Reference remapping: old -> new (in order of first appearance)
@@ -132,7 +135,7 @@ sections['## Additional files'] = (
 
 # Assemble
 full = '\n'.join(sections[s] for s in section_order) + '\n'
-out = '/home/ubuntu/repos/wip/rct-decomposition/04_paper_rsm.md'
+out = os.path.join(BASE, '04_paper_rsm.md')
 with open(out, 'w') as f:
     f.write(full)
 print(f'\nSaved to {out}')
