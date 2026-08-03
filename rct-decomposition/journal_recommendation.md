@@ -18,6 +18,7 @@
 | 優先 | ジャーナル | 出版社 | IF (2024/2025)* | APC (USD, 参考)** | 推奨理由 / 注意 |
 |---|---|---|---|---|---|
 | 1 | Statistics in Medicine | Wiley | ~1.8–2.0 | ~$4,940 | 方法論専門誌を回った後、まだ試していない統計 method 誌。実例評価が強い。 |
+| 1b | Statistical Methods in Medical Research | Sage | ~1.6–1.9 | ~$3,000 (Sage Choice) | SIM と似た medical statistics 専門誌。方法論指向・APC 安め。SIM と同列第1候補。 |
 | 2 | Circulation: Cardiovascular Quality and Outcomes | Lippincott Williams & Wilkins (AHA) | ~6.7–6.9 | ~$5,400 (OA) / CTA可 | 心血管臨床＋methodology。2症例が直接響く。方法をAppendixにまとめ臨床応用を前面へ。 |
 | 3 | EP Europace | Oxford University Press (ESC/EHRA) | ~7.9–10.2 | ~$3,625 (OA) | 完全OA。心血管領域。ただし領域はarrhythmia/electrophysiology寄り。 |
 | 4 | European Heart Journal - Digital Health | Oxford University Press (ESC) | ~4.4–5.3 | ~$3,225 / €3,169 | 完全OA。digital health/methodology歓迎。デジタル・レジストリ応用を追加すると強い。 |
@@ -42,6 +43,21 @@
   - 数学的すぎる記述は避ける（SIM は “primarily theorem and proof-based” な論文は推奨外）。数式は必要最小限にし、直感・図・実例を強化。
   - 「研究統合の文脈」が弱いため、KOTHA が「なぜ既存の meta-analysis 手法では不十分か」をより明確に説明する必要がある。
 - **推奨アクション**: 修正版を SIM に投稿する。投稿前に Research Square のプレプリントを v2 に更新。
+
+### 1b. Statistical Methods in Medical Research（SMMR）— 統計 method 第1候補（並列）
+
+- **出版社**: Sage Publications
+- **IF**: ~1.6–1.9（2024/2025 想定）
+- **APC**: ~$3,000（Sage Choice hybrid OA；標準レート、例外あり）
+- **スコープ**: “the leading vehicle for articles in all the main areas of medical statistics”；methodological developments motivated by medical problems.
+- **適合理由**:
+  - Statistics in Medicine と同じく medical statistics 専門誌で、KOTHA の counterfactual simulation / Bayesian integration に直接的な読者がいる。
+  - APC が SIM より低く、Sage Choice の標準レートを適用しやすい。
+  - 新しい統計的方法論をカバーする伝統があり、counterfactual power や evidence synthesis も範囲内。
+- **懸念・対応**:
+  - IF は SIM と同等かやや低い。論文の新規性と medical relevance を明確に強調する必要がある。
+  - 同様に「研究統合の文脈」より「medical statistics 的動機付け」を前面に出す方が合う。
+- **推奨アクション**: SIM への初投と並行検討、または SIM reject 時の代替として SMMR も列挙する。
 
 ### 2. Circulation: Cardiovascular Quality and Outcomes（Circulation: CQO）— 臨床系第一候補
 
