@@ -281,11 +281,7 @@ Target trial emulation uses observational data to mimic a specific RCT in order 
 
 The framework is reproducible from published aggregate data, follows the ADEMP reporting structure {r('ADEMP')}, and is illustrated with real, well-documented cases rather than synthetic examples. The modular design allows each component to be used independently.
 
-Limitations should be acknowledged. The cases are retrospective applications; prospective validation against trials whose results are not yet known would be stronger. Module T results are sensitive to the discounting parameter $\\alpha$ and to assumptions about residual confounding; we present sensitivity analyses but do not claim a single preferred $\\alpha$. The magnesium case involves genuine treatment-effect heterogeneity across thrombolysis eras, which Module K identifies but cannot fully explain. Finally, adoption by guideline groups will require institutional change beyond the method itself.
-
-### Conclusions
-
-The KOTHA Framework offers a reproducible, quantitative approach to distinguishing "evidence of no effect" from "no evidence of effect." By reframing the central question as whether the evidence base has sufficient information to answer the clinical question, it can guide more nuanced trial design, evidence synthesis, and guideline recommendations."""
+Limitations should be acknowledged. The cases are retrospective applications; prospective validation against trials whose results are not yet known would be stronger. Module T results are sensitive to the discounting parameter $\\alpha$ and to assumptions about residual confounding; we present sensitivity analyses but do not claim a single preferred $\\alpha$. The magnesium case involves genuine treatment-effect heterogeneity across thrombolysis eras, which Module K identifies but cannot fully explain. Finally, adoption by guideline groups will require institutional change beyond the method itself."""
 
     declarations = f"""### Ethics approval and consent to participate
 
