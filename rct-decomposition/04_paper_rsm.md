@@ -8,7 +8,7 @@
 
 ## Abstract
 
-**Background**: Discrepancies between meta-analyses of observational studies and randomized controlled trials (RCTs) are conventionally attributed to confounding in observational data. However, an alternative structural explanation --- that RCTs systematically exclude high-risk patients, leading to event dilution and insufficient statistical power --- remains underexplored and poorly operationalized. We developed the KOTHA (Knowledge-driven Observational-Trial Harmonization Approach) Framework to diagnose and address this structural information loss.
+**Background**: Discrepancies between meta-analyses of observational studies and randomized controlled trials (RCTs) are conventionally attributed to confounding in observational data. However, an alternative structural explanation --- that RCTs systematically exclude high-risk patients, leading to event dilution and insufficient statistical power --- remains underexplored and poorly operationalized. We developed the Knowledge-driven Observational-Trial Harmonization Approach (KOTHA) Framework to diagnose and address this structural information loss.
 
 **Methods**: The KOTHA Framework comprises three modules. Module K uses counterfactual power simulation comparing statistical power under actual RCT enrollment versus target-population scenarios. Module T integrates RCT and observational evidence through hierarchical Bayesian meta-analysis with power-prior discounting. Module H provides a structured checklist for guideline committees based on optimal information size (OIS), trial sequential analysis (TSA) boundaries, and the GRADE framework. We illustrated the framework using published data from two well-documented cases of observational-RCT divergence: (1) intravenous magnesium in acute myocardial infarction (12 trials, 1984--1995) and (2) statins in heart failure (5 observational studies, 2 RCTs).
 
@@ -46,7 +46,7 @@ Several trial design strategies can mitigate event dilution (Table 1), but their
 
 ### Aim
 
-We developed the KOTHA (Knowledge-driven Observational-Trial Harmonization Approach) Framework, a three-module methodological system designed to (1) diagnose structural information loss through counterfactual power simulation (Module K), (2) integrate discordant evidence using hierarchical Bayesian meta-analysis (Module T), and (3) guide interpretation and recommendation under information insufficiency (Module H). This paper describes the framework's theoretical foundations, validates it using real published data from two canonical cases of observational-RCT divergence, and demonstrates its application to guideline interpretation.
+We developed the Knowledge-driven Observational-Trial Harmonization Approach (KOTHA) Framework, a three-module methodological system designed to (1) diagnose structural information loss through counterfactual power simulation (Module K), (2) integrate discordant evidence using hierarchical Bayesian meta-analysis (Module T), and (3) guide interpretation and recommendation under information insufficiency (Module H). This paper describes the framework's theoretical foundations, validates it using real published data from two canonical cases of observational-RCT divergence, and demonstrates its application to guideline interpretation.
 
 
 ---
