@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Extract all tables from the CCT manuscript docx into a separate editable docx."""
+from lxml import etree
 from docx import Document
 
 
@@ -7,11 +8,10 @@ def build(src_docx='KOTHA_Framework_CCT.docx', out_docx='KOTHA_Framework_CCT_tab
     src = Document(src_docx)
     dst = Document()
     for t in src.tables:
-        nt = dst.add_table(rows=len(t.rows), cols=len(t.columns))
-        nt.style = 'Table Grid'
-        for i, row in enumerate(t.rows):
-            for j, cell in enumerate(row.cells):
-                nt.rows[i].cells[j].text = cell.text
+        # Deep-copy the table XML so Word-native equations (OMML) are preserved.
+        tbl_copy = etree.fromstring(etree.tostring(t._tbl))
+        placeholder = dst.add_table(rows=1, cols=1)
+        placeholder._tbl.getparent().replace(placeholder._tbl, tbl_copy)
     dst.save(out_docx)
     print(f'Saved {out_docx}')
 

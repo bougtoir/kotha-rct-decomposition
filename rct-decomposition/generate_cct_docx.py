@@ -1,15 +1,35 @@
 #!/usr/bin/env python3
-"""Convert CCT-format markdown to formatted docx with a title page."""
+"""Convert CCT-format markdown to formatted docx with a title page.
+
+Equations written in LaTeX ($...$ and $$...$$) are converted to Word-native
+Office Math Markup (OMML) using pandoc.
+"""
 import argparse
-import re
 import os
+import re
 import shutil
+import subprocess
+import tempfile
 import zipfile
 from datetime import datetime, timezone
+from lxml import etree
+
 from docx import Document
-from docx.shared import Pt, Inches, RGBColor, Cm
-from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
+from docx.shared import Cm, Inches, Pt, RGBColor
+
+
+# Locate a pandoc binary. The default fallback is a user-local download; if it
+# is not present the PATH is searched.
+_PANDOC_CANDIDATES = [
+    os.path.expanduser('~/.local/pandoc/bin/pandoc'),
+    shutil.which('pandoc'),
+    'pandoc',
+]
+PANDOC = next((p for p in _PANDOC_CANDIDATES if p and os.path.isfile(p) and os.access(p, os.X_OK)), 'pandoc')
 
 
 def build(input_md, output_docx):
@@ -36,10 +56,123 @@ def build(input_md, output_docx):
     style.paragraph_format.space_after = Pt(6)
     style.paragraph_format.line_spacing = 2.0
 
+    body = doc.element.body
+
+    def sectPr():
+        for child in body:
+            if child.tag.endswith('sectPr'):
+                return child
+        return None
+
+    def insert_element(e):
+        """Insert element before the final sectPr, keeping it at the document end."""
+        sp = sectPr()
+        if sp is None:
+            body.append(e)
+        else:
+            body.insert(body.index(sp), e)
+
+    def set_run_font(run_elem, size=12):
+        """Set Times New Roman and size (points) for a w:r element."""
+        rPr = run_elem.find(qn('w:rPr'))
+        if rPr is None:
+            rPr = OxmlElement('w:rPr')
+            run_elem.insert(0, rPr)
+        rFonts = rPr.find(qn('w:rFonts'))
+        if rFonts is None:
+            rFonts = OxmlElement('w:rFonts')
+            rPr.append(rFonts)
+        rFonts.set(qn('w:ascii'), 'Times New Roman')
+        rFonts.set(qn('w:hAnsi'), 'Times New Roman')
+        rFonts.set(qn('w:cs'), 'Times New Roman')
+        rFonts.set(qn('w:eastAsia'), 'Times New Roman')
+
+        sz = rPr.find(qn('w:sz'))
+        if sz is None:
+            sz = OxmlElement('w:sz')
+            rPr.append(sz)
+        sz.set(qn('w:val'), str(int(size * 2)))
+
+        szCs = rPr.find(qn('w:szCs'))
+        if szCs is None:
+            szCs = OxmlElement('w:szCs')
+            rPr.append(szCs)
+        szCs.set(qn('w:val'), str(int(size * 2)))
+
+    def apply_para_format(p_elem, style='Normal', align=None, line_spacing=480, space_after=120):
+        """Apply paragraph style, alignment, double line spacing and space-after."""
+        pPr = p_elem.find(qn('w:pPr'))
+        if pPr is None:
+            pPr = OxmlElement('w:pPr')
+            p_elem.insert(0, pPr)
+
+        pStyle = pPr.find(qn('w:pStyle'))
+        if pStyle is None:
+            pStyle = OxmlElement('w:pStyle')
+            pPr.append(pStyle)
+        pStyle.set(qn('w:val'), style)
+
+        if align is not None:
+            align_map = {
+                WD_ALIGN_PARAGRAPH.CENTER: 'center',
+                WD_ALIGN_PARAGRAPH.LEFT: 'left',
+                WD_ALIGN_PARAGRAPH.RIGHT: 'right',
+                WD_ALIGN_PARAGRAPH.JUSTIFY: 'both',
+            }
+            align_val = align_map.get(align, align) if isinstance(align, int) else align
+            jc = pPr.find(qn('w:jc'))
+            if jc is None:
+                jc = OxmlElement('w:jc')
+                pPr.append(jc)
+            jc.set(qn('w:val'), align_val)
+
+        spacing = pPr.find(qn('w:spacing'))
+        if spacing is None:
+            spacing = OxmlElement('w:spacing')
+            pPr.append(spacing)
+        spacing.set(qn('w:line'), str(line_spacing))
+        spacing.set(qn('w:lineRule'), 'auto')
+        if space_after is not None:
+            spacing.set(qn('w:after'), str(space_after))
+
+    def pandoc_docx(text):
+        """Convert a markdown fragment to a temporary docx and return the Document."""
+        with tempfile.TemporaryDirectory() as tmp:
+            md_path = os.path.join(tmp, 'in.md')
+            out_path = os.path.join(tmp, 'out.docx')
+            with open(md_path, 'w', encoding='utf-8') as f:
+                f.write(text + '\n')
+            subprocess.run(
+                [PANDOC, '-f', 'markdown', '-t', 'docx', '-o', out_path, md_path],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+            return Document(out_path)
+
+    def pandoc_para(text):
+        """Return a w:p element rendered from markdown text by pandoc."""
+        tmpdoc = pandoc_docx(text)
+        if not tmpdoc.paragraphs:
+            return OxmlElement('w:p')
+        p = tmpdoc.paragraphs[0]._p
+        return etree.fromstring(etree.tostring(p))
+
+    def pandoc_table(md_table):
+        """Return a w:tbl element rendered from a markdown table by pandoc."""
+        tmpdoc = pandoc_docx(md_table)
+        if not tmpdoc.tables:
+            return None
+        tbl = tmpdoc.tables[0]._tbl
+        return etree.fromstring(etree.tostring(tbl))
+
     def add_heading(text, level=1):
         h = doc.add_heading(text, level=level)
         for run in h.runs:
             run.font.color.rgb = RGBColor(0, 0, 0)
+            run.font.name = 'Times New Roman'
+            run.font.size = Pt(12)
+            run.font.bold = True
         return h
 
     def add_para(text, bold=False, italic=False, align=None):
@@ -53,102 +186,65 @@ def build(input_md, output_docx):
             p.alignment = align
         return p
 
-    def parse_inline(text):
-        """Parse markdown inline formatting into (text, bold, italic) runs."""
-        # Process $...$ math with clean_math
-        text = re.sub(r'\$([^$]+)\$', lambda m: clean_math(m.group(1)), text)
-        # Replace --- with em dash (before --)
-        text = text.replace('---', '\u2014')
-        # Replace -- with en dash
-        text = text.replace('--', '\u2013')
-
-        runs = []
-        i = 0
-        current = ''
-        while i < len(text):
-            # Bold+italic ***text***
-            if text[i:i+3] == '***':
-                if current:
-                    runs.append((current, False, False))
-                    current = ''
-                end = text.find('***', i + 3)
-                if end != -1:
-                    runs.append((text[i+3:end], True, True))
-                    i = end + 3
-                    continue
-            # Bold **text**
-            if text[i:i+2] == '**':
-                if current:
-                    runs.append((current, False, False))
-                    current = ''
-                end = text.find('**', i + 2)
-                if end != -1:
-                    runs.append((text[i+2:end], True, False))
-                    i = end + 2
-                    continue
-            # Italic *text* (not preceded/followed by *)
-            if (text[i] == '*' and
-                (i == 0 or text[i-1] != '*') and
-                (i+1 < len(text) and text[i+1] != '*')):
-                if current:
-                    runs.append((current, False, False))
-                    current = ''
-                end = text.find('*', i + 1)
-                if end != -1 and (end+1 >= len(text) or text[end+1] != '*'):
-                    runs.append((text[i+1:end], False, True))
-                    i = end + 1
-                    continue
-            current += text[i]
-            i += 1
-        if current:
-            runs.append((current, False, False))
-        return runs if runs else [(text, False, False)]
-
-    def add_rich_para(text, align=None):
-        """Add a paragraph with parsed inline formatting."""
-        p = doc.add_paragraph()
-        runs = parse_inline(text)
-        for txt, bold, italic in runs:
-            run = p.add_run(txt)
-            run.bold = bold
-            run.italic = italic
-            run.font.name = 'Times New Roman'
-            run.font.size = Pt(12)
-        if align:
-            p.alignment = align
-        return p
+    def add_rich_para(text, align=None, style='Normal'):
+        """Add a paragraph, using pandoc so inline math becomes Word equations."""
+        p_elem = pandoc_para(text)
+        insert_element(p_elem)
+        apply_para_format(p_elem, style=style, align=align)
+        for r in p_elem.findall(qn('w:r')):
+            set_run_font(r, size=12)
+        return p_elem
 
     def add_table(headers, rows):
-        """Add a formatted table."""
+        """Add a formatted table; math in headers/cells is converted to OMML."""
         ncols = len(headers)
-        table = doc.add_table(rows=1 + len(rows), cols=ncols)
-        table.style = 'Table Grid'
-        table.alignment = WD_TABLE_ALIGNMENT.CENTER
+        md = '| ' + ' | '.join(headers) + ' |\n'
+        md += '|' + '|'.join(['---'] * ncols) + '|\n'
+        for row in rows:
+            md += '| ' + ' | '.join(str(x) for x in row[:ncols]) + ' |\n'
 
-        # Header row
-        for j, header in enumerate(headers):
-            cell = table.rows[0].cells[j]
-            cell.text = ''
-            p = cell.paragraphs[0]
-            run = p.add_run(header.strip())
-            run.bold = True
-            run.font.name = 'Times New Roman'
-            run.font.size = Pt(10)
+        tbl_elem = pandoc_table(md)
+        if tbl_elem is None:
+            return None
 
-        # Data rows
-        for i, row in enumerate(rows):
-            for j in range(min(len(row), ncols)):
-                cell = table.rows[i + 1].cells[j]
-                cell.text = ''
-                p = cell.paragraphs[0]
-                ct = row[j].strip()
-                ct = re.sub(r'\$([^$]+)\$', lambda m: clean_math(m.group(1)), ct)
-                ct = ct.replace('--', '\u2013')
-                run = p.add_run(ct)
-                run.font.name = 'Times New Roman'
-                run.font.size = Pt(10)
+        # Table style and centering
+        tblPr = tbl_elem.find(qn('w:tblPr'))
+        if tblPr is None:
+            tblPr = OxmlElement('w:tblPr')
+            tbl_elem.insert(0, tblPr)
+        tblStyle = tblPr.find(qn('w:tblStyle'))
+        if tblStyle is None:
+            tblStyle = OxmlElement('w:tblStyle')
+            tblPr.append(tblStyle)
+        tblStyle.set(qn('w:val'), 'Table Grid')
 
-        return table
+        jc = tblPr.find(qn('w:jc'))
+        if jc is None:
+            jc = OxmlElement('w:jc')
+            tblPr.append(jc)
+        jc.set(qn('w:val'), 'center')
+
+        # Format cells: 10 pt Times New Roman, header bold, single line spacing
+        for tr in tbl_elem.findall(qn('w:tr')):
+            trPr = tr.find(qn('w:trPr'))
+            is_header = False
+            if trPr is not None:
+                is_header = trPr.find(qn('w:tblHeader')) is not None
+            for tc in tr.findall(qn('w:tc')):
+                for p in tc.findall(qn('w:p')):
+                    apply_para_format(p, style='Normal', line_spacing=240, space_after=0)
+                    for r in p.findall(qn('w:r')):
+                        set_run_font(r, size=10)
+                        if is_header:
+                            rPr = r.find(qn('w:rPr'))
+                            if rPr is None:
+                                rPr = OxmlElement('w:rPr')
+                                r.insert(0, rPr)
+                            if rPr.find(qn('w:b')) is None:
+                                rPr.append(OxmlElement('w:b'))
+
+        insert_element(tbl_elem)
+        return tbl_elem
 
     def add_figure(img_path, caption, fig_num):
         """Add a figure with caption."""
@@ -171,40 +267,10 @@ def build(input_md, output_docx):
         run.font.name = 'Times New Roman'
         run.font.size = Pt(10)
 
-    def clean_math(text):
-        """Convert a small subset of LaTeX math to Unicode text."""
-        # Commands that wrap a braced argument
-        text = re.sub(r'\\text\{([^}]*)\}', r'\1', text)
-        text = re.sub(r'\\sqrt\{([^}]*)\}', lambda m: '√' + m.group(1), text)
-        text = re.sub(r'\\frac\{([^}]*)\}\{([^}]*)\}', r'(\1)/(\2)', text)
-        text = re.sub(r'\\left|\\right', '', text)
-
-        replacements = [
-            ('\\sim', '~'), ('\\cdot', '\u00b7'),
-            ('\\sum', '\u03a3'), ('\\prod', '\u220f'),
-            ('\\alpha', '\u03b1'), ('\\beta', '\u03b2'),
-            ('\\mu', '\u03bc'), ('\\tau', '\u03c4'),
-            ('\\theta', '\u03b8'), ('\\sigma', '\u03c3'),
-            ('\\delta', '\u03b4'), ('\\rho', '\u03c1'),
-            ('\\Phi', '\u03a6'), ('\\phi', '\u03c6'),
-            ('\\in', '\u2208'), ('\\leq', '\u2264'),
-            ('\\geq', '\u2265'), ('\\neq', '\u2260'),
-            ('\\times', '\u00d7'), ('\\to', '\u2192'),
-            ('\\approx', '\u2248'), ('\\quad', '  '),
-            ('\\hat', ''), ('\\log', 'log'),
-            ('\\exp', 'exp'), ('\\mid', '|'),
-            ('\\sqrt', '\u221a'),
-            ('\\', ''),  # remove remaining backslashes
-            ('^2', '\u00b2'),
-        ]
-        for old, new in replacements:
-            text = text.replace(old, new)
-        return text
-
     # ============================================================
     # Read and parse front matter for title page
     # ============================================================
-    with open(input_md, 'r') as f:
+    with open(input_md, 'r', encoding='utf-8') as f:
         lines = f.readlines()
 
     metadata = {}
@@ -244,7 +310,6 @@ def build(input_md, output_docx):
     in_table = False
     table_headers = []
     table_rows = []
-    in_fig_section = False
     current_section = ''
 
     while i < len(lines):
@@ -389,35 +454,21 @@ def build(input_md, output_docx):
                 i += 1  # skip closing $$
             else:
                 i += 1
-            math_text = clean_math(math_text)
-            add_para(math_text.strip(), italic=True, align=WD_ALIGN_PARAGRAPH.CENTER)
+            if math_text:
+                add_rich_para('$$' + math_text + '$$', align=WD_ALIGN_PARAGRAPH.CENTER)
             continue
 
         # Bullet lists (top level)
         if line.strip().startswith('- '):
             text = line.strip()[2:]
-            p = doc.add_paragraph(style='List Bullet')
-            runs = parse_inline(text)
-            for txt, bold, italic in runs:
-                run = p.add_run(txt)
-                run.bold = bold
-                run.italic = italic
-                run.font.name = 'Times New Roman'
-                run.font.size = Pt(12)
+            add_rich_para(text, style='List Bullet')
             i += 1
             continue
 
         # Indented bullet lists
         if re.match(r'^  +- ', line):
             text = line.strip()[2:]
-            p = doc.add_paragraph(style='List Bullet 2')
-            runs = parse_inline(text)
-            for txt, bold, italic in runs:
-                run = p.add_run(txt)
-                run.bold = bold
-                run.italic = italic
-                run.font.name = 'Times New Roman'
-                run.font.size = Pt(12)
+            add_rich_para(text, style='List Bullet 2')
             i += 1
             continue
 
@@ -427,7 +478,7 @@ def build(input_md, output_docx):
             num = int(m.group(1))
             text = m.group(2)
 
-            # Detect references (typically start with author name)
+            # References (number + plain text, no markdown formatting)
             if current_section == 'References':
                 p = doc.add_paragraph()
                 run = p.add_run(f'{num}. {text}')
@@ -436,14 +487,7 @@ def build(input_md, output_docx):
                 i += 1
                 continue
             else:
-                p = doc.add_paragraph(style='List Number')
-                runs = parse_inline(text)
-                for txt, bold, italic in runs:
-                    run = p.add_run(txt)
-                    run.bold = bold
-                    run.italic = italic
-                    run.font.name = 'Times New Roman'
-                    run.font.size = Pt(12)
+                add_rich_para(text, style='List Number')
                 i += 1
                 continue
 

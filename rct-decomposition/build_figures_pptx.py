@@ -8,6 +8,36 @@ from pptx.util import Inches, Pt
 from pptx.enum.text import PP_ALIGN
 
 
+def clean_math(latex):
+    """Convert a small subset of LaTeX math to plain Unicode text for PPTX captions."""
+    text = latex
+    replacements = [
+        ('\\text{', ''), ('}', ''),
+        ('\\sim', '~'), ('\\cdot', '\u00b7'),
+        ('\\sqrt', '\u221a'), ('\\sum', '\u03a3'),
+        ('\\prod', '\u220f'), ('\\alpha', '\u03b1'),
+        ('\\beta', '\u03b2'), ('\\mu', '\u03bc'),
+        ('\\tau', '\u03c4'), ('\\theta', '\u03b8'),
+        ('\\sigma', '\u03c3'), ('\\delta', '\u03b4'),
+        ('\\rho', '\u03c1'), ('\\Phi', '\u03a6'),
+        ('\\phi', '\u03c6'), ('\\in', '\u2208'),
+        ('\\leq', '\u2264'), ('\\geq', '\u2265'),
+        ('\\neq', '\u2260'), ('\\times', '\u00d7'),
+        ('\\to', '\u2192'), ('\\approx', '\u2248'),
+        ('\\frac', ''), ('\\left', ''),
+        ('\\right', ''), ('\\quad', '  '),
+        ('\\hat', ''), ('\\log', 'log'),
+        ('\\exp', 'exp'), ('\\mid', '|'),
+        ('^2', '\u00b2'),
+    ]
+    for old, new in replacements:
+        text = text.replace(old, new)
+    text = re.sub(r'_\{([^}]+)\}', r'_\1', text)
+    text = re.sub(r'\^\{([^}]+)\}', r'^\1', text)
+    text = text.replace('\\', '')
+    return text
+
+
 def build(figures_md_path, out_path):
     prs = Presentation()
     prs.slide_width = Inches(13.333)
@@ -19,6 +49,7 @@ def build(figures_md_path, out_path):
     for cap_match in re.finditer(r'\*\*Fig\.\s*(\d+)\*\*\s*(.*?)\n\s*!\[.*?\]\((.*?)\)', md, re.S):
         fig_num = cap_match.group(1)
         caption = cap_match.group(2).strip()
+        caption = re.sub(r'\$([^$]+)\$', lambda m: clean_math(m.group(1)), caption)
         img_path = cap_match.group(3).strip()
 
         blank = prs.slide_layouts[6]  # blank
