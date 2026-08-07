@@ -13,7 +13,7 @@ corresponding_author: [To be determined]
 
 **Results**: In the magnesium case, control event rates fell from 8.9% to 7.2%; the pre-ISIS-4 pooled OR was 0.54 (95% CI: 0.40-0.75) and the all-trials estimate 0.56 (0.38-0.83) with $I^2$ = 62%. In the statins case, observational HR was 0.72 (0.64-0.80) versus RCT HR 0.97 (0.90-1.05), with an RCT-to-observational event rate ratio of 0.53. Bayesian integration with moderate discounting (α = 0.3) yielded OR 0.73 (95% CrI: 0.28-2.09), P(OR < 1) = 77% for magnesium, and HR 0.85 (0.59-1.57), P(HR < 1) = 84% for statins.
 
-**Conclusions**: KOTHA provides a reproducible, quantitative method to distinguish "evidence of no effect" from "no evidence of effect" and to inform trial design, evidence synthesis, and guideline interpretation. Module H classified magnesium as inconclusive with serious imprecision (heterogeneity) and moderate indirectness, and statins as inconclusive with serious indirectness.
+**Conclusions**: KOTHA distinguishes "evidence of no effect" from "no evidence of effect". Module H classified magnesium as inconclusive due to serious imprecision (heterogeneity) and moderate indirectness, and statins as inconclusive due to serious indirectness.
 
 **Keywords**: randomized controlled trials, meta-analysis, observational studies, trial design, counterfactual simulation, Bayesian evidence synthesis, power analysis, GRADE, magnesium, statins, heart failure
 
