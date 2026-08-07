@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Build the KOTHA manuscript for Contemporary Clinical Trials (CCT).
+Build the KOTHA manuscript for Contemporary Clinical Trials Communications (CCTC).
 
 Outputs:
-- 05_paper_cct.md (generated from computed results)
-- KOTHA_Framework_CCT.docx (via generate_cct_docx.py)
+- 05_paper_cctc.md (generated from computed results)
+- KOTHA_Framework_CCTC.docx (via generate_cct_docx.py)
 """
 import io
 import os
@@ -141,13 +141,7 @@ def _build_markdown():
     st_rct_lo = v['st_rct_lo']
     st_rct_hi = v['st_rct_hi']
 
-    abstract = f"""**Background**: Evidence-based medicine places randomized controlled trials (RCTs) and their meta-analyses at the top of the evidence hierarchy {r('GRADE')}. Discordance between observational and RCT evidence is often attributed to confounding, but an underexplored structural explanation is that trial enrollment progressively excludes higher-risk patients, diluting event rates and reducing statistical information. We developed the Knowledge-driven Observational-Trial Harmonization Approach (KOTHA) Framework to diagnose and address this structural information loss.
-
-**Methods**: KOTHA comprises three modules. Module K uses counterfactual power simulation to quantify how enrollment-driven risk-profile shifts alter statistical power. Module T integrates RCT and observational evidence through hierarchical Bayesian meta-analysis with power-prior discounting. Module H translates these outputs into a structured GRADE-compatible evidence assessment. We illustrated the framework using published data from two cases of observational-RCT divergence: intravenous magnesium in acute myocardial infarction ({v['mg_n_trials']} trials, {v['mg_year_min']}-{v['mg_year_max']}) and statins in heart failure ({v['st_n_obs']} observational studies, {v['st_n_rct']} RCTs).
-
-**Results**: In the magnesium case, control event rates fell from {v['s1_rate']*100:.1f}% (pre-thrombolysis era) to {v['s2_rate']*100:.1f}% (ISIS-4). The pre-ISIS-4 meta-analysis yielded OR = {mg_pre_or:.2f} (95% CI: {mg_pre_lo:.2f}-{mg_pre_hi:.2f}), while the all-trials estimate was OR = {mg_all_or:.2f} ({mg_all_lo:.2f}-{mg_all_hi:.2f}) with $I^2$ = {mg_all_i2}%. In the statins case, observational studies showed HR = {st_obs_hr:.2f} ({st_obs_lo:.2f}-{st_obs_hi:.2f}) and RCTs showed HR = {st_rct_hr:.2f} ({st_rct_lo:.2f}-{st_rct_hi:.2f}), with an RCT-to-observational event rate ratio of {v['st_rate_ratio']:.2f}. Bayesian integration with moderate discounting ($\\alpha$ = {v['alpha_example']:.1f}) yielded OR = {v['mg_pp_alpha3_or']:.2f} (95% CrI: {v['mg_pp_alpha3_lo']:.2f}-{v['mg_pp_alpha3_hi']:.2f}), P(OR < 1) = {v['mg_pp_alpha3_p1']:.0f}% for magnesium and HR = {v['st_pp_alpha3_hr']:.2f} ({v['st_pp_alpha3_lo']:.2f}-{v['st_pp_alpha3_hi']:.2f}), P(HR < 1) = {v['st_pp_alpha3_p1']:.0f}% for statins. Module H reclassified both cases as informationally inconclusive with serious indirectness.
-
-**Conclusions**: The KOTHA Framework provides a reproducible, quantitative method to distinguish "evidence of no effect" from "no evidence of effect" and to inform trial design, evidence synthesis, and guideline interpretation."""
+    abstract = f"""**Background**: Evidence-based medicine ranks RCTs and meta-analyses highest, yet observational-RCT discordance is usually attributed to confounding. We highlight a structural explanation: trial enrollment progressively excludes higher-risk patients, diluting event rates and statistical information. The Knowledge-driven Observational-Trial Harmonization Approach (KOTHA) Framework diagnoses this structural information loss. **Methods**: KOTHA comprises three modules. Module K (Counterfactual Power Simulation) quantifies how enrollment-driven risk-profile shifts alter statistical power. Module T (Bayesian Evidence Integration) combines RCT and observational evidence using power-prior discounting. Module H (Guideline Interpreter) translates outputs into a structured GRADE-compatible assessment. We illustrated KOTHA using two cases of observational-RCT divergence: intravenous magnesium in acute myocardial infarction ({v['mg_n_trials']} trials, {v['mg_year_min']}-{v['mg_year_max']}) and statins in heart failure ({v['st_n_obs']} observational studies, {v['st_n_rct']} RCTs). **Results**: In the magnesium case, control event rates fell from {v['s1_rate']*100:.1f}% to {v['s2_rate']*100:.1f}%; the pre-ISIS-4 pooled OR was {mg_pre_or:.2f} (95% CI: {mg_pre_lo:.2f}-{mg_pre_hi:.2f}) and the all-trials estimate {mg_all_or:.2f} ({mg_all_lo:.2f}-{mg_all_hi:.2f}) with $I^2$ = {mg_all_i2}%. In the statins case, observational HR was {st_obs_hr:.2f} ({st_obs_lo:.2f}-{st_obs_hi:.2f}) versus RCT HR {st_rct_hr:.2f} ({st_rct_lo:.2f}-{st_rct_hi:.2f}), with an RCT-to-observational event rate ratio of {v['st_rate_ratio']:.2f}. Bayesian integration with moderate discounting ($\\alpha$ = {v['alpha_example']:.1f}) yielded OR {v['mg_pp_alpha3_or']:.2f} (95% CrI: {v['mg_pp_alpha3_lo']:.2f}-{v['mg_pp_alpha3_hi']:.2f}), P(OR < 1) = {v['mg_pp_alpha3_p1']:.0f}% for magnesium, and HR {v['st_pp_alpha3_hr']:.2f} ({v['st_pp_alpha3_lo']:.2f}-{v['st_pp_alpha3_hi']:.2f}), P(HR < 1) = {v['st_pp_alpha3_p1']:.0f}% for statins. Module H reclassified both cases as informationally inconclusive due to serious indirectness. **Conclusions**: KOTHA provides a reproducible, quantitative method to distinguish "evidence of no effect" from "no evidence of effect" and to inform trial design, evidence synthesis, and guideline interpretation."""
 
     intro = f"""Evidence-based medicine places RCTs and their meta-analyses at the apex of the evidence hierarchy because randomization minimizes confounding and provides internally valid estimates of treatment effects {r('GRADE')}. Nevertheless, meta-analyses of observational studies and RCTs frequently disagree: observational evidence may show statistically significant benefit while RCT evidence does not {r('Concato', 'Anglemyer')}. The conventional explanation invokes residual confounding, selection bias, or publication bias in observational data. While these sources of bias are real, they may not fully account for the discordance.
 
@@ -411,14 +405,15 @@ The KOTHA Framework (Knowledge-driven Observational-Trial Harmonization Approach
 
     md = _front_matter(v, word_count) + body_md
 
-    md_path = os.path.join(BASE, '05_paper_cct.md')
+    md_path = os.path.join(BASE, '05_paper_cctc.md')
     with open(md_path, 'w') as f:
         f.write(md)
     print(f"Wrote {md_path} (main text word count: {word_count})")
 
     # Generate docx
+    docx_path = os.path.join(BASE, 'KOTHA_Framework_CCTC.docx')
     subprocess.run(
-        [sys.executable, os.path.join(BASE, 'generate_cct_docx.py'), md_path],
+        [sys.executable, os.path.join(BASE, 'generate_cct_docx.py'), md_path, docx_path],
         cwd=BASE,
         check=True,
     )

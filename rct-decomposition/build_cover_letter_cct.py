@@ -25,13 +25,11 @@ def main():
     # Date and address
     add_paragraph(doc, '[Date]')
     add_paragraph(doc, '')
-    add_paragraph(doc, 'Dr. Howard Sesso, ScD, MPH')
-    add_paragraph(doc, 'Editor-in-Chief, Contemporary Clinical Trials')
-    add_paragraph(doc, 'Harvard Medical School, Brigham and Women\'s Hospital')
-    add_paragraph(doc, 'Boston, Massachusetts, United States of America')
+    add_paragraph(doc, 'Dr. Zhezhen Jin and Dr. Zheng Su')
+    add_paragraph(doc, 'Co-Editors-in-Chief, Contemporary Clinical Trials Communications')
     add_paragraph(doc, '')
 
-    add_paragraph(doc, 'Dear Dr. Sesso,')
+    add_paragraph(doc, 'Dear Drs. Jin and Su,')
     add_paragraph(doc, '')
 
     # Opening
@@ -41,7 +39,7 @@ def main():
     )
     opening = (
         f'We are pleased to submit our manuscript, {title}, '
-        'for consideration for publication in *Contemporary Clinical Trials* as an Original Article.'
+        'for consideration for publication in *Contemporary Clinical Trials Communications* as an Original Article.'
     )
     add_paragraph(doc, opening)
     add_paragraph(doc, '')
@@ -64,20 +62,22 @@ def main():
     add_paragraph(doc, '')
 
     # Relevance
-    add_paragraph(doc, 'Relevance to Contemporary Clinical Trials', bold=True)
+    add_paragraph(doc, 'Relevance to Contemporary Clinical Trials Communications', bold=True)
     relevance = (
-        'We believe this work is well suited to the readership of *Contemporary Clinical Trials* for '
-        'the following reasons. First, Module K enables trialists to simulate how enrollment-driven '
-        'risk-profile shifts affect statistical power under counterfactual designs, informing decisions '
-        'about prognostic enrichment, event-driven enrollment, adaptive sample-size re-estimation, and '
-        'broad-eligibility pragmatic strategies. Second, the empirical applications demonstrate that '
-        'the same therapeutic question can appear conclusive in observational data and inconclusive in '
-        'RCTs not because the treatments differ, but because enrolled cohorts have systematically lower '
-        'event rates. This reframes a class of apparently negative RCT meta-analyses as design '
-        'information problems rather than true null effects. Third, the framework bridges quantitative '
-        'design diagnostics and structured evidence interpretation, helping readers distinguish '
-        '"evidence of no effect" from "no evidence of effect" when planning, reporting, and '
-        'interpreting clinical trials.'
+        'We believe this work is well suited to the open-access, multidisciplinary readership of '
+        '*Contemporary Clinical Trials Communications* for the following reasons. First, Module K '
+        'enables trialists to simulate how enrollment-driven risk-profile shifts affect statistical '
+        'power under counterfactual designs, informing decisions about prognostic enrichment, '
+        'event-driven enrollment, adaptive sample-size re-estimation, and broad-eligibility pragmatic '
+        'strategies. Second, the empirical applications demonstrate that the same therapeutic question '
+        'can appear conclusive in observational data and inconclusive in RCTs not because the '
+        'treatments differ, but because enrolled cohorts have systematically lower event rates. This '
+        'reframes a class of apparently negative RCT meta-analyses as design-information problems '
+        'rather than true null effects. Third, the framework bridges quantitative design diagnostics and '
+        'structured evidence interpretation, helping readers distinguish "evidence of no effect" '
+        'from "no evidence of effect" when planning, reporting, and interpreting clinical trials. The '
+        'reproducible pipeline and ADEMP reporting structure further align with the journal\'s goal of '
+        'increasing transparency and reducing publication bias.'
     )
     add_paragraph(doc, relevance)
     add_paragraph(doc, '')
@@ -99,7 +99,7 @@ def main():
     exclusivity = (
         'This manuscript is original, has not been published previously, and is not under '
         'consideration elsewhere. All authors have approved the manuscript and agree with its '
-        'submission to *Contemporary Clinical Trials*.'
+        'submission to *Contemporary Clinical Trials Communications*.'
     )
     add_paragraph(doc, exclusivity)
     add_paragraph(doc, '')
@@ -126,8 +126,8 @@ def main():
     add_paragraph(doc, '')
     add_paragraph(doc, 'Email: [To be determined]')
 
-    doc.save('cover_letter_CCT.docx')
-    print('Saved cover_letter_CCT.docx')
+    doc.save('cover_letter_CCTC.docx')
+    print('Saved cover_letter_CCTC.docx')
 
 
 if __name__ == '__main__':
