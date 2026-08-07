@@ -179,6 +179,112 @@ def ois_calculation(OR, alpha=0.05, power=0.80):
     return D
 
 
+def kotha_assessment(info_fraction, final_z, ci_lo, ci_hi, rate_ratio, i2,
+                     i2_threshold=50.0,
+                     indirect_moderate_low=0.85, indirect_moderate_high=1.18,
+                     indirect_serious_low=0.67, indirect_serious_high=1.50):
+    """
+    Derive a KOTHA-enhanced GRADE classification by integrating the five
+    Module H assessments: information sufficiency, CI interpretation,
+    representativeness (event-rate ratio), TSA boundary status, and
+    inconsistency (I^2).
+
+    Returns a dict with keys:
+      - classification: short label for the result section
+      - recommendation: short recommendation phrase
+      - rationale: one-sentence justification
+      - indirectness: 'low' / 'moderate' / 'serious'
+      - inconsistency: bool (I^2 > i2_threshold)
+    """
+    z_alpha = stats.norm.ppf(0.975)
+    obf_boundary = z_alpha / np.sqrt(info_fraction) if info_fraction > 0 else np.inf
+
+    ci_crosses_null = (ci_lo < 1.0) and (ci_hi > 1.0)
+    sig_benefit = (ci_hi < 1.0) or (final_z < -obf_boundary)
+    sig_harm = (ci_lo > 1.0) or (final_z > obf_boundary)
+
+    if rate_ratio < indirect_serious_low or rate_ratio > indirect_serious_high:
+        indirectness = "serious"
+    elif rate_ratio < indirect_moderate_low or rate_ratio > indirect_moderate_high:
+        indirectness = "moderate"
+    else:
+        indirectness = "low"
+
+    inconsistency = i2 > i2_threshold
+
+    if info_fraction < 1.0:
+        return {
+            'classification': "No evidence of effect (informationally insufficient)",
+            'recommendation': "No evidence of effect",
+            'rationale': "OIS not reached; meta-analysis is analogous to an interim analysis",
+            'indirectness': indirectness,
+            'inconsistency': inconsistency,
+        }
+
+    if not sig_benefit and not sig_harm:
+        if indirectness == "serious":
+            classification = "Inconclusive with serious indirectness"
+            recommendation = "Inconclusive; conditional recommendation"
+            rationale = "OIS reached but no TSA/CI boundary crossed; serious indirectness from enrollment-driven event dilution"
+        elif indirectness == "moderate":
+            classification = "Inconclusive with moderate indirectness"
+            recommendation = "Inconclusive; conditional recommendation"
+            rationale = "OIS reached but no TSA/CI boundary crossed; moderate indirectness"
+        else:
+            classification = "Inconclusive"
+            recommendation = "Inconclusive; conditional recommendation"
+            rationale = "OIS reached but no TSA/CI boundary crossed"
+        return {
+            'classification': classification,
+            'recommendation': recommendation,
+            'rationale': rationale,
+            'indirectness': indirectness,
+            'inconsistency': inconsistency,
+        }
+
+    if sig_benefit:
+        downgrade = []
+        if inconsistency:
+            downgrade.append("serious imprecision (heterogeneity)")
+        if indirectness == "serious":
+            downgrade.append("serious indirectness")
+        elif indirectness == "moderate":
+            downgrade.append("moderate indirectness")
+        if downgrade:
+            classification = "Inconclusive with " + " and ".join(downgrade)
+            recommendation = "Inconclusive; conditional recommendation"
+            rationale = "TSA/CI indicate benefit but the signal is downgraded by " + " and ".join(downgrade)
+        else:
+            classification = "Evidence of effect"
+            recommendation = "Evidence of effect; strong recommendation"
+            rationale = "TSA/CI consistently indicate benefit with low risk of bias"
+        return {
+            'classification': classification,
+            'recommendation': recommendation,
+            'rationale': rationale,
+            'indirectness': indirectness,
+            'inconsistency': inconsistency,
+        }
+
+    if sig_harm:
+        return {
+            'classification': "Evidence of harm / no benefit",
+            'recommendation': "Evidence of no benefit",
+            'rationale': "TSA/CI indicate harm or no benefit",
+            'indirectness': indirectness,
+            'inconsistency': inconsistency,
+        }
+
+    # Fallback
+    return {
+        'classification': "Inconclusive",
+        'recommendation': "Inconclusive; conditional recommendation",
+        'rationale': "OIS reached but no clear TSA/CI signal",
+        'indirectness': indirectness,
+        'inconsistency': inconsistency,
+    }
+
+
 def cumulative_z(logOR_arr, se_arr):
     """Compute cumulative Z-statistic for TSA under a fixed-effect model."""
     z_values = []
@@ -602,9 +708,15 @@ def run_module_h_magnesium(mg_data, mk_results):
     
     # Assessment 3: Representativeness
     rate_ratio = mk_results['s2_rate'] / mk_results['s1_rate']
+    if rate_ratio < 0.67 or rate_ratio > 1.50:
+        indirect_label = "Serious indirectness"
+    elif rate_ratio < 0.85 or rate_ratio > 1.18:
+        indirect_label = "Moderate indirectness"
+    else:
+        indirect_label = "Low indirectness"
     print(f"\nAssessment 3: Representativeness")
     print(f"  Event rate ratio (ISIS-4 / pre-thrombolysis) = {rate_ratio:.2f}")
-    print(f"  Classification: {'Serious indirectness' if rate_ratio < 0.67 else 'Moderate indirectness'}")
+    print(f"  Classification: {indirect_label}")
     
     # Assessment 4: TSA
     # Sort by year for cumulative analysis
@@ -625,16 +737,10 @@ def run_module_h_magnesium(mg_data, mk_results):
     
     # Assessment 5: Recommendation
     print(f"\nAssessment 5: Recommendation Language")
-    final_z = cum_z_re[-1]
-    if info_fraction >= 1.0 and final_z < -z_alpha:
-        print("  → Evidence of effect (efficacy boundary crossed; negative Z corresponds to OR < 1)")
-    elif info_fraction >= 1.0 and final_z > z_alpha:
-        print("  → Evidence of harm / no benefit (efficacy boundary crossed in opposite direction)")
-    elif info_fraction >= 1.0:
-        print("  → Inconclusive (OIS reached but neither efficacy nor futility boundary crossed)")
-    else:
-        print("  → No evidence of effect (informationally insufficient)")
-        print("    The meta-analysis is analogous to an interim analysis.")
+    kotha = kotha_assessment(
+        info_fraction, cum_z_re[-1], ci_lo, ci_hi, rate_ratio, mk_results['I2_all']
+    )
+    print(f"  → {kotha['classification']}: {kotha['rationale']}")
     
     return {
         'ois': ois, 'total_events': total_events, 'total_events_pre': total_events_pre,
@@ -642,6 +748,7 @@ def run_module_h_magnesium(mg_data, mk_results):
         'cum_z_fe': cum_z_fe, 'cum_pooled_fe': cum_pooled_fe, 'cum_info_fe': cum_info_fe,
         'cum_z_re': cum_z_re, 'cum_pooled_re': cum_pooled_re, 'cum_info_re': cum_info_re,
         'mg_sorted': mg_sorted,
+        'kotha': kotha,
     }
 
 
@@ -669,8 +776,15 @@ def run_module_h_statins(statin_obs, statin_rct, mk_results):
     print(f"  Pooled HR = {np.exp(pooled_rct):.2f} (95% CI: {ci_lo:.2f}-{ci_hi:.2f})")
     
     rate_ratio = mk_results['rct_rate'] / mk_results['obs_rate']
+    if rate_ratio < 0.67 or rate_ratio > 1.50:
+        indirect_label = "Serious indirectness"
+    elif rate_ratio < 0.85 or rate_ratio > 1.18:
+        indirect_label = "Moderate indirectness"
+    else:
+        indirect_label = "Low indirectness"
     print(f"\nAssessment 3: Representativeness")
     print(f"  Event rate ratio (RCT / observational) = {rate_ratio:.2f}")
+    print(f"  Classification: {indirect_label}")
     
     # Assessment 4: TSA
     st_sorted = statin_rct.sort_values('N')
@@ -687,18 +801,17 @@ def run_module_h_statins(statin_obs, statin_rct, mk_results):
     print(f"  Conventional efficacy boundary: Z = {z_alpha:.2f}")
     print(f"  Conventional futility boundary: Z = {-z_alpha:.2f}")
     
-    if info_fraction >= 1.0 and final_z_re < -z_alpha:
-        print("  → Efficacy boundary crossed: evidence of benefit (negative Z corresponds to HR < 1)")
-    elif info_fraction >= 1.0 and final_z_re > z_alpha:
-        print("  → Efficacy boundary crossed: evidence of harm / no benefit")
-    elif info_fraction >= 1.0:
-        print("  → Inconclusive: OIS reached but neither efficacy nor futility boundary crossed")
-    else:
-        print("  → Informationally insufficient: meta-analysis analogous to an interim analysis")
+    # Assessment 5: Recommendation
+    print(f"\nAssessment 5: Recommendation Language")
+    kotha = kotha_assessment(
+        info_fraction, final_z_re, ci_lo, ci_hi, rate_ratio, mk_results['I2_rct']
+    )
+    print(f"  → {kotha['classification']}: {kotha['rationale']}")
     
     return {
         'ois': ois, 'total_events': total_events, 'info_fraction': info_fraction,
         'cum_z_fe': cum_z_fe, 'cum_z_re': cum_z_re,
+        'kotha': kotha,
     }
 
 

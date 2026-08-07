@@ -229,6 +229,18 @@ def _compute_values():
         'st_z_fe': mh_st['cum_z_fe'][-1],
         'st_z_re': mh_st['cum_z_re'][-1],
 
+        # Module H KOTHA-enhanced classifications (from run_validation.py)
+        'mg_kotha_classification': mh_mg['kotha']['classification'],
+        'mg_kotha_recommendation': mh_mg['kotha']['recommendation'],
+        'mg_kotha_rationale': mh_mg['kotha']['rationale'],
+        'mg_kotha_indirectness': mh_mg['kotha']['indirectness'],
+        'mg_kotha_inconsistency': mh_mg['kotha']['inconsistency'],
+        'st_kotha_classification': mh_st['kotha']['classification'],
+        'st_kotha_recommendation': mh_st['kotha']['recommendation'],
+        'st_kotha_rationale': mh_st['kotha']['rationale'],
+        'st_kotha_indirectness': mh_st['kotha']['indirectness'],
+        'st_kotha_inconsistency': mh_st['kotha']['inconsistency'],
+
         # Data
         'mg_data': rv.mg_data,
         'statin_obs': rv.statin_obs,
@@ -295,15 +307,19 @@ def _table_7(v):
     st_i2_rct = int(round(v['st_rct_i2']))
     mg_reduction = int(round(v['mg_rate_reduction_pct']))
     st_reduction = int(round(v['st_rate_reduction_pct']))
+    mg_rec = v.get('mg_kotha_recommendation', '"Inconclusive; conditional recommendation"')
+    st_rec = v.get('st_kotha_recommendation', '"Inconclusive; conditional recommendation"')
+    mg_indirect = v.get('mg_kotha_indirectness', 'moderate').capitalize()
+    st_indirect = v.get('st_kotha_indirectness', 'serious').capitalize()
     lines = [
         "| GRADE domain | Standard (Mg in AMI) | KOTHA (Mg in AMI) | Standard (Statins HF) | KOTHA (Statins HF) |",
         "|---|---|---|---|---|",
         f"| Risk of bias | Low | Low | Low | Low |",
         f"| Inconsistency | High ($I^2$ = {mg_i2}%) | High ($I^2$ = {mg_i2}%) | Low ($I^2$ = {st_i2_rct}%) | Low ($I^2$ = {st_i2_rct}%) |",
-        f"| Indirectness | Not assessed | Moderate: event rate decreased by {mg_reduction}% | Not assessed | Serious: event rate decreased by {st_reduction}% |",
+        f"| Indirectness | Not assessed | {mg_indirect}: event rate decreased by {mg_reduction}% | Not assessed | {st_indirect}: event rate decreased by {st_reduction}% |",
         f"| Imprecision | Serious | Serious (heterogeneity-driven) | Serious | Serious |",
         f"| Overall certainty | Low | Very low | Moderate | Low |",
-        f"| Recommendation | \"No benefit demonstrated\" | \"Inconclusive; conditional recommendation\" | \"No benefit demonstrated\" | \"Inconclusive; conditional recommendation\" |",
+        f"| Recommendation | \"No benefit demonstrated\" | \"{mg_rec}\" | \"No benefit demonstrated\" | \"{st_rec}\" |",
     ]
     return "\n".join(lines)
 
@@ -323,9 +339,9 @@ def _section_abstract_results(v):
         f"HR = {v['st_obs_hr']:.2f} ({v['st_obs_lo']:.2f}--{v['st_obs_hi']:.2f}) while RCTs showed "
         f"HR = {v['st_rct_hr']:.2f} ({v['st_rct_lo']:.2f}--{v['st_rct_hi']:.2f}), "
         f"with event rate ratio of {v['st_rate_ratio']:.2f} (RCT/observational). "
-        "Module H assessment identified that standard GRADE evaluation would conclude "
-        "\"no benefit demonstrated,\" whereas KOTHA-enhanced assessment classified both cases "
-        "as informationally inconclusive with serious indirectness due to event dilution."
+        "Module H classified magnesium as "
+        f"{v['mg_kotha_classification'].lower()} and statins as {v['st_kotha_classification'].lower()}, "
+        "whereas standard GRADE evaluation would be more likely to conclude \"no benefit demonstrated.\""
     )
 
 

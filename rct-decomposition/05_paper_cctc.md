@@ -2,12 +2,18 @@
 running_head: KOTHA Framework for Trial Design
 title: The KOTHA Framework: diagnosing structural information loss in randomized controlled trial meta-analyses to inform trial design
 authors: [To be determined]
-word_count: 2107
+word_count: 2195
 corresponding_author: [To be determined]
 ---
 ## Abstract
 
-**Background**: Evidence-based medicine ranks RCTs and meta-analyses highest, yet observational-RCT discordance is usually attributed to confounding. We highlight a structural explanation: trial enrollment progressively excludes higher-risk patients, diluting event rates and statistical information. The Knowledge-driven Observational-Trial Harmonization Approach (KOTHA) Framework diagnoses this structural information loss. **Methods**: KOTHA comprises three modules. Module K (Counterfactual Power Simulation) quantifies how enrollment-driven risk-profile shifts alter statistical power. Module T (Bayesian Evidence Integration) combines RCT and observational evidence using power-prior discounting. Module H (Guideline Interpreter) translates outputs into a structured GRADE-compatible assessment. We illustrated KOTHA using two cases of observational-RCT divergence: intravenous magnesium in acute myocardial infarction (12 trials, 1984-1995) and statins in heart failure (5 observational studies, 2 RCTs). **Results**: In the magnesium case, control event rates fell from 8.9% to 7.2%; the pre-ISIS-4 pooled OR was 0.54 (95% CI: 0.40-0.75) and the all-trials estimate 0.56 (0.38-0.83) with $I^2$ = 62%. In the statins case, observational HR was 0.72 (0.64-0.80) versus RCT HR 0.97 (0.90-1.05), with an RCT-to-observational event rate ratio of 0.53. Bayesian integration with moderate discounting ($\alpha$ = 0.3) yielded OR 0.73 (95% CrI: 0.28-2.09), P(OR < 1) = 77% for magnesium, and HR 0.85 (0.59-1.57), P(HR < 1) = 84% for statins. Module H reclassified both cases as informationally inconclusive due to serious indirectness. **Conclusions**: KOTHA provides a reproducible, quantitative method to distinguish "evidence of no effect" from "no evidence of effect" and to inform trial design, evidence synthesis, and guideline interpretation.
+**Background**: Evidence-based medicine ranks RCTs and meta-analyses highest, yet observational-RCT discordance is usually attributed to confounding. We highlight a structural explanation: trial enrollment progressively excludes higher-risk patients, diluting event rates and statistical information. The Knowledge-driven Observational-Trial Harmonization Approach (KOTHA) Framework diagnoses this structural information loss.
+
+**Methods**: KOTHA comprises three modules. Module K (Counterfactual Power Simulation) quantifies how enrollment-driven risk-profile shifts alter statistical power. Module T (Bayesian Evidence Integration) combines RCT and observational evidence using power-prior discounting. Module H (Guideline Interpreter) translates outputs into a structured GRADE-compatible assessment. We illustrated KOTHA using two cases of observational-RCT divergence: intravenous magnesium in acute myocardial infarction (12 trials, 1984-1995) and statins in heart failure (5 observational studies, 2 RCTs).
+
+**Results**: In the magnesium case, control event rates fell from 8.9% to 7.2%; the pre-ISIS-4 pooled OR was 0.54 (95% CI: 0.40-0.75) and the all-trials estimate 0.56 (0.38-0.83) with $I^2$ = 62%. In the statins case, observational HR was 0.72 (0.64-0.80) versus RCT HR 0.97 (0.90-1.05), with an RCT-to-observational event rate ratio of 0.53. Bayesian integration with moderate discounting (α = 0.3) yielded OR 0.73 (95% CrI: 0.28-2.09), P(OR < 1) = 77% for magnesium, and HR 0.85 (0.59-1.57), P(HR < 1) = 84% for statins.
+
+**Conclusions**: KOTHA provides a reproducible, quantitative method to distinguish "evidence of no effect" from "no evidence of effect" and to inform trial design, evidence synthesis, and guideline interpretation. Module H classified magnesium as inconclusive with serious imprecision (heterogeneity) and moderate indirectness, and statins as inconclusive with serious indirectness.
 
 **Keywords**: randomized controlled trials, meta-analysis, observational studies, trial design, counterfactual simulation, Bayesian evidence synthesis, power analysis, GRADE, magnesium, statins, heart failure
 
@@ -19,7 +25,6 @@ corresponding_author: [To be determined]
 | AMI | Acute myocardial infarction |
 | CrI | Credible interval |
 | CI | Confidence interval |
-| EBM | Evidence-based medicine |
 | GRADE | Grading of Recommendations Assessment, Development and Evaluation |
 | HF | Heart failure |
 | HR | Hazard ratio |
@@ -73,11 +78,11 @@ where $\Phi$ is the standard normal cumulative distribution function. The ratio 
 
 ### Module T: Hierarchical Bayesian evidence integration
 
-When Module K indicates that RCT evidence is informationally insufficient, Module T combines RCT and observational evidence while explicitly modeling design-specific bias. Let $y_i$ denote the reported log effect size from study $i$ with standard error $s_i$. The model is $y_i \sim \text{Normal}(\theta_i, s_i^2)$ and $\theta_i = \mu + u_i + b_i$, where $\mu$ is the overall effect, $u_i \sim \text{Normal}(0, \tau^2)$ captures between-study heterogeneity, and $b_i$ captures design-specific bias. Alternative effect measures such as restricted mean survival time can be substituted when proportional-hazards assumptions are questionable [12-13]. Evidence-based priors have been proposed to anchor historical expectations while limiting prior-data conflict [14]. We use power-prior discounting [15] to down-weight observational evidence by a factor $\alpha \in [0, 1]$ and also present bias-adjusted normal-approximation analyses. Posterior distributions are obtained by Metropolis-Hastings MCMC (15,000 post-warmup iterations after 3,000 warmup) for each $\alpha$ in $(0, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0)$.
+When Module K indicates that RCT evidence is informationally insufficient, Module T combines RCT and observational evidence while discounting the observational likelihood for potential design-specific bias. Let $y_i$ denote the reported log effect size from study $i$ with standard error $s_i$. The RCT evidence contributes its full likelihood; the observational evidence contributes a power-prior-discounted likelihood with factor $\alpha \in [0, 1]$ [15], so that $\alpha = 0$ retains only RCTs and $\alpha = 1$ gives observational data full weight. Between-study heterogeneity is modeled with a random-effects distribution $u_i \sim \text{Normal}(0, \tau^2)$. Alternative effect measures such as restricted mean survival time can be substituted when proportional-hazards assumptions are questionable [12-13]. Evidence-based priors have been proposed to anchor historical expectations while limiting prior-data conflict [14]. We also present bias-adjusted normal-approximation analyses as a sensitivity check. Posterior distributions are obtained by Metropolis-Hastings MCMC (15,000 post-warmup iterations after 3,000 warmup) for each $\alpha$ in $(0, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0)$.
 
 ### Module H: Guideline interpretation
 
-Module H maps the outputs of Modules K and T onto the GRADE framework [1]. It includes five assessments (Table 2): information sufficiency (OIS vs observed events), confidence interval interpretation, representativeness (event rate ratio), TSA boundary status, and recommended language. The result is a KOTHA-enhanced certainty rating and recommendation that explicitly distinguishes "evidence of effect," "evidence of no effect," and "no evidence of effect (inconclusive)."
+Module H maps the outputs of Modules K and T onto the GRADE framework [1]. It includes five assessments (Table 2): information sufficiency (OIS vs observed events), confidence interval interpretation, representativeness (event rate ratio), TSA boundary status, and recommended language. For representativeness, event-rate ratios below 0.67 or above 1.50 (a ≥50% relative shift) are classified as serious indirectness, and ratios below 0.85 or above 1.18 (a ≥15% relative shift) as moderate indirectness. The result is a KOTHA-enhanced certainty rating and recommendation that explicitly distinguishes "evidence of effect," "evidence of no effect," and "no evidence of effect (inconclusive)."
 
 ### Data sources and statistical analysis
 
@@ -93,7 +98,7 @@ For magnesium in AMI we used study-level event counts extracted from published o
 |---|---|---|---|
 | Information sufficiency | Imprecision | OIS calculation | Total events < OIS: informationally insufficient |
 | CI assessment | Imprecision | CI inspection | CI spans benefit through null: inconclusive |
-| Representativeness | Indirectness | Module K event rate ratio | Event rate ratio > 1.5 or < 0.67: indirectness concern |
+| Representativeness | Indirectness | Module K event rate ratio | < 0.67 or > 1.50: serious; < 0.85 or > 1.18: moderate |
 | TSA | Imprecision | Sequential monitoring boundaries | Boundaries not crossed: interim analysis equivalent |
 | Recommendation language | Overall assessment | Standardized templates | Tailored to information sufficiency classification |
 
@@ -196,7 +201,7 @@ Bayesian integration (Table 5) showed that for magnesium, with $\alpha$ = 0 (ISI
 
 ### Module H assessment
 
-Module H results are summarized in Table 7 and Fig. 8. For magnesium, the OIS for the pre-ISIS-4 effect was 85 events and the observed total was 4,617 (information fraction 5426%). Although the OIS was exceeded, the pooled estimate was dominated by high between-study heterogeneity; the appropriate KOTHA classification is **inconclusive with serious imprecision**. For statins, the OIS for the observational effect was 279 events and the RCTs contributed 1,385 events (information fraction 496%). The cumulative $Z$ was -0.74, the efficacy boundary was not crossed, and the event rate ratio was 0.53; the appropriate classification is **inconclusive with serious indirectness**. In both cases, standard GRADE would be more likely to conclude "no benefit demonstrated," whereas KOTHA explicitly labels the evidence as informationally insufficient.
+Module H results are summarized in Table 7 and Fig. 8. For magnesium, the OIS for the pre-ISIS-4 effect was 85 events and the observed total was 4,617 (information fraction 5426%). The TSA efficacy boundary was crossed under random-effects accumulation, but the pooled estimate was dominated by high between-study heterogeneity ($I^2$ = 62%). The appropriate KOTHA classification is **Inconclusive with serious imprecision (heterogeneity) and moderate indirectness** (TSA/CI indicate benefit but the signal is downgraded by serious imprecision (heterogeneity) and moderate indirectness). For statins, the OIS for the observational effect was 279 events and the RCTs contributed 1,385 events (information fraction 496%). The cumulative $Z$ was -0.74, the efficacy boundary was not crossed, and the event rate ratio was 0.53; the appropriate classification is **Inconclusive with serious indirectness** (OIS reached but no TSA/CI boundary crossed; serious indirectness from enrollment-driven event dilution). In both cases, standard GRADE would be more likely to conclude "no benefit demonstrated," whereas KOTHA explicitly labels the evidence as informationally insufficient.
 
 **Table 7: Module H assessment --- Standard GRADE vs. KOTHA-enhanced**
 
@@ -217,7 +222,7 @@ Module H results are summarized in Table 7 and Fig. 8. For magnesium, the OIS fo
 
 ### Principal findings
 
-The KOTHA Framework integrates counterfactual power simulation, Bayesian evidence synthesis, and structured GRADE interpretation to diagnose structural information loss in RCT meta-analyses. In the magnesium case, Module K identified an 18% temporal decline in control event rates from the pre-thrombolysis era to ISIS-4. The divergence between pre-ISIS-4 and all-trials estimates is better explained by era-dependent treatment effect heterogeneity ($I^2$ = 62%) than by simple underpowering. In the statins case, Module K showed that RCT populations had roughly half the event rate of observational cohorts, and that power for a modest effect (HR = 0.85) dropped from 85% to 58%. Module T demonstrated that even modest borrowing from observational evidence shifted posterior probabilities of benefit substantially, but uncertainty remained. Module H reclassified both cases as inconclusive rather than "no effect."
+The KOTHA Framework integrates counterfactual power simulation, Bayesian evidence synthesis, and structured GRADE interpretation to diagnose structural information loss in RCT meta-analyses. In the magnesium case, Module K identified an 18% temporal decline in control event rates from the pre-thrombolysis era to ISIS-4. The divergence between pre-ISIS-4 and all-trials estimates is better explained by era-dependent treatment effect heterogeneity ($I^2$ = 62%) than by simple underpowering. In the statins case, Module K showed that RCT populations had roughly half the event rate of observational cohorts, and that power for a modest effect (HR = 0.85) dropped from 85% to 58%. Module T demonstrated that even modest borrowing from observational evidence shifted posterior probabilities of benefit substantially, but uncertainty remained. Module H classified magnesium as inconclusive with serious imprecision (heterogeneity) and moderate indirectness, and statins as inconclusive with serious indirectness, rather than "evidence of no effect."
 
 ### Implications for clinical trial design
 
