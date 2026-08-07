@@ -326,7 +326,7 @@ def build(input_md, output_docx):
         add_para(f"Word count: {metadata['word_count']}")
     if metadata.get('corresponding_author'):
         add_para(f"Corresponding author: {metadata['corresponding_author']}")
-    add_para("Prepared for submission to Contemporary Clinical Trials", italic=True)
+    add_para("Prepared for submission to Contemporary Clinical Trials Communications", italic=True)
     doc.add_page_break()
 
     # ============================================================
