@@ -12,7 +12,7 @@
 
 **Methods**: The KOTHA Framework comprises three modules. Module K uses counterfactual power simulation comparing statistical power under actual RCT enrollment versus target-population scenarios. Module T integrates RCT and observational evidence through hierarchical Bayesian meta-analysis with power-prior discounting. Module H provides a structured checklist for guideline committees based on optimal information size (OIS), trial sequential analysis (TSA) boundaries, and the GRADE framework. We illustrated the framework using published data from two well-documented cases of observational-RCT divergence: (1) intravenous magnesium in acute myocardial infarction (12 trials, 1984--1995) and (2) statins in heart failure (5 observational studies, 2 RCTs).
 
-**Results**: In the magnesium case, control event rates declined from 8.9% (pre-thrombolysis era) to 7.2% (ISIS-4), reflecting temporal event dilution. The pre-ISIS-4 meta-analysis yielded OR = 0.54 (95% CI: 0.40--0.75), while the all-trials estimate was OR = 0.56 (0.38--0.83) with $I^2$ = 62%. Bayesian integration with power prior discounting ($\alpha$ = 0.3) yielded OR = 0.74 (95% CrI: 0.24--1.32), P(OR < 1) = 83%. In the statins case, observational studies showed HR = 0.72 (0.64--0.80) while RCTs showed HR = 0.97 (0.90--1.05), with event rate ratio of 0.53 (RCT/observational). Module H classified magnesium as inconclusive with serious inconsistency (heterogeneity) and statins as inconclusive with serious indirectness, whereas standard GRADE evaluation would be more likely to conclude "no benefit demonstrated."
+**Results**: In the magnesium case, control event rates declined from 8.9% (pre-thrombolysis era) to 7.2% (ISIS-4), reflecting temporal event dilution. The pre-ISIS-4 meta-analysis yielded OR = 0.54 (95% CI: 0.40--0.75), while the all-trials estimate was OR = 0.56 (0.38--0.83) with $I^2$ = 62%. Bayesian integration with power prior discounting ($\alpha$ = 0.3) yielded OR = 0.74 (95% CrI: 0.25--1.43), P(OR < 1) = 81%. In the statins case, observational studies showed HR = 0.72 (0.64--0.80) while RCTs showed HR = 0.97 (0.90--1.05), with event rate ratio of 0.53 (RCT/observational). Module H classified magnesium as inconclusive with serious inconsistency (heterogeneity) and statins as inconclusive with serious indirectness, whereas standard GRADE evaluation would be more likely to conclude "no benefit demonstrated."
 
 **Conclusions**: The KOTHA Framework provides a reproducible, quantitative approach to distinguishing "evidence of no effect" from "no evidence of effect." Empirical illustration using two canonical cases of observational-RCT divergence demonstrates that the framework can identify structural information loss and produce more nuanced evidence assessments than standard approaches.
 
@@ -383,15 +383,15 @@ Power analysis at the combined RCT sample size (N = 9,585) revealed substantial 
 
 | $\alpha$ | OR (95% CrI) | P(OR < 1) | P(OR < 0.90) | P(OR < 0.80) |
 |---|---|---|---|---|
-| 0.0 (ISIS-4 only) | 1.07 (0.06--16.87) | 39.3% | 29.4% | 23.0% |
-| 0.1 | 0.94 (0.15--2.74) | 58.5% | 45.8% | 35.6% |
-| 0.2 | 0.82 (0.22--1.75) | 72.3% | 59.9% | 47.4% |
-| 0.3 | 0.74 (0.24--1.32) | 83.2% | 71.9% | 59.2% |
-| 0.5 | 0.64 (0.28--1.09) | 93.9% | 86.8% | 75.6% |
-| 0.7 | 0.59 (0.29--0.97) | 98.3% | 94.9% | 86.8% |
-| 1.0 (full weight) | 0.56 (0.31--0.86) | 99.6% | 98.5% | 94.5% |
+| 0.0 (ISIS-4 only) | 1.05 (0.03--27.97) | 42.8% | 33.4% | 27.0% |
+| 0.1 | 0.93 (0.15--2.92) | 58.3% | 46.3% | 36.2% |
+| 0.2 | 0.83 (0.22--1.75) | 71.4% | 58.9% | 46.9% |
+| 0.3 | 0.74 (0.25--1.43) | 80.7% | 69.6% | 57.4% |
+| 0.5 | 0.63 (0.28--1.10) | 94.0% | 87.2% | 76.3% |
+| 0.7 | 0.59 (0.29--0.98) | 98.1% | 94.8% | 87.1% |
+| 1.0 (full weight) | 0.55 (0.32--0.87) | 99.6% | 98.4% | 94.4% |
 
-At $\alpha$ = 0 (ISIS-4 only), the posterior median OR was 1.07 with only 39.3% probability of benefit. As $\alpha$ increased, incorporating pre-ISIS-4 evidence progressively shifted the posterior toward benefit. At $\alpha$ = 0.3 (moderate discounting), the posterior OR was 0.74 with 83% probability of benefit. The sensitivity analysis demonstrates that conclusions about magnesium efficacy depend critically on the weight assigned to pre-ISIS-4 evidence (Fig. 5A).
+At $\alpha$ = 0 (ISIS-4 only), the posterior median OR was 1.05 with only 42.8% probability of benefit. As $\alpha$ increased, incorporating pre-ISIS-4 evidence progressively shifted the posterior toward benefit. At $\alpha$ = 0.3 (moderate discounting), the posterior OR was 0.74 with 81% probability of benefit. The sensitivity analysis demonstrates that conclusions about magnesium efficacy depend critically on the weight assigned to pre-ISIS-4 evidence (Fig. 5A).
 
 #### Bayesian integration --- Statins in HF
 
@@ -399,15 +399,15 @@ At $\alpha$ = 0 (ISIS-4 only), the posterior median OR was 1.07 with only 39.3% 
 
 | $\alpha$ | HR (95% CrI) | P(HR < 1) | P(HR < 0.90) | P(HR < 0.80) |
 |---|---|---|---|---|
-| 0.0 (RCTs only) | 0.97 (0.54--1.64) | 62.7% | 21.1% | 9.5% |
-| 0.1 | 0.92 (0.52--1.60) | 71.7% | 42.0% | 18.3% |
-| 0.2 | 0.88 (0.54--1.37) | 81.0% | 56.3% | 25.4% |
-| 0.3 | 0.86 (0.57--1.26) | 86.4% | 65.3% | 29.9% |
-| 0.5 | 0.82 (0.60--1.08) | 93.9% | 79.6% | 40.8% |
-| 0.7 | 0.80 (0.63--1.01) | 97.3% | 88.3% | 49.5% |
-| 1.0 (full weight) | 0.78 (0.64--0.92) | 99.4% | 95.8% | 64.1% |
+| 0.0 (RCTs only) | 0.97 (0.58--1.65) | 62.9% | 21.2% | 8.9% |
+| 0.1 | 0.92 (0.53--1.64) | 71.9% | 42.7% | 19.2% |
+| 0.2 | 0.89 (0.53--1.41) | 79.8% | 54.7% | 24.4% |
+| 0.3 | 0.85 (0.55--1.24) | 86.5% | 66.0% | 31.1% |
+| 0.5 | 0.82 (0.59--1.10) | 93.9% | 79.6% | 41.9% |
+| 0.7 | 0.80 (0.62--1.00) | 97.3% | 88.3% | 49.7% |
+| 1.0 (full weight) | 0.78 (0.64--0.93) | 99.3% | 95.7% | 63.3% |
 
-At $\alpha$ = 0 (RCTs only), the posterior probability of any benefit was only 62.7%, and the probability of clinically meaningful benefit (HR < 0.90) was 21.1%. Even modest incorporation of observational evidence ($\alpha$ = 0.3) increased P(HR < 1) to 86.4% and P(HR < 0.90) to 65.3%. The sensitivity analysis (Fig. 5B) shows a monotonic increase in posterior probability of benefit with increasing $\alpha$, but conclusions remain uncertain across the full range of discounting.
+At $\alpha$ = 0 (RCTs only), the posterior probability of any benefit was only 62.9%, and the probability of clinically meaningful benefit (HR < 0.90) was 21.2%. Even modest incorporation of observational evidence ($\alpha$ = 0.3) increased P(HR < 1) to 86.5% and P(HR < 0.90) to 66.0%. The sensitivity analysis (Fig. 5B) shows a monotonic increase in posterior probability of benefit with increasing $\alpha$, but conclusions remain uncertain across the full range of discounting.
 
 ### Module H results
 
