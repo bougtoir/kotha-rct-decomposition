@@ -2,7 +2,7 @@
 running_head: KOTHA Framework for Trial Design
 title: The KOTHA Framework: diagnosing structural information loss in randomized controlled trial meta-analyses to inform trial design
 authors: [To be determined]
-word_count: 2254
+word_count: 2299
 corresponding_author: [To be determined]
 ---
 ## Abstract
@@ -11,7 +11,7 @@ corresponding_author: [To be determined]
 
 **Methods**: KOTHA comprises three modules. Module K (Counterfactual Power Simulation) quantifies how enrollment-driven risk-profile shifts alter statistical power. Module T (Bayesian Evidence Integration) combines RCT and observational evidence using power-prior discounting. Module H (Guideline Interpreter) translates outputs into a structured GRADE-compatible assessment. We illustrated KOTHA using two cases of observational-RCT divergence: intravenous magnesium in acute myocardial infarction (12 trials, 1984-1995) and statins in heart failure (5 observational studies, 2 RCTs).
 
-**Results**: In the magnesium case, control event rates fell from 8.9% to 7.2%; the pre-ISIS-4 pooled OR was 0.54 (95% CI: 0.40-0.75) and the all-trials estimate 0.56 (0.38-0.83) with $I^2$ = 62%. In the statins case, observational HR was 0.72 (0.64-0.80) versus RCT HR 0.97 (0.90-1.05), with an RCT-to-observational event rate ratio of 0.53. Bayesian integration with moderate discounting (α = 0.3) yielded OR 0.73 (95% CrI: 0.28-2.09), P(OR < 1) = 77% for magnesium, and HR 0.85 (0.59-1.57), P(HR < 1) = 84% for statins.
+**Results**: In the magnesium case, control event rates fell from 8.9% to 7.2%; the pre-ISIS-4 pooled OR was 0.54 (95% CI: 0.40-0.75) and the all-trials estimate 0.56 (0.38-0.83) with $I^2$ = 62%. In the statins case, observational HR was 0.72 (0.64-0.80) versus RCT HR 0.97 (0.90-1.05), with an RCT-to-observational event rate ratio of 0.53. Bayesian integration with moderate discounting (α = 0.3) yielded OR 0.74 (95% CrI: 0.25-1.40), P(OR < 1) = 81% for magnesium, and HR 0.85 (0.57-1.27), P(HR < 1) = 86% for statins.
 
 **Conclusions**: KOTHA distinguishes "evidence of no effect" from "no evidence of effect". Module H classified magnesium as inconclusive with serious inconsistency (heterogeneity), and statins as inconclusive with serious indirectness.
 
@@ -78,7 +78,7 @@ where $\Phi$ is the standard normal cumulative distribution function. The ratio 
 
 ### Module T: Hierarchical Bayesian evidence integration
 
-When Module K indicates that RCT evidence is informationally insufficient, Module T combines RCT and observational evidence while discounting the observational likelihood for potential design-specific bias. Let $y_i$ denote the reported log effect size from study $i$ with standard error $s_i$. The RCT evidence contributes its full likelihood; the observational evidence contributes a power-prior-discounted likelihood with factor $\alpha \in [0, 1]$ [15], so that $\alpha = 0$ retains only RCTs and $\alpha = 1$ gives observational data full weight. Between-study heterogeneity is modeled with a random-effects distribution $u_i \sim \text{Normal}(0, \tau^2)$. Alternative effect measures such as restricted mean survival time can be substituted when proportional-hazards assumptions are questionable [12-13]. Evidence-based priors have been proposed to anchor historical expectations while limiting prior-data conflict [14]. We also present bias-adjusted normal-approximation analyses as a sensitivity check. Posterior distributions are obtained by Metropolis-Hastings MCMC (15,000 post-warmup iterations after 3,000 warmup) for each $\alpha$ in $(0, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0)$; we report the full grid to show sensitivity and use $\alpha$ = 0.3 as an illustrative moderate-discounting value without claiming it is universally optimal.
+When Module K indicates that RCT evidence is informationally insufficient, Module T combines RCT and observational evidence while discounting the observational likelihood for potential design-specific bias. Let $y_i$ denote the reported log effect size from study $i$ with standard error $s_i$. The RCT evidence contributes its full likelihood; the observational evidence contributes a power-prior-discounted likelihood with factor $\alpha \in [0, 1]$ [15], so that $\alpha = 0$ retains only RCTs and $\alpha = 1$ gives observational data full weight. Between-study heterogeneity is modeled with a random-effects distribution $u_i \sim \text{Normal}(0, \tau^2)$. Alternative effect measures such as restricted mean survival time can be substituted when proportional-hazards assumptions are questionable [12-13]. Evidence-based priors have been proposed to anchor historical expectations while limiting prior-data conflict [14]. We also present bias-adjusted normal-approximation analyses as a sensitivity check. Posterior distributions are sampled with an affine-invariant ensemble MCMC [16] using 16 walkers, 1,000 warmup and 4,000 post-warmup iterations per walker, for each $\alpha$ in $(0, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0)$. Convergence was assessed with split-R-hat and effective sample size (ESS) for the population mean log effect and the between-study heterogeneity. Across all discounting factors the minimum ESS was 929 and the maximum split-R-hat was 1.022, indicating satisfactory convergence. We report the full grid to show sensitivity and use $\alpha$ = 0.3 as an illustrative moderate-discounting value without claiming it is universally optimal.
 
 ### Module H: Guideline interpretation
 
@@ -86,7 +86,7 @@ Module H maps the outputs of Modules K and T onto the GRADE framework [1]. It in
 
 ### Data sources and statistical analysis
 
-For magnesium in AMI we used study-level event counts extracted from published overviews [16-17]. For statins in heart failure we used aggregate data from five observational cohorts [18-22] and two RCTs [23-24]. We used DerSimonian-Laird random-effects meta-analysis [25] and computed 95% confidence intervals. OIS and TSA were calculated using standard formulas [6-9]. All analyses were performed with the Python code in the public repository.
+For magnesium in AMI we used study-level event counts extracted from published overviews [17-18]. For statins in heart failure we used aggregate data from five observational cohorts [19-23] and two RCTs [24-25]. We used DerSimonian-Laird random-effects meta-analysis [26] and computed 95% confidence intervals. OIS and TSA were calculated using standard formulas [6-9]. All analyses were performed with the Python code in the public repository.
 
 **Fig. 1** Overview of the KOTHA Framework. Module K (Counterfactual Power Simulation) quantifies risk-profile shift and estimates power under counterfactual enrollment scenarios. Module T (Bayesian Evidence Integration) combines RCT and observational evidence using power-prior discounting. Module H (Guideline Interpreter) synthesizes outputs into a structured GRADE-compatible assessment.
 
@@ -169,31 +169,31 @@ For statins, observational studies showed a pooled HR of 0.72 (95% CI: 0.64-0.80
 
 ### Bayesian integration
 
-Bayesian integration (Table 5) showed that for magnesium, with $\alpha$ = 0 (ISIS-4 only), the posterior median OR was 1.11 with 30.6% probability of benefit. With $\alpha$ = 0.3 the posterior shifted to OR = 0.73 (95% CrI: 0.28-2.09), with 77% probability of benefit (Fig. 7A). For statins (Table 6), with $\alpha$ = 0 (RCTs only) the posterior probability of benefit was 60.9% and the probability of a clinically meaningful benefit (HR < 0.90) was 17.7%. With $\alpha$ = 0.3 these probabilities rose to 83.7% and 65.7%, respectively (Fig. 7B). Even with moderate borrowing from observational evidence, conclusions remained uncertain.
+Bayesian integration (Table 5) showed that for magnesium, with $\alpha$ = 0 (ISIS-4 only), the posterior median OR was 1.05 with 40.9% probability of benefit. With $\alpha$ = 0.3 the posterior shifted to OR = 0.74 (95% CrI: 0.25-1.40), with 81% probability of benefit (Fig. 7A). For statins (Table 6), with $\alpha$ = 0 (RCTs only) the posterior probability of benefit was 61.9% and the probability of a clinically meaningful benefit (HR < 0.90) was 21.8%. With $\alpha$ = 0.3 these probabilities rose to 85.8% and 65.6%, respectively (Fig. 7B). Even with moderate borrowing from observational evidence, conclusions remained uncertain.
 
 **Table 5: Bayesian integration --- Magnesium in AMI (power prior)**
 
 | $\alpha$ | OR (95% CrI) | P(OR < 1) | P(OR < 0.90) | P(OR < 0.80) |
 |---|---|---|---|---|
-| 0.0 (ISIS-4 only) | 1.11 (0.43--7.03) | 30.6% | 22.2% | 16.2% |
-| 0.1 | 1.00 (0.31--3.51) | 50.7% | 36.6% | 27.9% |
-| 0.2 | 0.85 (0.31--2.50) | 66.5% | 55.0% | 45.8% |
-| 0.3 | 0.73 (0.28--2.09) | 77.0% | 66.3% | 56.9% |
-| 0.5 | 0.61 (0.28--1.30) | 92.6% | 87.3% | 77.1% |
-| 0.7 | 0.57 (0.29--1.05) | 96.6% | 94.1% | 87.4% |
-| 1.0 (full weight) | 0.54 (0.32--0.91) | 98.7% | 97.2% | 93.5% |
+| 0.0 (ISIS-4 only) | 1.05 (0.05--38.33) | 40.9% | 31.5% | 24.9% |
+| 0.1 | 0.94 (0.16--3.56) | 57.8% | 46.2% | 36.4% |
+| 0.2 | 0.83 (0.22--1.82) | 71.1% | 58.3% | 45.6% |
+| 0.3 | 0.74 (0.25--1.40) | 81.4% | 70.2% | 57.7% |
+| 0.5 | 0.65 (0.28--1.10) | 93.8% | 86.5% | 75.1% |
+| 0.7 | 0.59 (0.29--0.96) | 98.3% | 94.9% | 87.2% |
+| 1.0 (full weight) | 0.55 (0.30--0.85) | 99.7% | 98.6% | 95.0% |
 
 **Table 6: Bayesian integration --- Statins in HF (power prior)**
 
 | $\alpha$ | HR (95% CrI) | P(HR < 1) | P(HR < 0.90) | P(HR < 0.80) |
 |---|---|---|---|---|
-| 0.0 (RCTs only) | 0.98 (0.63--2.35) | 60.9% | 17.7% | 9.1% |
-| 0.1 | 0.92 (0.63--2.19) | 70.4% | 43.5% | 17.7% |
-| 0.2 | 0.88 (0.60--1.80) | 78.4% | 57.0% | 26.0% |
-| 0.3 | 0.85 (0.59--1.57) | 83.7% | 65.7% | 32.8% |
-| 0.5 | 0.82 (0.62--1.15) | 91.9% | 79.2% | 42.5% |
-| 0.7 | 0.79 (0.63--1.02) | 96.8% | 88.7% | 53.4% |
-| 1.0 (full weight) | 0.78 (0.65--0.95) | 99.1% | 94.8% | 64.1% |
+| 0.0 (RCTs only) | 0.97 (0.54--1.67) | 61.9% | 21.8% | 10.0% |
+| 0.1 | 0.92 (0.46--1.65) | 72.5% | 44.3% | 20.2% |
+| 0.2 | 0.88 (0.53--1.37) | 81.5% | 57.7% | 26.9% |
+| 0.3 | 0.85 (0.57--1.27) | 85.8% | 65.6% | 30.5% |
+| 0.5 | 0.82 (0.60--1.10) | 93.6% | 78.9% | 39.9% |
+| 0.7 | 0.80 (0.62--0.99) | 97.7% | 89.3% | 51.4% |
+| 1.0 (full weight) | 0.78 (0.64--0.94) | 99.3% | 94.6% | 61.7% |
 
 **Fig. 7** Sensitivity analysis of Bayesian integration to the discounting parameter $\alpha$. (A) Magnesium in AMI. (B) Statins in HF. Three posterior probability thresholds are shown: P(effect < 1.0), P(effect < 0.90), and P(effect < 0.80). Horizontal dashed line indicates 95% probability.
 
@@ -237,7 +237,7 @@ In this way, KOTHA moves the design conversation from "what sample size do we ne
 
 ### Comparison with existing methods
 
-Target trial emulation uses observational data to mimic a specific RCT in order to estimate a causal effect [26-27]. Module K is complementary: it does not estimate effects but quantifies the information lost due to enrollment decisions. Existing methods for combining RCT and observational evidence include hierarchical models, power priors, and meta-analytic-predictive priors [28-30]. Module T builds on these but embeds them in a broader workflow that first diagnoses the need for integration and then interprets the result through Module H. TSA and OIS are well established [6-9], but are not routinely used to quantify risk-profile shifts. GRADE provides domains for assessment [1]; KOTHA provides quantitative inputs to the imprecision and indirectness domains without changing GRADE's structure.
+Target trial emulation uses observational data to mimic a specific RCT in order to estimate a causal effect [27-28]. Module K is complementary: it does not estimate effects but quantifies the information lost due to enrollment decisions. Existing methods for combining RCT and observational evidence include hierarchical models, power priors, and meta-analytic-predictive priors [29-31]. Module T builds on these but embeds them in a broader workflow that first diagnoses the need for integration and then interprets the result through Module H. TSA and OIS are well established [6-9], but are not routinely used to quantify risk-profile shifts. GRADE provides domains for assessment [1]; KOTHA provides quantitative inputs to the imprecision and indirectness domains without changing GRADE's structure.
 
 ### Strengths and limitations
 
@@ -296,18 +296,19 @@ The authors declare that they have no competing interests.
 13. Boyd AP, Kittelson JM, Gillen DL. Estimation of treatment effect under non-proportional hazards and conditionally independent censoring. Stat Med. 2012;31(28):3504-15. doi:10.1002/sim.5440.
 14. Sherry AD, Msaouel P, Kupferman GS, Lin TA, Abi Jaoude J, Kouzy R, et al. Evidence-based prior for estimating the treatment effect of phase III randomized trials in oncology. JCO Precis Oncol. 2024;8:e2400363. doi:10.1200/PO.24.00363.
 15. Ibrahim JG, Chen MH. Power prior distributions for regression models. Stat Sci. 2000;15(1):46-60.
-16. Teo KK, Yusuf S, Collins R, Held PH, Peto R. Effects of intravenous magnesium in suspected acute myocardial infarction: overview of randomised trials. BMJ. 1991;303(6816):1499-503.
-17. Li J, Zhang Q, Zhang M, Egger M. Intravenous magnesium for acute myocardial infarction. Cochrane Database Syst Rev. 2007;(2):CD002755.
-18. Anker SD, Clark AL, Winkler R, Zugck C, Cicoira M, Haehling S, et al. Statin use and survival in patients with chronic heart failure -- results from two observational studies with 5200 patients. Int J Cardiol. 2006;112(2):234-42.
-19. Mozaffarian D, Nye R, Levy WC. Statin therapy is associated with lower mortality among patients with severe heart failure. Am J Cardiol. 2004;93(9):1124-9.
-20. Horwich TB, MacLellan WR, Fonarow GC. Statin therapy is associated with improved survival in ischemic and non-ischemic heart failure. J Am Coll Cardiol. 2004;43(4):642-8.
-21. Go AS, Lee WY, Yang J, Lo JC, Gurwitz JH. Statin therapy and risks for death and hospitalization in chronic heart failure. JAMA. 2006;296(17):2105-11.
-22. Foody JM, Shah R, Galusha D, Masoudi FA, Havranek EP, Krumholz HM. Statins and mortality among elderly patients hospitalized with heart failure. Circulation. 2006;113(8):1086-92.
-23. Kjekshus J, Apetrei E, Barrios V, Bohm M, Cleland JG, Cornel JH, et al. Rosuvastatin in older patients with systolic heart failure. N Engl J Med. 2007;357(22):2248-61.
-24. GISSI-HF Investigators. Effect of rosuvastatin in patients with chronic heart failure (the GISSI-HF trial): a randomised, double-blind, placebo-controlled trial. Lancet. 2008;372(9645):1231-9.
-25. DerSimonian R, Laird N. Meta-analysis in clinical trials. Control Clin Trials. 1986;7(3):177-88.
-26. Hernan MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. Am J Epidemiol. 2016;183(8):758-64.
-27. Hernan MA, Wang W, Leaf DE. Target trial emulation: a framework for causal inference from observational data. JAMA. 2022;328(24):2446-7.
-28. Schmidli H, Gsteiger S, Roychoudhury S, O'Hagan A, Spiegelhalter D, Neuenschwander B. Robust meta-analytic-predictive priors in clinical trials with historical control information. Biometrics. 2014;70(4):1023-32.
-29. Verde PE, Ohmann C. Combining randomized and non-randomized evidence in clinical research: a review of methods and applications. Res Synth Methods. 2015;6(1):45-62.
-30. Efthimiou O, Mavridis D, Debray TPA, Samara M, Belger M, Salanti G, et al. Combining randomized and non-randomized evidence in network meta-analysis. Stat Med. 2017;36(8):1210-26.
+16. Foreman-Mackey D, Hogg DW, Lang D, Goodman J. emcee: the MCMC hammer. Publ Astron Soc Pac. 2013;125(925):306-12.
+17. Teo KK, Yusuf S, Collins R, Held PH, Peto R. Effects of intravenous magnesium in suspected acute myocardial infarction: overview of randomised trials. BMJ. 1991;303(6816):1499-503.
+18. Li J, Zhang Q, Zhang M, Egger M. Intravenous magnesium for acute myocardial infarction. Cochrane Database Syst Rev. 2007;(2):CD002755.
+19. Anker SD, Clark AL, Winkler R, Zugck C, Cicoira M, Haehling S, et al. Statin use and survival in patients with chronic heart failure -- results from two observational studies with 5200 patients. Int J Cardiol. 2006;112(2):234-42.
+20. Mozaffarian D, Nye R, Levy WC. Statin therapy is associated with lower mortality among patients with severe heart failure. Am J Cardiol. 2004;93(9):1124-9.
+21. Horwich TB, MacLellan WR, Fonarow GC. Statin therapy is associated with improved survival in ischemic and non-ischemic heart failure. J Am Coll Cardiol. 2004;43(4):642-8.
+22. Go AS, Lee WY, Yang J, Lo JC, Gurwitz JH. Statin therapy and risks for death and hospitalization in chronic heart failure. JAMA. 2006;296(17):2105-11.
+23. Foody JM, Shah R, Galusha D, Masoudi FA, Havranek EP, Krumholz HM. Statins and mortality among elderly patients hospitalized with heart failure. Circulation. 2006;113(8):1086-92.
+24. Kjekshus J, Apetrei E, Barrios V, Bohm M, Cleland JG, Cornel JH, et al. Rosuvastatin in older patients with systolic heart failure. N Engl J Med. 2007;357(22):2248-61.
+25. GISSI-HF Investigators. Effect of rosuvastatin in patients with chronic heart failure (the GISSI-HF trial): a randomised, double-blind, placebo-controlled trial. Lancet. 2008;372(9645):1231-9.
+26. DerSimonian R, Laird N. Meta-analysis in clinical trials. Control Clin Trials. 1986;7(3):177-88.
+27. Hernan MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. Am J Epidemiol. 2016;183(8):758-64.
+28. Hernan MA, Wang W, Leaf DE. Target trial emulation: a framework for causal inference from observational data. JAMA. 2022;328(24):2446-7.
+29. Schmidli H, Gsteiger S, Roychoudhury S, O'Hagan A, Spiegelhalter D, Neuenschwander B. Robust meta-analytic-predictive priors in clinical trials with historical control information. Biometrics. 2014;70(4):1023-32.
+30. Verde PE, Ohmann C. Combining randomized and non-randomized evidence in clinical research: a review of methods and applications. Res Synth Methods. 2015;6(1):45-62.
+31. Efthimiou O, Mavridis D, Debray TPA, Samara M, Belger M, Salanti G, et al. Combining randomized and non-randomized evidence in network meta-analysis. Stat Med. 2017;36(8):1210-26.

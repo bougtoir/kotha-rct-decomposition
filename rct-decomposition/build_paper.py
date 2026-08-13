@@ -48,6 +48,16 @@ def _compute_values():
     mh_mg = results['mh_mg']
     mh_st = results['mh_st']
 
+    # MCMC convergence diagnostics ( conservative summary across cases and alphas )
+    all_ess = []
+    all_rhat = []
+    for case in (mt_mg, mt_st):
+        for alpha, r in case['power_prior'].items():
+            all_ess.extend([r.get('ess_mu', np.nan), r.get('ess_log_tau', np.nan)])
+            all_rhat.extend([r.get('rhat_mu', np.nan), r.get('rhat_log_tau', np.nan)])
+    min_ess = int(round(min([e for e in all_ess if not np.isnan(e)])))
+    max_rhat = max([r for r in all_rhat if not np.isnan(r)])
+
     # ------------------------------------------------------------------
     # Common helpers
     # ------------------------------------------------------------------
@@ -240,6 +250,10 @@ def _compute_values():
         'st_kotha_rationale': mh_st['kotha']['rationale'],
         'st_kotha_indirectness': mh_st['kotha']['indirectness'],
         'st_kotha_inconsistency': mh_st['kotha']['inconsistency'],
+
+        # MCMC convergence diagnostics
+        'mc_min_ess': min_ess,
+        'mc_max_rhat': max_rhat,
 
         # Data
         'mg_data': rv.mg_data,
