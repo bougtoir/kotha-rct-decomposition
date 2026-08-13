@@ -2,7 +2,7 @@
 running_head: KOTHA Framework for Trial Design
 title: The KOTHA Framework: diagnosing structural information loss in randomized controlled trial meta-analyses to inform trial design
 authors: [To be determined]
-word_count: 2195
+word_count: 2197
 corresponding_author: [To be determined]
 ---
 ## Abstract
@@ -13,7 +13,7 @@ corresponding_author: [To be determined]
 
 **Results**: In the magnesium case, control event rates fell from 8.9% to 7.2%; the pre-ISIS-4 pooled OR was 0.54 (95% CI: 0.40-0.75) and the all-trials estimate 0.56 (0.38-0.83) with $I^2$ = 62%. In the statins case, observational HR was 0.72 (0.64-0.80) versus RCT HR 0.97 (0.90-1.05), with an RCT-to-observational event rate ratio of 0.53. Bayesian integration with moderate discounting (α = 0.3) yielded OR 0.73 (95% CrI: 0.28-2.09), P(OR < 1) = 77% for magnesium, and HR 0.85 (0.59-1.57), P(HR < 1) = 84% for statins.
 
-**Conclusions**: KOTHA distinguishes "evidence of no effect" from "no evidence of effect". Module H classified magnesium as inconclusive due to serious imprecision (heterogeneity) and moderate indirectness, and statins as inconclusive due to serious indirectness.
+**Conclusions**: KOTHA distinguishes "evidence of no effect" from "no evidence of effect". Module H classified magnesium as inconclusive with serious inconsistency (heterogeneity), and statins as inconclusive with serious indirectness.
 
 **Keywords**: randomized controlled trials, meta-analysis, observational studies, trial design, counterfactual simulation, Bayesian evidence synthesis, power analysis, GRADE, magnesium, statins, heart failure
 
@@ -82,7 +82,7 @@ When Module K indicates that RCT evidence is informationally insufficient, Modul
 
 ### Module H: Guideline interpretation
 
-Module H maps the outputs of Modules K and T onto the GRADE framework [1]. It includes five assessments (Table 2): information sufficiency (OIS vs observed events), confidence interval interpretation, representativeness (event rate ratio), TSA boundary status, and recommended language. For representativeness, event-rate ratios below 0.67 or above 1.50 (a ≥50% relative shift) are classified as serious indirectness, and ratios below 0.85 or above 1.18 (a ≥15% relative shift) as moderate indirectness. The result is a KOTHA-enhanced certainty rating and recommendation that explicitly distinguishes "evidence of effect," "evidence of no effect," and "no evidence of effect (inconclusive)."
+Module H maps the outputs of Modules K and T onto the GRADE framework [1]. It includes five assessments (Table 2): information sufficiency (OIS vs observed events), confidence interval interpretation, representativeness (event rate ratio), TSA boundary status, and recommended language. For representativeness, event-rate ratios below 0.67 or above 1.50 (a ≥50% relative shift) are classified as serious indirectness, and ratios below 0.80 or above 1.25 (a ≥25% relative shift) as moderate indirectness. These thresholds correspond to conventional boundaries for clinically important relative effects. The result is a KOTHA-enhanced certainty rating and recommendation that explicitly distinguishes "evidence of effect," "evidence of no effect," and "no evidence of effect (inconclusive)."
 
 ### Data sources and statistical analysis
 
@@ -98,7 +98,7 @@ For magnesium in AMI we used study-level event counts extracted from published o
 |---|---|---|---|
 | Information sufficiency | Imprecision | OIS calculation | Total events < OIS: informationally insufficient |
 | CI assessment | Imprecision | CI inspection | CI spans benefit through null: inconclusive |
-| Representativeness | Indirectness | Module K event rate ratio | < 0.67 or > 1.50: serious; < 0.85 or > 1.18: moderate |
+| Representativeness | Indirectness | Module K event rate ratio | < 0.67 or > 1.50: serious; < 0.80 or > 1.25: moderate |
 | TSA | Imprecision | Sequential monitoring boundaries | Boundaries not crossed: interim analysis equivalent |
 | Recommendation language | Overall assessment | Standardized templates | Tailored to information sufficiency classification |
 
@@ -201,7 +201,7 @@ Bayesian integration (Table 5) showed that for magnesium, with $\alpha$ = 0 (ISI
 
 ### Module H assessment
 
-Module H results are summarized in Table 7 and Fig. 8. For magnesium, the OIS for the pre-ISIS-4 effect was 85 events and the observed total was 4,617 (information fraction 5426%). The TSA efficacy boundary was crossed under random-effects accumulation, but the pooled estimate was dominated by high between-study heterogeneity ($I^2$ = 62%). The appropriate KOTHA classification is **Inconclusive with serious imprecision (heterogeneity) and moderate indirectness** (TSA/CI indicate benefit but the signal is downgraded by serious imprecision (heterogeneity) and moderate indirectness). For statins, the OIS for the observational effect was 279 events and the RCTs contributed 1,385 events (information fraction 496%). The cumulative $Z$ was -0.74, the efficacy boundary was not crossed, and the event rate ratio was 0.53; the appropriate classification is **Inconclusive with serious indirectness** (OIS reached but no TSA/CI boundary crossed; serious indirectness from enrollment-driven event dilution). In both cases, standard GRADE would be more likely to conclude "no benefit demonstrated," whereas KOTHA explicitly labels the evidence as informationally insufficient.
+Module H results are summarized in Table 7 and Fig. 8. For magnesium, the OIS for the pre-ISIS-4 effect was 85 events and the observed total was 4,617 (information fraction 5426%). The TSA efficacy boundary was crossed under random-effects accumulation, but the pooled estimate was dominated by high between-study heterogeneity ($I^2$ = 62%). The appropriate KOTHA classification is **Inconclusive with serious inconsistency (heterogeneity)** (TSA/CI indicate benefit but the signal is downgraded by serious inconsistency (heterogeneity)). For statins, the OIS for the observational effect was 279 events and the RCTs contributed 1,385 events (information fraction 496%). The cumulative $Z$ was -0.74, the efficacy boundary was not crossed, and the event rate ratio was 0.53; the appropriate classification is **Inconclusive with serious indirectness** (OIS reached but no TSA/CI boundary crossed; serious indirectness from enrollment-driven event dilution). In both cases, standard GRADE would be more likely to conclude "no benefit demonstrated," whereas KOTHA explicitly labels the evidence as informationally insufficient.
 
 **Table 7: Module H assessment --- Standard GRADE vs. KOTHA-enhanced**
 
@@ -209,9 +209,9 @@ Module H results are summarized in Table 7 and Fig. 8. For magnesium, the OIS fo
 |---|---|---|---|---|
 | Risk of bias | Low | Low | Low | Low |
 | Inconsistency | High ($I^2$ = 62%) | High ($I^2$ = 62%) | Low ($I^2$ = 0%) | Low ($I^2$ = 0%) |
-| Indirectness | Not assessed | Moderate: event rate decreased by 18% | Not assessed | Serious: event rate decreased by 47% |
-| Imprecision | Serious | Serious (heterogeneity-driven) | Serious | Serious |
-| Overall certainty | Low | Very low | Moderate | Low |
+| Indirectness | Not assessed | Low: event rate decreased by 18% | Not assessed | Serious: event rate decreased by 47% |
+| Imprecision | Not serious (OIS met) | Not serious (OIS met, CI excludes null) | Not serious (OIS met, CI excludes clinically important benefit) | Not serious (OIS met, CI excludes clinically important benefit) |
+| Overall certainty | Low | Low | High | Low |
 | Recommendation | "No benefit demonstrated" | "Inconclusive; conditional recommendation" | "No benefit demonstrated" | "Inconclusive; conditional recommendation" |
 
 **Fig. 8** Module H assessment comparison: standard GRADE vs. KOTHA-enhanced evaluation for both illustrative cases. Color coding indicates severity of concern (green = no concern, yellow = moderate, red = serious).
@@ -222,7 +222,7 @@ Module H results are summarized in Table 7 and Fig. 8. For magnesium, the OIS fo
 
 ### Principal findings
 
-The KOTHA Framework integrates counterfactual power simulation, Bayesian evidence synthesis, and structured GRADE interpretation to diagnose structural information loss in RCT meta-analyses. In the magnesium case, Module K identified a 18% temporal decline in control event rates from the pre-thrombolysis era to ISIS-4. The divergence between pre-ISIS-4 and all-trials estimates is better explained by era-dependent treatment effect heterogeneity ($I^2$ = 62%) than by simple underpowering. In the statins case, Module K showed that RCT populations had roughly half the event rate of observational cohorts, and that power for a modest effect (HR = 0.85) dropped from 85% to 58%. Module T demonstrated that even modest borrowing from observational evidence shifted posterior probabilities of benefit substantially, but uncertainty remained. Module H classified magnesium as inconclusive with serious imprecision (heterogeneity) and moderate indirectness, and statins as inconclusive with serious indirectness, rather than "evidence of no effect."
+The KOTHA Framework integrates counterfactual power simulation, Bayesian evidence synthesis, and structured GRADE interpretation to diagnose structural information loss in RCT meta-analyses. In the magnesium case, Module K identified a 18% temporal decline in control event rates from the pre-thrombolysis era to ISIS-4. The divergence between pre-ISIS-4 and all-trials estimates is better explained by era-dependent treatment effect heterogeneity ($I^2$ = 62%) than by simple underpowering. In the statins case, Module K showed that RCT populations had roughly half the event rate of observational cohorts, and that power for a modest effect (HR = 0.85) dropped from 85% to 58%. Module T demonstrated that even modest borrowing from observational evidence shifted posterior probabilities of benefit substantially, but uncertainty remained. Module H classified magnesium as inconclusive with serious inconsistency (heterogeneity), and statins as inconclusive with serious indirectness, rather than "evidence of no effect."
 
 ### Implications for clinical trial design
 

@@ -181,7 +181,7 @@ def ois_calculation(OR, alpha=0.05, power=0.80):
 
 def kotha_assessment(info_fraction, final_z, ci_lo, ci_hi, rate_ratio, i2,
                      i2_threshold=50.0,
-                     indirect_moderate_low=0.85, indirect_moderate_high=1.18,
+                     indirect_moderate_low=0.80, indirect_moderate_high=1.25,
                      indirect_serious_low=0.67, indirect_serious_high=1.50):
     """
     Derive a KOTHA-enhanced GRADE classification by integrating the five
@@ -245,7 +245,7 @@ def kotha_assessment(info_fraction, final_z, ci_lo, ci_hi, rate_ratio, i2,
     if sig_benefit:
         downgrade = []
         if inconsistency:
-            downgrade.append("serious imprecision (heterogeneity)")
+            downgrade.append("serious inconsistency (heterogeneity)")
         if indirectness == "serious":
             downgrade.append("serious indirectness")
         elif indirectness == "moderate":
@@ -710,7 +710,7 @@ def run_module_h_magnesium(mg_data, mk_results):
     rate_ratio = mk_results['s2_rate'] / mk_results['s1_rate']
     if rate_ratio < 0.67 or rate_ratio > 1.50:
         indirect_label = "Serious indirectness"
-    elif rate_ratio < 0.85 or rate_ratio > 1.18:
+    elif rate_ratio < 0.80 or rate_ratio > 1.25:
         indirect_label = "Moderate indirectness"
     else:
         indirect_label = "Low indirectness"
@@ -778,7 +778,7 @@ def run_module_h_statins(statin_obs, statin_rct, mk_results):
     rate_ratio = mk_results['rct_rate'] / mk_results['obs_rate']
     if rate_ratio < 0.67 or rate_ratio > 1.50:
         indirect_label = "Serious indirectness"
-    elif rate_ratio < 0.85 or rate_ratio > 1.18:
+    elif rate_ratio < 0.80 or rate_ratio > 1.25:
         indirect_label = "Moderate indirectness"
     else:
         indirect_label = "Low indirectness"

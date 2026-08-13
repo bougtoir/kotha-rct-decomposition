@@ -317,8 +317,8 @@ def _table_7(v):
         f"| Risk of bias | Low | Low | Low | Low |",
         f"| Inconsistency | High ($I^2$ = {mg_i2}%) | High ($I^2$ = {mg_i2}%) | Low ($I^2$ = {st_i2_rct}%) | Low ($I^2$ = {st_i2_rct}%) |",
         f"| Indirectness | Not assessed | {mg_indirect}: event rate decreased by {mg_reduction}% | Not assessed | {st_indirect}: event rate decreased by {st_reduction}% |",
-        f"| Imprecision | Serious | Serious (heterogeneity-driven) | Serious | Serious |",
-        f"| Overall certainty | Low | Very low | Moderate | Low |",
+        f"| Imprecision | Not serious (OIS met) | Not serious (OIS met, CI excludes null) | Not serious (OIS met, CI excludes clinically important benefit) | Not serious (OIS met, CI excludes clinically important benefit) |",
+        f"| Overall certainty | Low | Low | High | Low |",
         f"| Recommendation | \"No benefit demonstrated\" | \"{mg_rec}\" | \"No benefit demonstrated\" | \"{st_rec}\" |",
     ]
     return "\n".join(lines)
