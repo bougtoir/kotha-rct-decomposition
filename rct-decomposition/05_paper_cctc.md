@@ -3,13 +3,13 @@ running_head: KOTHA Framework for Trial Design
 title: The KOTHA Framework: diagnosing structural information loss in randomized controlled trial meta-analyses to inform trial design
 authors: [To be determined]
 affiliations: [To be determined]
-word_count: 2365
+word_count: 2422
 corresponding_author: [To be determined]
 corresponding_author_address: [To be determined]
 ---
 ## Highlights
 
-* KOTHA separates structural information loss from residual confounding in trial evidence.
+* KOTHA separates structural information loss from residual confounding.
 * Counterfactual power simulation quantifies enrollment-driven event dilution.
 * Power-prior Bayesian synthesis transparently discounts observational evidence.
 * GRADE-compatible output labels evidence as sufficient or insufficient.
@@ -83,7 +83,7 @@ For each scenario, we compute the expected control event rate $p_c$ and treatmen
 
 $$\text{Power} = \Phi\left( |\log(\text{OR})| \cdot \sqrt{D} / 2 - z_{\alpha/2} \right)$$
 
-where $\Phi$ is the standard normal cumulative distribution function. The ratio $\rho = p_c^{(S2)} / p_c^{(S1)}$ quantifies event dilution. Module K reports power across a grid of assumed true effects and computes the sample size required to reach 80% power under each scenario.
+where $\Phi$ is the standard normal cumulative distribution function. The ratio $\rho = p_c^{(S2)} / p_c^{(S1)}$ quantifies event dilution. Module K reports power across a grid of assumed true effects and computes the sample size required to reach 80% power under each scenario. For the statins case, which reports hazard ratios, the hazard ratio is approximated by an odds ratio under the rare-event assumption and published annual mortality rates are used as approximate event probabilities; this comparison is intended to illustrate the relative power loss across enrollment scenarios rather than to provide exact sample-size estimates for a specific follow-up duration.
 
 ### Module T: Hierarchical Bayesian evidence integration
 
