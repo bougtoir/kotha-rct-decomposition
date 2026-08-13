@@ -11,6 +11,7 @@ import shutil
 import subprocess
 import tempfile
 import zipfile
+from copy import deepcopy
 from datetime import datetime, timezone
 from lxml import etree
 
@@ -149,6 +150,42 @@ def build(input_md, output_docx):
         if space_after is not None:
             spacing.set(qn('w:after'), str(space_after))
 
+    def apply_citation_superscript(p_elem):
+        """Convert bracketed citation numbers (e.g. [1], [2-3]) to superscript."""
+        CIT_RE = re.compile(r'(\[\d+(?:-\d+)?\])')
+        for r in list(p_elem.findall(qn('w:r'))):
+            # Only process text runs; skip math, drawing, or other special runs
+            children = list(r)
+            t_elems = [c for c in children if c.tag == qn('w:t')]
+            if not t_elems:
+                continue
+            non_t = [c for c in children if c.tag not in (qn('w:rPr'), qn('w:t'))]
+            if non_t:
+                continue
+            text = ''.join((t.text or '') for t in t_elems)
+            if '[' not in text:
+                continue
+            rPr = r.find(qn('w:rPr'))
+            segments = [s for s in CIT_RE.split(text) if s != '']
+            p_elem.remove(r)
+            for seg in segments:
+                new_r = OxmlElement('w:r')
+                if rPr is not None:
+                    new_rPr = deepcopy(rPr)
+                else:
+                    new_rPr = OxmlElement('w:rPr')
+                new_t = OxmlElement('w:t')
+                new_t.set(qn('xml:space'), 'preserve')
+                new_t.text = seg
+                if CIT_RE.match(seg):
+                    vert = OxmlElement('w:vertAlign')
+                    vert.set(qn('w:val'), 'superscript')
+                    new_rPr.append(vert)
+                if len(new_rPr) > 0:
+                    new_r.append(new_rPr)
+                new_r.append(new_t)
+                p_elem.append(new_r)
+
     # --- Page numbers in footer ---
     for section in doc.sections:
         footer = section.footer
@@ -229,6 +266,7 @@ def build(input_md, output_docx):
         apply_para_format(p_elem, style=style, align=align)
         for r in p_elem.findall(qn('w:r')):
             set_run_font(r, size=12)
+        apply_citation_superscript(p_elem)
         return p_elem
 
     def add_table(headers, rows):
