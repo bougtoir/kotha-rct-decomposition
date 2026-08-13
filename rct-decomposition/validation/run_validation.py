@@ -637,6 +637,7 @@ def power_prior_meta(logY_rct, se_rct, logY_obs, se_obs, alpha_grid, n_iter=4000
             'rhat_log_tau': float(rhat[1]),
             'ess_mu': float(ess[0]),
             'ess_log_tau': float(ess[1]),
+            'chain': chain,
         }
 
     return results
@@ -799,6 +800,9 @@ def run_module_h_magnesium(mg_data, mk_results):
         'cum_z_re': cum_z_re, 'cum_pooled_re': cum_pooled_re, 'cum_info_re': cum_info_re,
         'mg_sorted': mg_sorted,
         'kotha': kotha,
+        'rate_ratio': rate_ratio,
+        'ci_lo': ci_lo,
+        'ci_hi': ci_hi,
     }
 
 
@@ -862,6 +866,9 @@ def run_module_h_statins(statin_obs, statin_rct, mk_results):
         'ois': ois, 'total_events': total_events, 'info_fraction': info_fraction,
         'cum_z_fe': cum_z_fe, 'cum_z_re': cum_z_re,
         'kotha': kotha,
+        'rate_ratio': rate_ratio,
+        'ci_lo': ci_lo,
+        'ci_hi': ci_hi,
     }
 
 
@@ -1395,40 +1402,110 @@ def fig7_sensitivity_heatmap(mt_results_mg, mt_results_st):
     print(f"Saved: {OUTDIR}/fig7_sensitivity_analysis.png")
 
 
-def fig8_module_h_summary():
-    """Fig 8: Module H assessment comparison — standard vs KOTHA-enhanced."""
-    fig, ax = plt.subplots(1, 1, figsize=(11, 6))
-    ax.axis('off')
-    
-    # Table data
+def _severity_color(cell, domain):
+    """Return a GRADE-style color for a summary table cell."""
+    t = cell.lower()
+    if domain == 'Risk of bias':
+        if 'low' in t: return '#ccffcc'
+        if 'moderate' in t: return '#fff3cc'
+        if 'serious' in t: return '#ffcccc'
+        return '#e0e0e0'
+    if domain == 'Inconsistency':
+        if 'low' in t: return '#ccffcc'
+        if 'high' in t or 'substantial' in t: return '#fff3cc'
+        return '#e0e0e0'
+    if domain == 'Indirectness':
+        if 'not assessed' in t: return '#e0e0e0'
+        if 'low' in t: return '#ccffcc'
+        if 'moderate' in t: return '#fff3cc'
+        if 'serious' in t: return '#ffcccc'
+        return '#e0e0e0'
+    if domain == 'Imprecision':
+        if 'not serious' in t: return '#ccffcc'
+        if 'serious' in t: return '#fff3cc'
+        return '#e0e0e0'
+    if domain == 'Overall certainty':
+        if 'high' in t and 'very' not in t: return '#ccffcc'
+        if 'moderate' in t: return '#e6f5c9'
+        if 'very low' in t: return '#ffcccc'
+        if 'low' in t: return '#fff3cc'
+        return '#e0e0e0'
+    if domain == 'Recommendation':
+        if 'no benefit' in t: return '#ffcccc'
+        if 'inconclusive' in t or 'conditional' in t: return '#cce5ff'
+        return '#ccffcc'
+    return '#e0e0e0'
+
+
+def _imprecision_cell(info_fraction, ci_lo, ci_hi, effect='OR'):
+    """Build the imprecision label from OIS and CI."""
+    if info_fraction < 1.0:
+        return 'Serious\n(OIS not met)'
+    if ci_hi < 1.0:
+        return 'Not serious\n(OIS met, CI excludes null)'
+    if effect == 'HR' and ci_lo >= 0.90:
+        return 'Not serious\n(OIS met, CI excludes clinically important benefit)'
+    return 'Serious\n(OIS met but CI crosses null)'
+
+
+def fig8_module_h_summary(mh_mg, mh_st, mk_mg, mk_st):
+    """Fig 8: Module H assessment comparison — standard vs KOTHA-enhanced.
+
+    Uses the same KOTHA outputs that populate Table 7 so the figure and
+    manuscript table remain consistent.
+    """
+    mg_i2 = int(round(mk_mg['I2_all']))
+    st_i2 = int(round(mk_st['I2_rct']))
+
+    mg_indirect = mh_mg['kotha']['indirectness'].capitalize()
+    st_indirect = mh_st['kotha']['indirectness'].capitalize()
+    mg_reduction = int(round((1 - mh_mg['rate_ratio']) * 100))
+    st_reduction = int(round((1 - mh_st['rate_ratio']) * 100))
+
+    mg_imprec = _imprecision_cell(mh_mg['info_fraction'], mh_mg['ci_lo'], mh_mg['ci_hi'], effect='OR')
+    st_imprec = _imprecision_cell(mh_st['info_fraction'], mh_st['ci_lo'], mh_st['ci_hi'], effect='HR')
+
+    # Overall certainty: standard Mg is low because of high inconsistency;
+    # standard St is high because the RCT evidence has no serious concerns;
+    # KOTHA certainty is driven by the dominant domain (inconsistency for Mg,
+    # indirectness for St) and is therefore low for both.
+    standard_mg_certainty = 'Low'
+    standard_st_certainty = 'High'
+    kotha_mg_certainty = 'Low'
+    kotha_st_certainty = 'Low'
+
+    mg_rec = mh_mg['kotha']['recommendation']
+    st_rec = mh_st['kotha']['recommendation']
+
     headers = ['GRADE Domain', 'Standard\n(Mg in AMI)', 'KOTHA-enhanced\n(Mg in AMI)',
                'Standard\n(Statins in HF)', 'KOTHA-enhanced\n(Statins in HF)']
-    
+
     rows = [
         ['Risk of bias', 'Low', 'Low', 'Low', 'Low'],
-        ['Inconsistency', 'High (I²=62%)', 'High (I²=62%)', 'Low (I²=0%)', 'Low (I²=0%)'],
-        ['Indirectness', 'Not assessed', 'Moderate:\nEvent rate\ndecreased by 18%', 'Not assessed', 'Serious:\nEvent rate\ndecreased by 47%'],
-        ['Imprecision', 'Serious', 'Serious\n(heterogeneity-driven)', 'Serious', 'Serious'],
-        ['Overall certainty', 'Low', 'Very low', 'Moderate', 'Low'],
-        ['Recommendation', '"No benefit"', '"Inconclusive;\nconditional rec."', '"No benefit"', '"Inconclusive;\nconditional rec."'],
+        ['Inconsistency', f'High ($I^2$ = {mg_i2}%)', f'High ($I^2$ = {mg_i2}%)',
+         f'Low ($I^2$ = {st_i2}%)', f'Low ($I^2$ = {st_i2}%)'],
+        ['Indirectness', 'Not assessed',
+         f'{mg_indirect}:\nEvent rate\ndecreased by {mg_reduction}%',
+         'Not assessed',
+         f'{st_indirect}:\nEvent rate\ndecreased by {st_reduction}%'],
+        ['Imprecision', mg_imprec, mg_imprec, st_imprec, st_imprec],
+        ['Overall certainty', standard_mg_certainty, kotha_mg_certainty,
+         standard_st_certainty, kotha_st_certainty],
+        ['Recommendation', '"No benefit\ndemonstrated"',
+         f'"{mg_rec}"', '"No benefit\ndemonstrated"', f'"{st_rec}"'],
     ]
-    
+
     colors_cell = []
     for row in rows:
+        domain = row[0]
         row_colors = ['#f0f0f0']
         for j in range(1, 5):
-            if 'Very serious' in row[j] or 'Very low' in row[j]:
-                row_colors.append('#ffcccc')
-            elif 'Serious' in row[j] or 'Low' == row[j].strip():
-                row_colors.append('#fff3cc')
-            elif 'Inconclusive' in row[j] or 'conditional' in row[j]:
-                row_colors.append('#cce5ff')
-            elif '"No benefit"' in row[j]:
-                row_colors.append('#ffcccc')
-            else:
-                row_colors.append('#ccffcc')
+            row_colors.append(_severity_color(row[j], domain))
         colors_cell.append(row_colors)
-    
+
+    fig, ax = plt.subplots(1, 1, figsize=(16, 7))
+    ax.axis('off')
+
     table = ax.table(
         cellText=rows,
         colLabels=headers,
@@ -1439,20 +1516,60 @@ def fig8_module_h_summary():
     )
     table.auto_set_font_size(False)
     table.set_fontsize(9)
+    table.auto_set_column_width(col=np.arange(5))
     table.scale(1.0, 2.0)
-    
+
     # Style header
     for j in range(5):
         table[0, j].set_text_props(fontweight='bold', color='white')
         table[0, j].set_facecolor(C_BLUE)
-    
+
     ax.set_title('Module H Assessment: Standard GRADE vs. KOTHA-Enhanced',
                  fontweight='bold', fontsize=14, pad=20)
-    
+
     fig.tight_layout()
     fig.savefig(f'{OUTDIR}/fig8_module_h_comparison.png', dpi=300)
     plt.close()
     print(f"Saved: {OUTDIR}/fig8_module_h_comparison.png")
+
+
+def figS1_trace_mcmc(mt_mg, mt_st):
+    """Supplementary Figure S1: MCMC trace plots for selected discounting factors."""
+    selected_alphas = [0.0, 0.3, 1.0]
+    cases = [
+        ('Mg AMI, log OR', 'log effect', mt_mg['power_prior']),
+        ('Statins HF, log HR', 'log effect', mt_st['power_prior']),
+    ]
+    param_names = ['log effect', 'log τ']
+    param_indices = [0, 1]
+
+    n_rows = len(cases) * len(param_indices)
+    n_cols = len(selected_alphas)
+    fig, axes = plt.subplots(n_rows, n_cols, figsize=(4 * n_cols, 2.2 * n_rows), sharex='col')
+    if n_rows == 1:
+        axes = axes.reshape(1, -1)
+
+    for i, (case_label, _, pp) in enumerate(cases):
+        for p, p_name in enumerate(param_names):
+            row = i * len(param_indices) + p
+            for col, alpha in enumerate(selected_alphas):
+                ax = axes[row, col]
+                chain = pp[alpha]['chain']  # (n_walkers, n_iter, n_params)
+                for w in range(chain.shape[0]):
+                    ax.plot(chain[w, :, p], alpha=0.25, linewidth=0.7)
+                ax.set_title(f'{case_label} — {p_name}, α = {alpha}', fontsize=9)
+                ax.set_ylabel(p_name, fontsize=8)
+                if row == n_rows - 1:
+                    ax.set_xlabel('Iteration (post-warmup)', fontsize=8)
+                ax.tick_params(labelsize=7)
+                ax.set_xlim(0, chain.shape[1])
+
+    fig.suptitle('Supplementary Figure S1: MCMC trace plots by case, parameter and discounting factor',
+                 fontweight='bold', fontsize=12)
+    fig.tight_layout(h_pad=2.0, w_pad=1.0)
+    fig.savefig(f'{OUTDIR}/figS1_trace_mcmc.png', dpi=300)
+    plt.close()
+    print(f"Saved: {OUTDIR}/figS1_trace_mcmc.png")
 
 
 # ============================================================
@@ -1498,7 +1615,8 @@ def main():
     fig5_tsa_plot(mh_mg)
     fig6_forest_statins(statin_obs, statin_rct, mt_st)
     fig7_sensitivity_heatmap(mt_mg, mt_st)
-    fig8_module_h_summary()
+    fig8_module_h_summary(mh_mg, mh_st, mk_mg, mk_st)
+    figS1_trace_mcmc(mt_mg, mt_st)
     
     print("\n" + "=" * 60)
     print("VALIDATION COMPLETE")
