@@ -39,7 +39,7 @@ def main():
     )
     opening = (
         f'We are pleased to submit our manuscript, {title}, '
-        'for consideration for publication in *Contemporary Clinical Trials Communications* as an Original Article.'
+        'for consideration for publication in *Contemporary Clinical Trials Communications* as an Original Research / Methodology article.'
     )
     add_paragraph(doc, opening)
     add_paragraph(doc, '')
