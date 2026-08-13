@@ -296,11 +296,15 @@ Not applicable.
 
 All data are from published sources and are included in the repository (https://github.com/bougtoir/kotha-rct-decomposition). Python code that reproduces all results, tables, and figures is available in the same repository.
 
-### Competing interests
+### Trial registration
+
+Not applicable. This manuscript presents a methodological framework and retrospective case illustrations; no prospective clinical trial was conducted.
+
+### Declaration of competing interest
 
 The authors declare that they have no competing interests.
 
-### Funding
+### Funding source
 
 [To be determined]
 
@@ -312,7 +316,16 @@ The authors declare that they have no competing interests.
 
 [To be determined]"""
 
-    body_md = f"""## Abstract
+    highlights = """* KOTHA separates structural information loss from residual confounding in trial evidence.
+* Counterfactual power simulation quantifies enrollment-driven event dilution.
+* Power-prior Bayesian synthesis transparently discounts observational evidence.
+* GRADE-compatible output labels evidence as sufficient or insufficient."""
+
+    body_md = f"""## Highlights
+
+{highlights}
+
+## Abstract
 
 {abstract}
 

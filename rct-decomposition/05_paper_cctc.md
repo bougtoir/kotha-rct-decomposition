@@ -5,6 +5,13 @@ authors: [To be determined]
 word_count: 2361
 corresponding_author: [To be determined]
 ---
+## Highlights
+
+* KOTHA separates structural information loss from residual confounding in trial evidence.
+* Counterfactual power simulation quantifies enrollment-driven event dilution.
+* Power-prior Bayesian synthesis transparently discounts observational evidence.
+* GRADE-compatible output labels evidence as sufficient or insufficient.
+
 ## Abstract
 
 **Background**: Evidence-based medicine ranks RCTs and meta-analyses highest, yet observational-RCT discordance is usually attributed to confounding. We highlight a structural explanation: trial enrollment progressively excludes higher-risk patients, diluting event rates and statistical information. The Knowledge-driven Observational-Trial Harmonization Approach (KOTHA) Framework diagnoses this structural information loss.
@@ -263,11 +270,15 @@ Not applicable.
 
 All data are from published sources and are included in the repository (https://github.com/bougtoir/kotha-rct-decomposition). Python code that reproduces all results, tables, and figures is available in the same repository.
 
-### Competing interests
+### Trial registration
+
+Not applicable. This manuscript presents a methodological framework and retrospective case illustrations; no prospective clinical trial was conducted.
+
+### Declaration of competing interest
 
 The authors declare that they have no competing interests.
 
-### Funding
+### Funding source
 
 [To be determined]
 
