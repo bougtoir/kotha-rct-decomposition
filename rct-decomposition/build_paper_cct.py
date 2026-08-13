@@ -117,8 +117,10 @@ def _front_matter(v, word_count):
 running_head: KOTHA Framework for Trial Design
 title: The KOTHA Framework: diagnosing structural information loss in randomized controlled trial meta-analyses to inform trial design
 authors: [To be determined]
+affiliations: [To be determined]
 word_count: {word_count}
 corresponding_author: [To be determined]
+corresponding_author_address: [To be determined]
 ---
 """
 
@@ -349,7 +351,7 @@ The authors declare that they have no competing interests.
 | RCT | Randomized controlled trial |
 | TSA | Trial sequential analysis |
 
-## Introduction
+## 1. Introduction
 
 {intro}
 
@@ -364,7 +366,7 @@ The authors declare that they have no competing interests.
 | External data-informed design | Use retrospective data to quantify expected event loss and adjust design | Ideal but very rare in practice |
 | Pragmatic / registry-based trials | Broad eligibility, minimal exclusions, real-world enrollment | Growing (e.g., REMAP-CAP, RECOVERY) but not yet standard |
 
-## Methods
+## 2. Methods
 
 {methods}
 
@@ -382,15 +384,15 @@ The authors declare that they have no competing interests.
 | TSA | Imprecision | Sequential monitoring boundaries | Boundaries not crossed: interim analysis equivalent |
 | Recommendation language | Overall assessment | Standardized templates | Tailored to information sufficiency classification |
 
-## Results
+## 3. Results
 
 {results}
 
-## Discussion
+## 4. Discussion
 
 {discussion}
 
-## Conclusions
+## 5. Conclusions
 
 The KOTHA Framework (Knowledge-driven Observational-Trial Harmonization Approach) addresses structural information loss in RCT meta-analyses through counterfactual power simulation, hierarchical Bayesian evidence integration, and structured GRADE-compatible interpretation. Empirical application to magnesium in AMI and statins in heart failure demonstrates that the framework can identify enrollment-driven event dilution, quantify its impact on statistical power, and produce more nuanced evidence assessments than standard approaches.
 
@@ -408,7 +410,7 @@ The KOTHA Framework (Knowledge-driven Observational-Trial Harmonization Approach
     # Strip front matter sections not counted
     # For CCT, word count typically excludes title page, abstract, references, tables, figures.
     # We will count Introduction through Conclusions.
-    wc_match = re.search(r'## Introduction(.*?)## Declarations', body_md, re.S)
+    wc_match = re.search(r'## 1\. Introduction(.*?)## Declarations', body_md, re.S)
     if wc_match:
         wc_text = wc_match.group(1)
     else:

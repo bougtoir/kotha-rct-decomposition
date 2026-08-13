@@ -2,8 +2,10 @@
 running_head: KOTHA Framework for Trial Design
 title: The KOTHA Framework: diagnosing structural information loss in randomized controlled trial meta-analyses to inform trial design
 authors: [To be determined]
-word_count: 2361
+affiliations: [To be determined]
+word_count: 2365
 corresponding_author: [To be determined]
+corresponding_author_address: [To be determined]
 ---
 ## Highlights
 
@@ -42,7 +44,7 @@ corresponding_author: [To be determined]
 | RCT | Randomized controlled trial |
 | TSA | Trial sequential analysis |
 
-## Introduction
+## 1. Introduction
 
 Evidence-based medicine places RCTs and their meta-analyses at the apex of the evidence hierarchy because randomization minimizes confounding and provides internally valid estimates of treatment effects [1]. Nevertheless, meta-analyses of observational studies and RCTs frequently disagree: observational evidence may show statistically significant benefit while RCT evidence does not [2-3]. The conventional explanation invokes residual confounding, selection bias, or publication bias in observational data. While these sources of bias are real, they may not fully account for the discordance.
 
@@ -65,7 +67,7 @@ We therefore developed the Knowledge-driven Observational-Trial Harmonization Ap
 | External data-informed design | Use retrospective data to quantify expected event loss and adjust design | Ideal but very rare in practice |
 | Pragmatic / registry-based trials | Broad eligibility, minimal exclusions, real-world enrollment | Growing (e.g., REMAP-CAP, RECOVERY) but not yet standard |
 
-## Methods
+## 2. Methods
 
 ### Overview
 
@@ -109,7 +111,7 @@ For magnesium in AMI we used study-level event counts extracted from published o
 | TSA | Imprecision | Sequential monitoring boundaries | Boundaries not crossed: interim analysis equivalent |
 | Recommendation language | Overall assessment | Standardized templates | Tailored to information sufficiency classification |
 
-## Results
+## 3. Results
 
 ### Study-level data and risk-profile shift
 
@@ -225,7 +227,7 @@ Module H results are summarized in Table 7 and Fig. 8. For magnesium, the OIS fo
 
 ![Fig. 8](validation/figures/fig8_module_h_comparison.png)
 
-## Discussion
+## 4. Discussion
 
 ### Principal findings
 
@@ -252,7 +254,7 @@ The framework is reproducible from published aggregate data, follows the ADEMP r
 
 Limitations should be acknowledged. The cases are retrospective applications of the framework to published aggregate data; individual patient data would strengthen risk-profile stratification and adjustment for confounders, and ecological bias may affect the representativeness assessment. Prospective validation against trials whose results are not yet known would be stronger. Module T treats the discounting parameter $\alpha$ as a fixed sensitivity parameter and is therefore sensitive to assumptions about residual confounding; we present the full grid of values but do not claim a single preferred $\alpha$. The magnesium case involves genuine treatment-effect heterogeneity across thrombolysis eras, which Module K identifies but cannot fully explain. Finally, adoption by guideline groups will require institutional change beyond the method itself.
 
-## Conclusions
+## 5. Conclusions
 
 The KOTHA Framework (Knowledge-driven Observational-Trial Harmonization Approach) addresses structural information loss in RCT meta-analyses through counterfactual power simulation, hierarchical Bayesian evidence integration, and structured GRADE-compatible interpretation. Empirical application to magnesium in AMI and statins in heart failure demonstrates that the framework can identify enrollment-driven event dilution, quantify its impact on statistical power, and produce more nuanced evidence assessments than standard approaches.
 

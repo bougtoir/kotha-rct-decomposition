@@ -32,6 +32,20 @@ _PANDOC_CANDIDATES = [
 PANDOC = next((p for p in _PANDOC_CANDIDATES if p and os.path.isfile(p) and os.access(p, os.X_OK)), 'pandoc')
 
 
+def _rewrite_docx_timestamps(docx_path):
+    """Rewrite docx zip timestamps to a fixed value for reproducibility."""
+    _fixed_time = (2025, 1, 1, 0, 0, 0)
+    _tmp = docx_path + '.tmp'
+    shutil.move(docx_path, _tmp)
+    with zipfile.ZipFile(_tmp, 'r') as zin:
+        with zipfile.ZipFile(docx_path, 'w', zipfile.ZIP_DEFLATED) as zout:
+            for info in zin.infolist():
+                data = zin.read(info.filename)
+                info.date_time = _fixed_time
+                zout.writestr(info, data)
+    os.remove(_tmp)
+
+
 def build(input_md, output_docx):
     BASE = os.path.dirname(os.path.abspath(input_md))
 
@@ -134,6 +148,28 @@ def build(input_md, output_docx):
         spacing.set(qn('w:lineRule'), 'auto')
         if space_after is not None:
             spacing.set(qn('w:after'), str(space_after))
+
+    # --- Page numbers in footer ---
+    for section in doc.sections:
+        footer = section.footer
+        footer.is_linked_to_previous = False
+        p = footer.paragraphs[0] if footer.paragraphs else footer.add_paragraph()
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = p.add_run()
+        fldChar1 = OxmlElement('w:fldChar')
+        fldChar1.set(qn('w:fldCharType'), 'begin')
+        instrText = OxmlElement('w:instrText')
+        instrText.set(qn('xml:space'), 'preserve')
+        instrText.text = 'PAGE'
+        fldChar2 = OxmlElement('w:fldChar')
+        fldChar2.set(qn('w:fldCharType'), 'separate')
+        fldChar3 = OxmlElement('w:fldChar')
+        fldChar3.set(qn('w:fldCharType'), 'end')
+        run._r.append(fldChar1)
+        run._r.append(instrText)
+        run._r.append(fldChar2)
+        run._r.append(fldChar3)
+        set_run_font(run._r, size=10)
 
     def pandoc_docx(text):
         """Convert a markdown fragment to a temporary docx and return the Document."""
@@ -322,10 +358,14 @@ def build(input_md, output_docx):
             run.font.size = Pt(14)
     if metadata.get('authors'):
         p = add_para(metadata['authors'], italic=True, align=WD_ALIGN_PARAGRAPH.CENTER)
-    if metadata.get('word_count'):
-        add_para(f"Word count: {metadata['word_count']}")
+    if metadata.get('affiliations'):
+        p = add_para(f"Affiliations: {metadata['affiliations']}", italic=True, align=WD_ALIGN_PARAGRAPH.CENTER)
     if metadata.get('corresponding_author'):
         add_para(f"Corresponding author: {metadata['corresponding_author']}")
+    if metadata.get('corresponding_author_address'):
+        add_para(f"Corresponding author address: {metadata['corresponding_author_address']}")
+    if metadata.get('word_count'):
+        add_para(f"Word count: {metadata['word_count']}")
     add_para("Prepared for submission to Contemporary Clinical Trials Communications", italic=True)
     doc.add_page_break()
 
@@ -487,14 +527,14 @@ def build(input_md, output_docx):
             continue
 
         # Bullet lists (top level)
-        if line.strip().startswith('- '):
+        if line.strip().startswith(('- ', '* ')):
             text = line.strip()[2:]
             add_rich_para(text, style='List Bullet')
             i += 1
             continue
 
         # Indented bullet lists
-        if re.match(r'^  +- ', line):
+        if re.match(r'^  +(- |\* )', line):
             text = line.strip()[2:]
             add_rich_para(text, style='List Bullet 2')
             i += 1
@@ -531,19 +571,7 @@ def build(input_md, output_docx):
 
     # Save
     doc.save(output_docx)
-
-    # Rewrite the zip with fixed timestamps so the docx is byte-for-byte reproducible
-    _fixed_time = (2025, 1, 1, 0, 0, 0)
-    _tmp = output_docx + '.tmp'
-    shutil.move(output_docx, _tmp)
-    with zipfile.ZipFile(_tmp, 'r') as zin:
-        with zipfile.ZipFile(output_docx, 'w', zipfile.ZIP_DEFLATED) as zout:
-            for info in zin.infolist():
-                data = zin.read(info.filename)
-                info.date_time = _fixed_time
-                zout.writestr(info, data)
-    os.remove(_tmp)
-
+    _rewrite_docx_timestamps(output_docx)
     print(f'\nSaved CCT docx to {output_docx}')
 
     # Word count
@@ -552,6 +580,43 @@ def build(input_md, output_docx):
         word_count += len(p.text.split())
     print(f'Total word count (all content): ~{word_count}')
     print(f'File size: {os.path.getsize(output_docx) / 1024:.0f} KB')
+
+    # Generate a separate Highlights docx for the online submission system
+    highlights_docx = output_docx.rsplit('.docx', 1)[0] + '_highlights.docx'
+    hdoc = Document()
+    hdoc.core_properties.created = datetime(2025, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
+    hdoc.core_properties.modified = datetime(2025, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
+    hsec = hdoc.sections[0]
+    hsec.top_margin = Cm(2.54)
+    hsec.bottom_margin = Cm(2.54)
+    hsec.left_margin = Cm(2.54)
+    hsec.right_margin = Cm(2.54)
+    hstyle = hdoc.styles['Normal']
+    hstyle.font.name = 'Times New Roman'
+    hstyle.font.size = Pt(12)
+    htitle = hdoc.add_heading('Highlights', level=1)
+    for r in htitle.runs:
+        r.font.name = 'Times New Roman'
+        r.font.size = Pt(12)
+        r.font.bold = True
+    with open(input_md, 'r', encoding='utf-8') as f:
+        md_text = f.read()
+    h_match = re.search(r'## Highlights\n\n(.*?)\n\n## ', md_text, re.S)
+    highlights_text = h_match.group(1).strip() if h_match else ''
+    for line in highlights_text.splitlines():
+        line = line.strip()
+        if line.startswith('* '):
+            p = hdoc.add_paragraph(line[2:], style='List Bullet')
+        elif line:
+            p = hdoc.add_paragraph(line)
+        if p:
+            for r in p.runs:
+                r.font.name = 'Times New Roman'
+                r.font.size = Pt(12)
+    hdoc.save(highlights_docx)
+    _rewrite_docx_timestamps(highlights_docx)
+    print(f'Saved Highlights docx to {highlights_docx}')
+    print(f'Highlights file size: {os.path.getsize(highlights_docx) / 1024:.0f} KB')
 
 
 if __name__ == '__main__':
