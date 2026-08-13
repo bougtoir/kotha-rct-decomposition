@@ -13,6 +13,7 @@ import os
 
 import numpy as np
 import pandas as pd
+import emcee
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -529,56 +530,99 @@ def bias_adjusted_normal(logY_rct, se_rct, logY_obs, se_obs, delta_grid):
     return results
 
 
-def power_prior_meta(logY_rct, se_rct, logY_obs, se_obs, alpha_grid, n_iter=15000, n_warmup=3000):
+def _split_rhat(chains):
+    """Split-R-hat (Gelman-Rubin) for chains of shape (n_chains, n_draws, n_vars)."""
+    chains = np.asarray(chains)
+    if chains.ndim == 2:
+        chains = chains[..., None]
+    n, L, d = chains.shape
+    half = L // 2
+    if half == 0:
+        return np.full(d, np.nan)
+    split = np.concatenate([chains[:, :half], chains[:, half:2*half]], axis=0)
+    theta_mean = split.mean(axis=1)
+    theta_var = split.var(axis=1, ddof=1)
+    B = half * theta_mean.var(axis=0, ddof=1)
+    W = theta_var.mean(axis=0)
+    V = (half - 1) / half * W + B / half
+    rhat = np.sqrt(V / W)
+    return rhat
+
+
+def _ess_ise(x, max_lag=None):
+    """Geyer initial sequence estimator for one chain."""
+    x = np.asarray(x)
+    n = len(x)
+    if n < 4:
+        return float(n)
+    x = x - x.mean()
+    # autocovariances via FFT
+    f = np.fft.fft(x, n=2*n)
+    ac = np.fft.ifft(f * f.conjugate()).real[:n]
+    ac = ac / (np.arange(n, 0, -1) * np.var(x, ddof=1) + 1e-12)
+    G = 0.0
+    for t in range(0, n - 1, 2):
+        if t + 1 >= n:
+            break
+        g = ac[t] + ac[t + 1]
+        if g < 0:
+            break
+        G += g
+    ess = n / (1.0 + 2.0 * G)
+    return max(1.0, ess)
+
+
+def _ess_mcmc(chains):
+    """Sum ESS across independent chains."""
+    chains = np.asarray(chains)
+    if chains.ndim == 2:
+        chains = chains[..., None]
+    n, L, d = chains.shape
+    ess = np.zeros(d)
+    for i in range(n):
+        for j in range(d):
+            ess[j] += _ess_ise(chains[i, :, j])
+    return ess
+
+
+def power_prior_meta(logY_rct, se_rct, logY_obs, se_obs, alpha_grid, n_iter=4000, n_warmup=1000, n_walkers=16, seed=42):
     """
     Power prior meta-analysis: discount observational likelihood by alpha.
-    
-    Simple model:
-        y_i ~ Normal(mu, se_i^2 + tau^2)
-        Obs likelihood raised to power alpha
+    Uses an ensemble affine-invariant MCMC sampler for robust convergence.
     """
     results = {}
-    
+    rng = np.random.default_rng(seed)
+
     for alpha in alpha_grid:
-        rng = np.random.default_rng(42)
-        
-        mu = 0.0
-        log_tau = np.log(0.1)
-        step_mu = 0.04
-        step_log_tau = 0.08
-        
-        mu_samples = np.empty(n_iter)
-        idx = 0
-        
-        def log_post(mu, log_tau):
+        def log_prob(theta):
+            mu, log_tau = theta
+            if not np.isfinite(log_tau):
+                return -np.inf
             tau = np.exp(log_tau)
+            if tau <= 1e-9 or tau > 100.0:
+                return -np.inf
             var_rct = se_rct**2 + tau**2
             ll_rct = np.sum(stats.norm.logpdf(logY_rct, loc=mu, scale=np.sqrt(var_rct)))
-            
             var_obs = se_obs**2 + tau**2
             ll_obs = alpha * np.sum(stats.norm.logpdf(logY_obs, loc=mu, scale=np.sqrt(var_obs)))
-            
             lp_mu = stats.norm.logpdf(mu, 0, 10)
+            # Jacobian for tau = exp(log_tau)
             lp_tau = stats.halfcauchy.logpdf(tau, scale=0.5) + log_tau
-            
             return ll_rct + ll_obs + lp_mu + lp_tau
-        
-        current_lp = log_post(mu, log_tau)
-        
-        for it in range(n_warmup + n_iter):
-            mu_p = mu + rng.normal(0, step_mu)
-            lt_p = log_tau + rng.normal(0, step_log_tau)
-            lp_p = log_post(mu_p, lt_p)
-            if np.log(rng.uniform()) < lp_p - current_lp:
-                mu, log_tau, current_lp = mu_p, lt_p, lp_p
-            
-            if it >= n_warmup:
-                mu_samples[idx] = mu
-                idx += 1
-        
-        mu_arr = mu_samples[:idx]
-        hr_arr = np.exp(mu_arr)
-        
+
+        # initial walkers around a small ball near tau ~ 0.1
+        p0 = rng.normal([0.0, -2.3], 0.15, size=(n_walkers, 2))
+        sampler = emcee.EnsembleSampler(n_walkers, 2, log_prob)
+        sampler.run_mcmc(p0, n_warmup + n_iter, progress=False)
+        chain = sampler.get_chain(discard=n_warmup, thin=1)  # (n_iter, n_walkers, 2)
+        chain = chain.transpose(1, 0, 2)  # (n_walkers, n_iter, 2)
+
+        mu_samples = chain[:, :, 0].reshape(-1)
+        hr_arr = np.exp(mu_samples)
+
+        rhat = _split_rhat(chain)
+        ess = _ess_mcmc(chain)
+
         results[alpha] = {
             'hr_median': float(np.median(hr_arr)),
             'hr_lo': float(np.percentile(hr_arr, 2.5)),
@@ -586,9 +630,13 @@ def power_prior_meta(logY_rct, se_rct, logY_obs, se_obs, alpha_grid, n_iter=1500
             'p_benefit': float(np.mean(hr_arr < 1.0)),
             'p_lt_090': float(np.mean(hr_arr < 0.90)),
             'p_lt_080': float(np.mean(hr_arr < 0.80)),
-            'samples': mu_arr,
+            'samples': mu_samples,
+            'rhat_mu': float(rhat[0]),
+            'rhat_log_tau': float(rhat[1]),
+            'ess_mu': float(ess[0]),
+            'ess_log_tau': float(ess[1]),
         }
-    
+
     return results
 
 
