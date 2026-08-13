@@ -315,6 +315,30 @@ def _pp_table(rows, effect_label):
     return "\n".join(lines)
 
 
+def _pp_table_combined(v):
+    """Combined Bayesian integration table for both cases."""
+    lines = [
+        "| Case | $\\alpha$ | OR/HR (95% CrI) | P(effect < 1) | P(effect < 0.90) | P(effect < 0.80) |",
+        "|---|---|---|---|---|---|",
+    ]
+    for mg_r, st_r in zip(v['mg_pp_rows'], v['st_pp_rows']):
+        alpha = mg_r['alpha']
+        alpha_label = f"{alpha:.1f}"
+        if alpha == 0.0:
+            alpha_label += ' (ISIS-4 / RCTs only)'
+        elif alpha == 1.0:
+            alpha_label += ' (full weight)'
+        lines.append(
+            f"| Magnesium (OR) | {alpha_label} | OR {mg_r['median']:.2f} ({mg_r['lo']:.2f}--{mg_r['hi']:.2f}) | "
+            f"{mg_r['p1']:.1f}% | {mg_r['p09']:.1f}% | {mg_r['p08']:.1f}% |"
+        )
+        lines.append(
+            f"| Statins (HR) | {alpha_label} | HR {st_r['median']:.2f} ({st_r['lo']:.2f}--{st_r['hi']:.2f}) | "
+            f"{st_r['p1']:.1f}% | {st_r['p09']:.1f}% | {st_r['p08']:.1f}% |"
+        )
+    return "\n".join(lines)
+
+
 def _table_7(v):
     mg_i2 = int(round(v['mg_all_i2']))
     st_i2_obs = int(round(v['st_obs_i2']))

@@ -1346,6 +1346,187 @@ def fig6_forest_statins(statin_obs, statin_rct, mt_results_st):
     print(f"Saved: {OUTDIR}/fig6_forest_statins.png")
 
 
+def fig4_forest_combined(mg_data, mt_results_mg, statin_obs, statin_rct, mt_results_st):
+    """Fig 4: Combined forest plots for magnesium and statins."""
+    # -------- Magnesium panel --------
+    mg = mg_data.copy()
+    mg_studies = []
+    for _, row in mg.iterrows():
+        lo, se = compute_or(row['e_treat'], row['n_treat'], row['e_ctrl'], row['n_ctrl'])
+        OR = np.exp(lo)
+        ci_lo = np.exp(lo - 1.96 * se)
+        ci_hi = np.exp(lo + 1.96 * se)
+        mg_studies.append({
+            'name': row['study'], 'OR': OR, 'ci_lo': ci_lo, 'ci_hi': ci_hi,
+            'era': row['era'],
+        })
+
+    pp_mg = mt_results_mg['power_prior']
+    pre_isis = mg[mg['study'] != 'ISIS-4 1995']
+    lo_pre, se_pre, _, _ = random_effects_meta(pre_isis['logOR'].values, pre_isis['se'].values)
+    lo_all, se_all, _, _ = random_effects_meta(mg['logOR'].values, mg['se'].values)
+    mg_pooled = [
+        {'name': 'Pre-ISIS-4 (frequentist)', 'OR': np.exp(lo_pre),
+         'ci_lo': np.exp(lo_pre - 1.96*se_pre), 'ci_hi': np.exp(lo_pre + 1.96*se_pre), 'era': 'pooled'},
+        {'name': 'All trials (frequentist)', 'OR': np.exp(lo_all),
+         'ci_lo': np.exp(lo_all - 1.96*se_all), 'ci_hi': np.exp(lo_all + 1.96*se_all), 'era': 'pooled'},
+    ]
+    for alpha in [0.3, 0.5, 1.0]:
+        r = pp_mg[alpha]
+        mg_pooled.append({
+            'name': f'Bayesian integrated (α={alpha})',
+            'OR': r['hr_median'], 'ci_lo': r['hr_lo'], 'ci_hi': r['hr_hi'], 'era': 'bayesian'
+        })
+
+    n_mg_studies = len(mg_studies)
+    n_mg_pooled = len(mg_pooled)
+    total_mg = n_mg_studies + n_mg_pooled + 2
+
+    # -------- Statins panel --------
+    st_all_studies = []
+    for _, row in statin_rct.iterrows():
+        st_all_studies.append({
+            'name': row['study'], 'HR': np.exp(row['logHR']),
+            'ci_lo': np.exp(row['logHR'] - 1.96*row['se']),
+            'ci_hi': np.exp(row['logHR'] + 1.96*row['se']), 'type': 'RCT'
+        })
+    for _, row in statin_obs.iterrows():
+        st_all_studies.append({
+            'name': row['study'], 'HR': np.exp(row['logHR']),
+            'ci_lo': np.exp(row['logHR'] - 1.96*row['se']),
+            'ci_hi': np.exp(row['logHR'] + 1.96*row['se']), 'type': 'OBS'
+        })
+
+    lo_rct, se_rct, _, _ = random_effects_meta(statin_rct['logHR'].values, statin_rct['se'].values)
+    lo_obs, se_obs, _, _ = random_effects_meta(statin_obs['logHR'].values, statin_obs['se'].values)
+    pp_st = mt_results_st['power_prior']
+    st_pooled = [
+        {'name': 'RCT pooled', 'HR': np.exp(lo_rct),
+         'ci_lo': np.exp(lo_rct - 1.96*se_rct), 'ci_hi': np.exp(lo_rct + 1.96*se_rct), 'type': 'pooled_rct'},
+        {'name': 'Observational pooled', 'HR': np.exp(lo_obs),
+         'ci_lo': np.exp(lo_obs - 1.96*se_obs), 'ci_hi': np.exp(lo_obs + 1.96*se_obs), 'type': 'pooled_obs'},
+    ]
+    for alpha in [0.1, 0.3, 0.5]:
+        r = pp_st[alpha]
+        st_pooled.append({
+            'name': f'KOTHA integrated (α={alpha})',
+            'HR': r['hr_median'], 'ci_lo': r['hr_lo'], 'ci_hi': r['hr_hi'], 'type': 'bayesian'
+        })
+
+    total_st = len(st_all_studies) + len(st_pooled) + 3
+    max_total = max(total_mg, total_st)
+
+    # -------- Plot --------
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(18, 0.45 * max_total + 2),
+                                   gridspec_kw={'wspace': 0.22})
+
+    # Left: Magnesium
+    era_colors_mg = {
+        'pre-thrombolysis': C_BLUE, 'transition': C_ORANGE,
+        'thrombolysis': C_RED, 'pooled': C_PURPLE, 'bayesian': C_GREEN,
+    }
+    y_pos = total_mg
+    for s in mg_studies:
+        color = era_colors_mg.get(s['era'], C_GREY)
+        ax1.plot([s['ci_lo'], s['ci_hi']], [y_pos, y_pos], '-', color=color, lw=1.5)
+        ax1.plot(s['OR'], y_pos, 'o', color=color, ms=7, zorder=5)
+        ax1.text(0.12, y_pos, s['name'], ha='right', va='center', fontsize=9)
+        ax1.text(4.5, y_pos, f"{s['OR']:.2f} ({s['ci_lo']:.2f}-{s['ci_hi']:.2f})",
+                ha='left', va='center', fontsize=8, color=color)
+        y_pos -= 1
+
+    y_pos -= 1.5
+    ax1.axhline(y_pos + 0.5, color=C_GREY, linestyle='-', alpha=0.3)
+    for p in mg_pooled:
+        y_pos -= 1
+        color = era_colors_mg.get(p['era'], C_GREY)
+        ax1.plot([p['ci_lo'], p['ci_hi']], [y_pos, y_pos], '-', color=color, lw=2.5)
+        ax1.plot(p['OR'], y_pos, 'D', color=color, ms=9, zorder=5)
+        ax1.text(0.12, y_pos, p['name'], ha='right', va='center', fontsize=9, fontweight='bold')
+        ax1.text(4.5, y_pos, f"{p['OR']:.2f} ({p['ci_lo']:.2f}-{p['ci_hi']:.2f})",
+                ha='left', va='center', fontsize=8, color=color, fontweight='bold')
+
+    ax1.axvline(1.0, color='black', linestyle='-', lw=0.8)
+    ax1.set_xlabel('Odds Ratio (95% CI/CrI)', fontsize=12)
+    ax1.set_title('A. Magnesium in AMI', fontweight='bold', fontsize=13)
+    ax1.set_xlim(0.1, 5.0)
+    ax1.set_xscale('log')
+    ax1.set_xticks([0.2, 0.5, 1.0, 2.0, 4.0])
+    ax1.set_xticklabels(['0.2', '0.5', '1.0', '2.0', '4.0'])
+    ax1.set_yticks([])
+    ax1.grid(True, axis='x', alpha=0.3)
+    handles_mg = [
+        mpatches.Patch(color=C_BLUE, label='Pre-thrombolysis era'),
+        mpatches.Patch(color=C_ORANGE, label='Transition era'),
+        mpatches.Patch(color=C_RED, label='Thrombolysis era'),
+        mpatches.Patch(color=C_PURPLE, label='Frequentist pooled'),
+        mpatches.Patch(color=C_GREEN, label='Bayesian integrated'),
+    ]
+    ax1.legend(handles=handles_mg, loc='lower right', fontsize=9)
+
+    # Right: Statins
+    type_colors = {
+        'RCT': C_RED, 'OBS': C_BLUE,
+        'pooled_rct': C_RED, 'pooled_obs': C_BLUE, 'bayesian': C_GREEN,
+    }
+    y_pos = total_st
+    y_pos -= 1
+    ax2.text(0.35, y_pos, 'Randomized Controlled Trials', fontsize=10, fontweight='bold', va='center')
+    y_pos -= 1
+    for s in [s for s in st_all_studies if s['type'] == 'RCT']:
+        color = type_colors[s['type']]
+        ax2.plot([s['ci_lo'], s['ci_hi']], [y_pos, y_pos], '-', color=color, lw=1.5)
+        ax2.plot(s['HR'], y_pos, 'o', color=color, ms=7, zorder=5)
+        ax2.text(0.35, y_pos, s['name'], ha='right', va='center', fontsize=9)
+        ax2.text(1.6, y_pos, f"{s['HR']:.2f} ({s['ci_lo']:.2f}-{s['ci_hi']:.2f})",
+                ha='left', va='center', fontsize=8, color=color)
+        y_pos -= 1
+
+    y_pos -= 0.5
+    ax2.text(0.35, y_pos, 'Observational Studies', fontsize=10, fontweight='bold', va='center')
+    y_pos -= 1
+    for s in [s for s in st_all_studies if s['type'] == 'OBS']:
+        color = type_colors[s['type']]
+        ax2.plot([s['ci_lo'], s['ci_hi']], [y_pos, y_pos], '-', color=color, lw=1.5)
+        ax2.plot(s['HR'], y_pos, 'o', color=color, ms=7, zorder=5)
+        ax2.text(0.35, y_pos, s['name'], ha='right', va='center', fontsize=9)
+        ax2.text(1.6, y_pos, f"{s['HR']:.2f} ({s['ci_lo']:.2f}-{s['ci_hi']:.2f})",
+                ha='left', va='center', fontsize=8, color=color)
+        y_pos -= 1
+
+    y_pos -= 0.5
+    ax2.axhline(y_pos + 0.3, color=C_GREY, linestyle='-', alpha=0.3)
+    for p in st_pooled:
+        y_pos -= 1
+        color = type_colors[p['type']]
+        ax2.plot([p['ci_lo'], p['ci_hi']], [y_pos, y_pos], '-', color=color, lw=2.5)
+        ax2.plot(p['HR'], y_pos, 'D', color=color, ms=9, zorder=5)
+        ax2.text(0.35, y_pos, p['name'], ha='right', va='center', fontsize=9, fontweight='bold')
+        ax2.text(1.6, y_pos, f"{p['HR']:.2f} ({p['ci_lo']:.2f}-{p['ci_hi']:.2f})",
+                ha='left', va='center', fontsize=8, color=color, fontweight='bold')
+
+    ax2.axvline(1.0, color='black', linestyle='-', lw=0.8)
+    ax2.set_xlabel('Hazard Ratio (95% CI/CrI)', fontsize=12)
+    ax2.set_title('B. Statins in heart failure', fontweight='bold', fontsize=13)
+    ax2.set_xlim(0.3, 1.5)
+    ax2.set_xscale('log')
+    ax2.set_xticks([0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3])
+    ax2.set_xticklabels(['0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1.0', '1.1', '1.2', '1.3'])
+    ax2.set_yticks([])
+    ax2.grid(True, axis='x', alpha=0.3)
+    handles_st = [
+        mpatches.Patch(color=C_RED, label='RCT'),
+        mpatches.Patch(color=C_BLUE, label='Observational'),
+        mpatches.Patch(color=C_GREEN, label='KOTHA integrated'),
+    ]
+    ax2.legend(handles=handles_st, loc='lower right', fontsize=9)
+
+    fig.tight_layout()
+    fig.savefig(f'{OUTDIR}/fig4_forest_combined.png', dpi=500)
+    plt.close()
+    print(f"Saved: {OUTDIR}/fig4_forest_combined.png")
+
+
 def fig7_sensitivity_heatmap(mt_results_mg, mt_results_st):
     """Fig 7: Sensitivity analysis heatmap — P(benefit) by alpha and case."""
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
@@ -1534,42 +1715,41 @@ def fig8_module_h_summary(mh_mg, mh_st, mk_mg, mk_st):
 
 
 def figS1_trace_mcmc(mt_mg, mt_st):
-    """Supplementary Figure S1: MCMC trace plots for selected discounting factors."""
+    """Supplementary Figures S1a and S1b: MCMC trace plots for selected discounting factors."""
     selected_alphas = [0.0, 0.3, 1.0]
     cases = [
-        ('Mg AMI, log OR', 'log effect', mt_mg['power_prior']),
-        ('Statins HF, log HR', 'log effect', mt_st['power_prior']),
+        ('magnesium', 'Mg AMI, log OR', 'log effect', mt_mg['power_prior'], 'figS1a_trace_mcmc_magnesium.png', 'Supplementary Figure S1a'),
+        ('statins', 'Statins HF, log HR', 'log effect', mt_st['power_prior'], 'figS1b_trace_mcmc_statins.png', 'Supplementary Figure S1b'),
     ]
     param_names = ['log effect', 'log τ']
-    param_indices = [0, 1]
 
-    n_rows = len(cases) * len(param_indices)
-    n_cols = len(selected_alphas)
-    fig, axes = plt.subplots(n_rows, n_cols, figsize=(4 * n_cols, 2.2 * n_rows), sharex='col')
-    if n_rows == 1:
-        axes = axes.reshape(1, -1)
+    for case_key, case_label, _, pp, filename, sup_fig_label in cases:
+        n_rows = len(param_names)
+        n_cols = len(selected_alphas)
+        fig, axes = plt.subplots(n_rows, n_cols, figsize=(4 * n_cols, 2.2 * n_rows), sharex='col')
+        if n_rows == 1:
+            axes = axes.reshape(1, -1)
 
-    for i, (case_label, _, pp) in enumerate(cases):
         for p, p_name in enumerate(param_names):
-            row = i * len(param_indices) + p
             for col, alpha in enumerate(selected_alphas):
-                ax = axes[row, col]
+                ax = axes[p, col]
                 chain = pp[alpha]['chain']  # (n_walkers, n_iter, n_params)
                 for w in range(chain.shape[0]):
                     ax.plot(chain[w, :, p], alpha=0.25, linewidth=0.7)
                 ax.set_title(f'{case_label} — {p_name}, α = {alpha}', fontsize=9)
                 ax.set_ylabel(p_name, fontsize=8)
-                if row == n_rows - 1:
+                if p == n_rows - 1:
                     ax.set_xlabel('Iteration (post-warmup)', fontsize=8)
                 ax.tick_params(labelsize=7)
                 ax.set_xlim(0, chain.shape[1])
 
-    fig.suptitle('Supplementary Figure S1: MCMC trace plots by case, parameter and discounting factor',
-                 fontweight='bold', fontsize=12)
-    fig.tight_layout(h_pad=2.0, w_pad=1.0)
-    fig.savefig(f'{OUTDIR}/figS1_trace_mcmc.png', dpi=500)
-    plt.close()
-    print(f"Saved: {OUTDIR}/figS1_trace_mcmc.png")
+        fig.suptitle(f'{sup_fig_label}: MCMC trace plots for {case_key} case by parameter and discounting factor',
+                     fontweight='bold', fontsize=12)
+        fig.tight_layout(h_pad=2.0, w_pad=1.0)
+        save_path = f'{OUTDIR}/{filename}'
+        fig.savefig(save_path, dpi=500)
+        plt.close()
+        print(f"Saved: {save_path}")
 
 
 # ============================================================
@@ -1611,9 +1791,8 @@ def main():
     fig1_framework_overview()
     fig2_risk_profile_shift(mk_mg['mg_data'])
     fig3_power_curves(mk_mg, mk_st)
-    fig4_forest_plot(mk_mg['mg_data'], mt_mg)
+    fig4_forest_combined(mk_mg['mg_data'], mt_mg, statin_obs, statin_rct, mt_st)
     fig5_tsa_plot(mh_mg)
-    fig6_forest_statins(statin_obs, statin_rct, mt_st)
     fig7_sensitivity_heatmap(mt_mg, mt_st)
     fig8_module_h_summary(mh_mg, mh_st, mk_mg, mk_st)
     figS1_trace_mcmc(mt_mg, mt_st)

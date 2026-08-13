@@ -79,36 +79,36 @@ class RefManager:
 # Reference list in planned order of first appearance
 REFS = [
     ('GRADE', 'Guyatt GH, Oxman AD, Vist GE, Kunz R, Falck-Ytter Y, Alonso-Coello P, et al. GRADE: an emerging consensus on rating quality of evidence and strength of recommendations. BMJ. 2008;336(7650):924-6.'),
-    ('Concato', 'Concato J, Shah N, Horwitz RI. Randomized, controlled trials, observational studies, and the hierarchy of research designs. N Engl J Med. 2000;342(25):1887-92.'),
-    ('Anglemyer', 'Anglemyer A, Horvath HT, Bero L. Healthcare outcomes assessed with observational study designs compared with those assessed in randomized trials. Cochrane Database Syst Rev. 2014;(4):MR000034.'),
+    ('Concato', 'Concato J, Shah N, Horwitz RI. Randomized, controlled trials, observational studies, and the hierarchy of research designs. N. Engl. J. Med. 2000;342(25):1887-92.'),
+    ('Anglemyer', 'Anglemyer A, Horvath HT, Bero L. Healthcare outcomes assessed with observational study designs compared with those assessed in randomized trials. Cochrane Database Syst. Rev. 2014;(4):MR000034.'),
     ('KennedyMartin', 'Kennedy-Martin T, Curtis S, Faries D, Robinson S, Johnston J. A literature review on the representativeness of randomized controlled trial samples and implications for the external validity of trial results. Trials. 2015;16:495.'),
     ('Rothwell', 'Rothwell PM. External validity of randomised controlled trials: "to whom do the results of this trial apply?" Lancet. 2005;365(9453):82-93.'),
-    ('Pogue', 'Pogue JM, Yusuf S. Cumulating evidence from randomized trials: utilizing sequential monitoring boundaries for cumulative meta-analysis. Control Clin Trials. 1997;18(6):580-93.'),
-    ('Wetterslev', 'Wetterslev J, Thorlund K, Brok J, Gluud C. Estimating required information size by quantifying diversity in random-effects model meta-analyses. BMC Med Res Methodol. 2009;9:86.'),
-    ('Brok', 'Brok J, Thorlund K, Gluud C, Wetterslev J. Trial sequential analysis reveals insufficient information size and potentially false positive results in many meta-analyses. J Clin Epidemiol. 2008;61(8):763-9.'),
+    ('Pogue', 'Pogue JM, Yusuf S. Cumulating evidence from randomized trials: utilizing sequential monitoring boundaries for cumulative meta-analysis. Control. Clin. Trials. 1997;18(6):580-93.'),
+    ('Wetterslev', 'Wetterslev J, Thorlund K, Brok J, Gluud C. Estimating required information size by quantifying diversity in random-effects model meta-analyses. BMC Med. Res. Methodol. 2009;9:86.'),
+    ('Brok', 'Brok J, Thorlund K, Gluud C, Wetterslev J. Trial sequential analysis reveals insufficient information size and potentially false positive results in many meta-analyses. J. Clin. Epidemiol. 2008;61(8):763-9.'),
     ('TSAManual', 'Thorlund K, Engstrom J, Wetterslev J, Brok J, Imberger G, Gluud C. User manual for trial sequential analysis (TSA). Copenhagen Trial Unit, Centre for Clinical Intervention Research; 2011.'),
-    ('ADEMP', 'Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Stat Med. 2019;38(11):2074-102.'),
+    ('ADEMP', 'Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Stat. Med. 2019;38(11):2074-102.'),
     ('Schoenfeld', 'Schoenfeld DA. Sample-size formula for the proportional-hazards regression model. Biometrics. 1983;39(2):499-503.'),
+    ('Ibrahim', 'Ibrahim JG, Chen MH. Power prior distributions for regression models. Stat. Sci. 2000;15(1):46-60.'),
     ('RMST', 'McCaw ZR, Yin G, Wei LJ. Using the restricted mean survival time difference as an alternative to the hazard ratio for analyzing clinical cardiovascular studies. Circulation. 2019;140(17):1366-8. doi:10.1161/CIRCULATIONAHA.119.040680.'),
-    ('Boyd', 'Boyd AP, Kittelson JM, Gillen DL. Estimation of treatment effect under non-proportional hazards and conditionally independent censoring. Stat Med. 2012;31(28):3504-15. doi:10.1002/sim.5440.'),
-    ('Sherry', 'Sherry AD, Msaouel P, Kupferman GS, Lin TA, Abi Jaoude J, Kouzy R, et al. Evidence-based prior for estimating the treatment effect of phase III randomized trials in oncology. JCO Precis Oncol. 2024;8:e2400363. doi:10.1200/PO.24.00363.'),
-    ('Ibrahim', 'Ibrahim JG, Chen MH. Power prior distributions for regression models. Stat Sci. 2000;15(1):46-60.'),
-    ('emcee', 'Foreman-Mackey D, Hogg DW, Lang D, Goodman J. emcee: the MCMC hammer. Publ Astron Soc Pac. 2013;125(925):306-12.'),
+    ('Boyd', 'Boyd AP, Kittelson JM, Gillen DL. Estimation of treatment effect under non-proportional hazards and conditionally independent censoring. Stat. Med. 2012;31(28):3504-15. doi:10.1002/sim.5440.'),
+    ('Sherry', 'Sherry AD, Msaouel P, Kupferman GS, Lin TA, Abi Jaoude J, Kouzy R, et al. Evidence-based prior for estimating the treatment effect of phase III randomized trials in oncology. JCO Precis. Oncol. 2024;8:e2400363. doi:10.1200/PO.24.00363.'),
+    ('emcee', 'Foreman-Mackey D, Hogg DW, Lang D, Goodman J. emcee: the MCMC hammer. Publ. Astron. Soc. Pac. 2013;125(925):306-12.'),
     ('Teo', 'Teo KK, Yusuf S, Collins R, Held PH, Peto R. Effects of intravenous magnesium in suspected acute myocardial infarction: overview of randomised trials. BMJ. 1991;303(6816):1499-503.'),
-    ('Li', 'Li J, Zhang Q, Zhang M, Egger M. Intravenous magnesium for acute myocardial infarction. Cochrane Database Syst Rev. 2007;(2):CD002755.'),
-    ('Anker', 'Anker SD, Clark AL, Winkler R, Zugck C, Cicoira M, Haehling S, et al. Statin use and survival in patients with chronic heart failure -- results from two observational studies with 5200 patients. Int J Cardiol. 2006;112(2):234-42.'),
-    ('Mozaffarian', 'Mozaffarian D, Nye R, Levy WC. Statin therapy is associated with lower mortality among patients with severe heart failure. Am J Cardiol. 2004;93(9):1124-9.'),
-    ('Horwich', 'Horwich TB, MacLellan WR, Fonarow GC. Statin therapy is associated with improved survival in ischemic and non-ischemic heart failure. J Am Coll Cardiol. 2004;43(4):642-8.'),
+    ('Li', 'Li J, Zhang Q, Zhang M, Egger M. Intravenous magnesium for acute myocardial infarction. Cochrane Database Syst. Rev. 2007;(2):CD002755.'),
+    ('Anker', 'Anker SD, Clark AL, Winkler R, Zugck C, Cicoira M, Haehling S, et al. Statin use and survival in patients with chronic heart failure -- results from two observational studies with 5200 patients. Int. J. Cardiol. 2006;112(2):234-42.'),
+    ('Mozaffarian', 'Mozaffarian D, Nye R, Levy WC. Statin therapy is associated with lower mortality among patients with severe heart failure. Am. J. Cardiol. 2004;93(9):1124-9.'),
+    ('Horwich', 'Horwich TB, MacLellan WR, Fonarow GC. Statin therapy is associated with improved survival in ischemic and non-ischemic heart failure. J. Am. Coll. Cardiol. 2004;43(4):642-8.'),
     ('Go', 'Go AS, Lee WY, Yang J, Lo JC, Gurwitz JH. Statin therapy and risks for death and hospitalization in chronic heart failure. JAMA. 2006;296(17):2105-11.'),
     ('Foody', 'Foody JM, Shah R, Galusha D, Masoudi FA, Havranek EP, Krumholz HM. Statins and mortality among elderly patients hospitalized with heart failure. Circulation. 2006;113(8):1086-92.'),
-    ('CORONA', 'Kjekshus J, Apetrei E, Barrios V, Bohm M, Cleland JG, Cornel JH, et al. Rosuvastatin in older patients with systolic heart failure. N Engl J Med. 2007;357(22):2248-61.'),
+    ('CORONA', 'Kjekshus J, Apetrei E, Barrios V, Bohm M, Cleland JG, Cornel JH, et al. Rosuvastatin in older patients with systolic heart failure. N. Engl. J. Med. 2007;357(22):2248-61.'),
     ('GISSI', 'GISSI-HF Investigators. Effect of rosuvastatin in patients with chronic heart failure (the GISSI-HF trial): a randomised, double-blind, placebo-controlled trial. Lancet. 2008;372(9645):1231-9.'),
-    ('DerSimonianLaird', 'DerSimonian R, Laird N. Meta-analysis in clinical trials. Control Clin Trials. 1986;7(3):177-88.'),
-    ('HernanTTE1', 'Hernan MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. Am J Epidemiol. 2016;183(8):758-64.'),
+    ('DerSimonianLaird', 'DerSimonian R, Laird N. Meta-analysis in clinical trials. Control. Clin. Trials. 1986;7(3):177-88.'),
+    ('HernanTTE1', 'Hernan MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. Am. J. Epidemiol. 2016;183(8):758-64.'),
     ('HernanTTE2', 'Hernan MA, Wang W, Leaf DE. Target trial emulation: a framework for causal inference from observational data. JAMA. 2022;328(24):2446-7.'),
     ('Schmidli', 'Schmidli H, Gsteiger S, Roychoudhury S, O\'Hagan A, Spiegelhalter D, Neuenschwander B. Robust meta-analytic-predictive priors in clinical trials with historical control information. Biometrics. 2014;70(4):1023-32.'),
-    ('Verde', 'Verde PE, Ohmann C. Combining randomized and non-randomized evidence in clinical research: a review of methods and applications. Res Synth Methods. 2015;6(1):45-62.'),
-    ('Efthimiou', 'Efthimiou O, Mavridis D, Debray TPA, Samara M, Belger M, Salanti G, et al. Combining randomized and non-randomized evidence in network meta-analysis. Stat Med. 2017;36(8):1210-26.'),
+    ('Verde', 'Verde PE, Ohmann C. Combining randomized and non-randomized evidence in clinical research: a review of methods and applications. Res. Synth. Methods. 2015;6(1):45-62.'),
+    ('Efthimiou', 'Efthimiou O, Mavridis D, Debray TPA, Samara M, Belger M, Salanti G, et al. Combining randomized and non-randomized evidence in network meta-analysis. Stat. Med. 2017;36(8):1210-26.'),
 ]
 
 
@@ -180,7 +180,7 @@ where $\\Phi$ is the standard normal cumulative distribution function. The ratio
 
 ### Module T: Hierarchical Bayesian evidence integration
 
-When Module K indicates that RCT evidence is informationally insufficient, Module T combines RCT and observational evidence while discounting the observational likelihood for potential design-specific bias. Let $y_i$ denote the reported log effect size from study $i$ with standard error $s_i$. The RCT evidence contributes its full likelihood; the observational evidence contributes a power-prior-discounted likelihood with factor $\\alpha \\in [0, 1]$ {r('Ibrahim')}, so that $\\alpha = 0$ retains only RCTs and $\\alpha = 1$ gives observational data full weight. Between-study heterogeneity is modeled with a random-effects distribution $u_i \\sim \\text{{Normal}}(0, \\tau^2)$. Alternative effect measures such as restricted mean survival time can be substituted when proportional-hazards assumptions are questionable {r('RMST', 'Boyd')}. Evidence-based priors have been proposed to anchor historical expectations while limiting prior-data conflict {r('Sherry')}. We also present bias-adjusted normal-approximation analyses as a sensitivity check. Posterior distributions are sampled with an affine-invariant ensemble MCMC {r('emcee')} using 16 walkers, 1,000 warmup and 4,000 post-warmup iterations per walker, for each $\\alpha$ in $(0, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0)$. Convergence was assessed with split-R-hat and effective sample size (ESS) for the population mean log effect and the between-study heterogeneity, using accepted thresholds (split-R-hat < 1.05; ESS per parameter > 400). Trace plots for selected chains are provided as Supplementary Figure S1 and showed no obvious non-stationarity. Across all discounting factors the minimum ESS was {v['mc_min_ess']:.0f} and the maximum split-R-hat was {v['mc_max_rhat']:.3f}, both satisfying the convergence criteria. We report the full grid to show sensitivity and use $\\alpha$ = 0.3 as an illustrative moderate-discounting value without claiming it is universally optimal.
+When Module K indicates that RCT evidence is informationally insufficient, Module T combines RCT and observational evidence while discounting the observational likelihood for potential design-specific bias. Let $y_i$ denote the reported log effect size from study $i$ with standard error $s_i$. The RCT evidence contributes its full likelihood; the observational evidence contributes a power-prior-discounted likelihood with factor $\\alpha \\in [0, 1]$ {r('Ibrahim')}, so that $\\alpha = 0$ retains only RCTs and $\\alpha = 1$ gives observational data full weight. Between-study heterogeneity is modeled with a random-effects distribution $u_i \\sim \\text{{Normal}}(0, \\tau^2)$. Alternative effect measures such as restricted mean survival time can be substituted when proportional-hazards assumptions are questionable {r('RMST', 'Boyd')}. Evidence-based priors have been proposed to anchor historical expectations while limiting prior-data conflict {r('Sherry')}. We also present bias-adjusted normal-approximation analyses as a sensitivity check. Posterior distributions are sampled with an affine-invariant ensemble MCMC {r('emcee')} using 16 walkers, 1,000 warmup and 4,000 post-warmup iterations per walker, for each $\\alpha$ in $(0, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0)$. Convergence was assessed with split-R-hat and effective sample size (ESS) for the population mean log effect and the between-study heterogeneity, using accepted thresholds (split-R-hat < 1.05; ESS per parameter > 400). Trace plots for selected chains are provided as Supplementary Figures S1a (magnesium) and S1b (statins) and showed no obvious non-stationarity. Across all discounting factors the minimum ESS was {v['mc_min_ess']:.0f} and the maximum split-R-hat was {v['mc_max_rhat']:.3f}, both satisfying the convergence criteria. We report the full grid to show sensitivity and use $\\alpha$ = 0.3 as an illustrative moderate-discounting value without claiming it is universally optimal.
 
 ### Module H: Guideline interpretation
 
@@ -192,15 +192,7 @@ For magnesium in AMI we used study-level event counts extracted from published o
 
     results = f"""### Study-level data and risk-profile shift
 
-Study-level data are summarized in Table 3 (magnesium in AMI) and Table 4 (statins in HF). In the magnesium case, control-group mortality fell from a pre-thrombolysis weighted mean of {v['s1_rate']*100:.1f}% to {v['s2_rate']*100:.1f}% in ISIS-4, an event rate ratio of {v['mg_rate_ratio']:.2f} (Fig. 2). In the statins case, the RCT-to-observational event rate ratio was {v['st_rate_ratio']:.2f}, indicating that the RCT populations had roughly half the mortality event rate of the observational cohorts.
-
-**Table 3: Study-level data for magnesium in AMI**
-
-{bp._table_3(v)}
-
-**Table 4: Study-level data for statins in heart failure**
-
-{bp._table_4(v)}
+Study-level data are provided in Supplementary Table S1 (magnesium in AMI) and Supplementary Table S2 (statins in HF). In the magnesium case, control-group mortality fell from a pre-thrombolysis weighted mean of {v['s1_rate']*100:.1f}% to {v['s2_rate']*100:.1f}% in ISIS-4, an event rate ratio of {v['mg_rate_ratio']:.2f} (Fig. 2). In the statins case, the RCT-to-observational event rate ratio was {v['st_rate_ratio']:.2f}, indicating that the RCT populations had roughly half the mortality event rate of the observational cohorts.
 
 **Fig. 2** Risk-profile shift in the magnesium-in-AMI case. (A) Control-group mortality rates over time, with bubble size proportional to study sample size and colors indicating era. (B) Weighted mean control mortality by era.
 
@@ -216,49 +208,41 @@ At the ISIS-4 sample size (N = {v['N_isis4']:,}) and the pre-ISIS-4 pooled effec
 
 ### Frequentist meta-analysis and trial sequential analysis
 
-Random-effects meta-analysis of the 11 pre-ISIS-4 magnesium trials yielded OR = {mg_pre_or:.2f} (95% CI: {mg_pre_lo:.2f}-{mg_pre_hi:.2f}) with $I^2$ = {int(round(v['mg_pre_i2']))}%. Adding ISIS-4 changed the pooled estimate to OR = {mg_all_or:.2f} ({mg_all_lo:.2f}-{mg_all_hi:.2f}), but heterogeneity increased to $I^2$ = {mg_all_i2}% (Fig. 4). TSA under a fixed-effect accumulation produced a final cumulative $Z$ of {v['mg_z_fe']:.2f}, below the conventional boundary of {v['mg_z_alpha']:.2f}; under a random-effects accumulation the final $Z$ was {v['mg_z_re']:.2f}, crossing the O'Brien-Fleming boundary of {v['mg_obf']:.2f} (Fig. 5). This divergence reflects era-dependent treatment-effect heterogeneity driven by the ISIS-4 result.
+Forest plots for magnesium and statins are shown in Fig. 4. Random-effects meta-analysis of the 11 pre-ISIS-4 magnesium trials yielded OR = {mg_pre_or:.2f} (95% CI: {mg_pre_lo:.2f}-{mg_pre_hi:.2f}) with $I^2$ = {int(round(v['mg_pre_i2']))}%. Adding ISIS-4 changed the pooled estimate to OR = {mg_all_or:.2f} ({mg_all_lo:.2f}-{mg_all_hi:.2f}), but heterogeneity increased to $I^2$ = {mg_all_i2}% (Fig. 4A). TSA under a fixed-effect accumulation produced a final cumulative $Z$ of {v['mg_z_fe']:.2f}, below the conventional boundary of {v['mg_z_alpha']:.2f}; under a random-effects accumulation the final $Z$ was {v['mg_z_re']:.2f}, crossing the O'Brien-Fleming boundary of {v['mg_obf']:.2f} (Fig. 5). This divergence reflects era-dependent treatment-effect heterogeneity driven by the ISIS-4 result.
 
-**Fig. 4** Forest plot for magnesium in AMI. Individual study odds ratios are shown with 95% confidence intervals, color-coded by era. Pooled estimates include frequentist random-effects (pre-ISIS-4 and all trials) and Bayesian integrated estimates at selected discounting levels ($\\alpha$ = 0.3, 0.5, 1.0).
+For statins, observational studies showed a pooled HR of {st_obs_hr:.2f} (95% CI: {st_obs_lo:.2f}-{st_obs_hi:.2f}) with $I^2$ = {int(round(v['st_obs_i2']))}%, whereas the two RCTs (CORONA and GISSI-HF) yielded HR = {st_rct_hr:.2f} ({st_rct_lo:.2f}-{st_rct_hi:.2f}) with $I^2$ = {int(round(v['st_rct_i2']))}% (Fig. 4B).
 
-![Fig. 4](validation/figures/fig4_forest_plot_mg.png)
+**Fig. 4** Forest plots for (A) magnesium in AMI and (B) statins in heart failure. Individual study effect estimates are shown with 95% confidence intervals. Pooled estimates include frequentist random-effects and Bayesian integrated estimates at selected discounting levels ($\\alpha$ = 0.3, 0.5, 1.0 for magnesium; 0.1, 0.3, 0.5 for statins).
+
+![Fig. 4](validation/figures/fig4_forest_combined.png)
 
 **Fig. 5** Trial sequential analysis for magnesium in AMI. The cumulative Z-curve is plotted against cumulative events. Vertical dashed line indicates the optimal information size (OIS). Curved lines show O'Brien-Fleming monitoring boundaries.
 
 ![Fig. 5](validation/figures/fig5_tsa_magnesium.png)
 
-For statins, observational studies showed a pooled HR of {st_obs_hr:.2f} (95% CI: {st_obs_lo:.2f}-{st_obs_hi:.2f}) with $I^2$ = {int(round(v['st_obs_i2']))}%, whereas the two RCTs (CORONA and GISSI-HF) yielded HR = {st_rct_hr:.2f} ({st_rct_lo:.2f}-{st_rct_hi:.2f}) with $I^2$ = {int(round(v['st_rct_i2']))}% (Fig. 6).
-
-**Fig. 6** Forest plot for statins in heart failure. Individual study hazard ratios are shown with 95% confidence intervals, grouped by design. Pooled estimates include design-specific frequentist pooling and KOTHA-integrated estimates at selected discounting levels ($\\alpha$ = 0.1, 0.3, 0.5).
-
-![Fig. 6](validation/figures/fig6_forest_statins.png)
-
 ### Bayesian integration
 
-Bayesian integration (Table 5) showed that for magnesium, with $\\alpha$ = 0 (ISIS-4 only), the posterior median OR was {v['mg_pp_alpha0_or']:.2f} with {v['mg_pp_alpha0_p1']:.1f}% probability of benefit. With $\\alpha$ = {v['alpha_example']:.1f} the posterior shifted to OR = {v['mg_pp_alpha3_or']:.2f} (95% CrI: {v['mg_pp_alpha3_lo']:.2f}-{v['mg_pp_alpha3_hi']:.2f}), with {v['mg_pp_alpha3_p1']:.0f}% probability of benefit (Fig. 7A). For statins (Table 6), with $\\alpha$ = 0 (RCTs only) the posterior probability of benefit was {v['st_pp_alpha0_p1']:.1f}% and the probability of a clinically meaningful benefit (HR < 0.90) was {v['st_pp_alpha0_p09']:.1f}%. With $\\alpha$ = {v['alpha_example']:.1f} these probabilities rose to {v['st_pp_alpha3_p1']:.1f}% and {v['st_pp_alpha3_p09']:.1f}%, respectively (Fig. 7B). Even with moderate borrowing from observational evidence, conclusions remained uncertain.
+Bayesian integration (Table 3) showed that for magnesium, with $\\alpha$ = 0 (ISIS-4 only), the posterior median OR was {v['mg_pp_alpha0_or']:.2f} with {v['mg_pp_alpha0_p1']:.1f}% probability of benefit. With $\\alpha$ = {v['alpha_example']:.1f} the posterior shifted to OR = {v['mg_pp_alpha3_or']:.2f} (95% CrI: {v['mg_pp_alpha3_lo']:.2f}-{v['mg_pp_alpha3_hi']:.2f}), with {v['mg_pp_alpha3_p1']:.0f}% probability of benefit (Fig. 6A). For statins, with $\\alpha$ = 0 (RCTs only) the posterior probability of benefit was {v['st_pp_alpha0_p1']:.1f}% and the probability of a clinically meaningful benefit (HR < 0.90) was {v['st_pp_alpha0_p09']:.1f}%. With $\\alpha$ = {v['alpha_example']:.1f} these probabilities rose to {v['st_pp_alpha3_p1']:.1f}% and {v['st_pp_alpha3_p09']:.1f}%, respectively (Fig. 6B). Even with moderate borrowing from observational evidence, conclusions remained uncertain.
 
-**Table 5: Bayesian integration --- Magnesium in AMI (power prior)**
+**Table 3: Bayesian integration results by case and discounting factor (power prior)**
 
-{bp._pp_table(v['mg_pp_rows'], 'OR')}
+{bp._pp_table_combined(v)}
 
-**Table 6: Bayesian integration --- Statins in HF (power prior)**
+**Fig. 6** Sensitivity analysis of Bayesian integration to the discounting parameter $\\alpha$. (A) Magnesium in AMI. (B) Statins in HF. Three posterior probability thresholds are shown: P(effect < 1.0), P(effect < 0.90), and P(effect < 0.80). Horizontal dashed line indicates 95% probability.
 
-{bp._pp_table(v['st_pp_rows'], 'HR')}
-
-**Fig. 7** Sensitivity analysis of Bayesian integration to the discounting parameter $\\alpha$. (A) Magnesium in AMI. (B) Statins in HF. Three posterior probability thresholds are shown: P(effect < 1.0), P(effect < 0.90), and P(effect < 0.80). Horizontal dashed line indicates 95% probability.
-
-![Fig. 7](validation/figures/fig7_sensitivity_analysis.png)
+![Fig. 6](validation/figures/fig7_sensitivity_analysis.png)
 
 ### Module H assessment
 
-Module H results are summarized in Table 7 and Fig. 8. For magnesium, the OIS for the pre-ISIS-4 effect was {v['mg_ois']} events and the observed total was {v['mg_total_events']:,} (information fraction {v['mg_info_frac']:.0f}%). The TSA efficacy boundary was crossed under random-effects accumulation, but the pooled estimate was dominated by high between-study heterogeneity ($I^2$ = {mg_all_i2}%). The appropriate KOTHA classification is **{v['mg_kotha_classification']}** ({v['mg_kotha_rationale']}). For statins, if the observational effect (HR {v['st_obs_hr']:.2f}) represented the true effect in the target population, the required information size would be {v['st_ois']} events; the RCTs contributed {v['st_total_events']:,} events (information fraction {v['st_info_frac']:.0f}%). The cumulative $Z$ was {v['st_z_re']:.2f}, the efficacy boundary was not crossed, and the event rate ratio was {v['st_rate_ratio']:.2f}; the appropriate classification is **{v['st_kotha_classification']}** ({v['st_kotha_rationale']}). In both cases, standard GRADE would be more likely to conclude "no benefit demonstrated," whereas KOTHA explicitly labels the evidence as informationally insufficient.
+Module H results are summarized in Table 4 and Fig. 7. For magnesium, the OIS for the pre-ISIS-4 effect was {v['mg_ois']} events and the observed total was {v['mg_total_events']:,} (information fraction {v['mg_info_frac']:.0f}%). The TSA efficacy boundary was crossed under random-effects accumulation, but the pooled estimate was dominated by high between-study heterogeneity ($I^2$ = {mg_all_i2}%). The appropriate KOTHA classification is **{v['mg_kotha_classification']}** ({v['mg_kotha_rationale']}). For statins, if the observational effect (HR {v['st_obs_hr']:.2f}) represented the true effect in the target population, the required information size would be {v['st_ois']} events; the RCTs contributed {v['st_total_events']:,} events (information fraction {v['st_info_frac']:.0f}%). The cumulative $Z$ was {v['st_z_re']:.2f}, the efficacy boundary was not crossed, and the event rate ratio was {v['st_rate_ratio']:.2f}; the appropriate classification is **{v['st_kotha_classification']}** ({v['st_kotha_rationale']}). In both cases, standard GRADE would be more likely to conclude "no benefit demonstrated," whereas KOTHA explicitly labels the evidence as informationally insufficient.
 
-**Table 7: Module H assessment --- Standard GRADE vs. KOTHA-enhanced**
+**Table 4: Module H assessment --- Standard GRADE vs. KOTHA-enhanced**
 
 {bp._table_7(v)}
 
-**Fig. 8** Module H assessment comparison: standard GRADE vs. KOTHA-enhanced evaluation for both illustrative cases. Color coding indicates severity of concern (green = no concern, yellow = moderate, red = serious).
+**Fig. 7** Module H assessment comparison: standard GRADE vs. KOTHA-enhanced evaluation for both illustrative cases. Color coding indicates severity of concern (green = no concern, yellow = moderate, red = serious).
 
-![Fig. 8](validation/figures/fig8_module_h_comparison.png)"""
+![Fig. 7](validation/figures/fig8_module_h_comparison.png)"""
 
 
     discussion = f"""### Principal findings
