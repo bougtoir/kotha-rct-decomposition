@@ -593,7 +593,7 @@ def power_prior_meta(logY_rct, se_rct, logY_obs, se_obs, alpha_grid, n_iter=4000
     results = {}
     rng = np.random.default_rng(seed)
 
-    for alpha in alpha_grid:
+    for i, alpha in enumerate(alpha_grid):
         def log_prob(theta):
             mu, log_tau = theta
             if not np.isfinite(log_tau):
@@ -613,6 +613,8 @@ def power_prior_meta(logY_rct, se_rct, logY_obs, se_obs, alpha_grid, n_iter=4000
         # initial walkers around a small ball near tau ~ 0.1
         p0 = rng.normal([0.0, -2.3], 0.15, size=(n_walkers, 2))
         sampler = emcee.EnsembleSampler(n_walkers, 2, log_prob)
+        # seed emcee's internal RandomState for reproducibility
+        sampler.random_state = np.random.RandomState(seed + i).get_state()
         sampler.run_mcmc(p0, n_warmup + n_iter, progress=False)
         chain = sampler.get_chain(discard=n_warmup, thin=1)  # (n_iter, n_walkers, 2)
         chain = chain.transpose(1, 0, 2)  # (n_walkers, n_iter, 2)

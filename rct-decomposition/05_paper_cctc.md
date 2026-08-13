@@ -11,7 +11,7 @@ corresponding_author: [To be determined]
 
 **Methods**: KOTHA comprises three modules. Module K (Counterfactual Power Simulation) quantifies how enrollment-driven risk-profile shifts alter statistical power. Module T (Bayesian Evidence Integration) combines RCT and observational evidence using power-prior discounting. Module H (Guideline Interpreter) translates outputs into a structured GRADE-compatible assessment. We illustrated KOTHA using two cases of observational-RCT divergence: intravenous magnesium in acute myocardial infarction (12 trials, 1984-1995) and statins in heart failure (5 observational studies, 2 RCTs).
 
-**Results**: In the magnesium case, control event rates fell from 8.9% to 7.2%; the pre-ISIS-4 pooled OR was 0.54 (95% CI: 0.40-0.75) and the all-trials estimate 0.56 (0.38-0.83) with $I^2$ = 62%. In the statins case, observational HR was 0.72 (0.64-0.80) versus RCT HR 0.97 (0.90-1.05), with an RCT-to-observational event rate ratio of 0.53. Bayesian integration with moderate discounting (α = 0.3) yielded OR 0.74 (95% CrI: 0.25-1.40), P(OR < 1) = 81% for magnesium, and HR 0.85 (0.57-1.27), P(HR < 1) = 86% for statins.
+**Results**: In the magnesium case, control event rates fell from 8.9% to 7.2%; the pre-ISIS-4 pooled OR was 0.54 (95% CI: 0.40-0.75) and the all-trials estimate 0.56 (0.38-0.83) with $I^2$ = 62%. In the statins case, observational HR was 0.72 (0.64-0.80) versus RCT HR 0.97 (0.90-1.05), with an RCT-to-observational event rate ratio of 0.53. Bayesian integration with moderate discounting (α = 0.3) yielded OR 0.74 (95% CrI: 0.25-1.43), P(OR < 1) = 81% for magnesium, and HR 0.85 (0.55-1.24), P(HR < 1) = 87% for statins.
 
 **Conclusions**: KOTHA distinguishes "evidence of no effect" from "no evidence of effect". Module H classified magnesium as inconclusive with serious inconsistency (heterogeneity), and statins as inconclusive with serious indirectness.
 
@@ -78,7 +78,7 @@ where $\Phi$ is the standard normal cumulative distribution function. The ratio 
 
 ### Module T: Hierarchical Bayesian evidence integration
 
-When Module K indicates that RCT evidence is informationally insufficient, Module T combines RCT and observational evidence while discounting the observational likelihood for potential design-specific bias. Let $y_i$ denote the reported log effect size from study $i$ with standard error $s_i$. The RCT evidence contributes its full likelihood; the observational evidence contributes a power-prior-discounted likelihood with factor $\alpha \in [0, 1]$ [15], so that $\alpha = 0$ retains only RCTs and $\alpha = 1$ gives observational data full weight. Between-study heterogeneity is modeled with a random-effects distribution $u_i \sim \text{Normal}(0, \tau^2)$. Alternative effect measures such as restricted mean survival time can be substituted when proportional-hazards assumptions are questionable [12-13]. Evidence-based priors have been proposed to anchor historical expectations while limiting prior-data conflict [14]. We also present bias-adjusted normal-approximation analyses as a sensitivity check. Posterior distributions are sampled with an affine-invariant ensemble MCMC [16] using 16 walkers, 1,000 warmup and 4,000 post-warmup iterations per walker, for each $\alpha$ in $(0, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0)$. Convergence was assessed with split-R-hat and effective sample size (ESS) for the population mean log effect and the between-study heterogeneity. Across all discounting factors the minimum ESS was 929 and the maximum split-R-hat was 1.022, indicating satisfactory convergence. We report the full grid to show sensitivity and use $\alpha$ = 0.3 as an illustrative moderate-discounting value without claiming it is universally optimal.
+When Module K indicates that RCT evidence is informationally insufficient, Module T combines RCT and observational evidence while discounting the observational likelihood for potential design-specific bias. Let $y_i$ denote the reported log effect size from study $i$ with standard error $s_i$. The RCT evidence contributes its full likelihood; the observational evidence contributes a power-prior-discounted likelihood with factor $\alpha \in [0, 1]$ [15], so that $\alpha = 0$ retains only RCTs and $\alpha = 1$ gives observational data full weight. Between-study heterogeneity is modeled with a random-effects distribution $u_i \sim \text{Normal}(0, \tau^2)$. Alternative effect measures such as restricted mean survival time can be substituted when proportional-hazards assumptions are questionable [12-13]. Evidence-based priors have been proposed to anchor historical expectations while limiting prior-data conflict [14]. We also present bias-adjusted normal-approximation analyses as a sensitivity check. Posterior distributions are sampled with an affine-invariant ensemble MCMC [16] using 16 walkers, 1,000 warmup and 4,000 post-warmup iterations per walker, for each $\alpha$ in $(0, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0)$. Convergence was assessed with split-R-hat and effective sample size (ESS) for the population mean log effect and the between-study heterogeneity. Across all discounting factors the minimum ESS was 972 and the maximum split-R-hat was 1.024, indicating satisfactory convergence. We report the full grid to show sensitivity and use $\alpha$ = 0.3 as an illustrative moderate-discounting value without claiming it is universally optimal.
 
 ### Module H: Guideline interpretation
 
@@ -169,31 +169,31 @@ For statins, observational studies showed a pooled HR of 0.72 (95% CI: 0.64-0.80
 
 ### Bayesian integration
 
-Bayesian integration (Table 5) showed that for magnesium, with $\alpha$ = 0 (ISIS-4 only), the posterior median OR was 1.05 with 40.9% probability of benefit. With $\alpha$ = 0.3 the posterior shifted to OR = 0.74 (95% CrI: 0.25-1.40), with 81% probability of benefit (Fig. 7A). For statins (Table 6), with $\alpha$ = 0 (RCTs only) the posterior probability of benefit was 61.9% and the probability of a clinically meaningful benefit (HR < 0.90) was 21.8%. With $\alpha$ = 0.3 these probabilities rose to 85.8% and 65.6%, respectively (Fig. 7B). Even with moderate borrowing from observational evidence, conclusions remained uncertain.
+Bayesian integration (Table 5) showed that for magnesium, with $\alpha$ = 0 (ISIS-4 only), the posterior median OR was 1.05 with 42.8% probability of benefit. With $\alpha$ = 0.3 the posterior shifted to OR = 0.74 (95% CrI: 0.25-1.43), with 81% probability of benefit (Fig. 7A). For statins (Table 6), with $\alpha$ = 0 (RCTs only) the posterior probability of benefit was 62.9% and the probability of a clinically meaningful benefit (HR < 0.90) was 21.2%. With $\alpha$ = 0.3 these probabilities rose to 86.5% and 66.0%, respectively (Fig. 7B). Even with moderate borrowing from observational evidence, conclusions remained uncertain.
 
 **Table 5: Bayesian integration --- Magnesium in AMI (power prior)**
 
 | $\alpha$ | OR (95% CrI) | P(OR < 1) | P(OR < 0.90) | P(OR < 0.80) |
 |---|---|---|---|---|
-| 0.0 (ISIS-4 only) | 1.05 (0.05--38.33) | 40.9% | 31.5% | 24.9% |
-| 0.1 | 0.94 (0.16--3.56) | 57.8% | 46.2% | 36.4% |
-| 0.2 | 0.83 (0.22--1.82) | 71.1% | 58.3% | 45.6% |
-| 0.3 | 0.74 (0.25--1.40) | 81.4% | 70.2% | 57.7% |
-| 0.5 | 0.65 (0.28--1.10) | 93.8% | 86.5% | 75.1% |
-| 0.7 | 0.59 (0.29--0.96) | 98.3% | 94.9% | 87.2% |
-| 1.0 (full weight) | 0.55 (0.30--0.85) | 99.7% | 98.6% | 95.0% |
+| 0.0 (ISIS-4 only) | 1.05 (0.03--27.97) | 42.8% | 33.4% | 27.0% |
+| 0.1 | 0.93 (0.15--2.92) | 58.3% | 46.3% | 36.2% |
+| 0.2 | 0.83 (0.22--1.75) | 71.4% | 58.9% | 46.9% |
+| 0.3 | 0.74 (0.25--1.43) | 80.7% | 69.6% | 57.4% |
+| 0.5 | 0.63 (0.28--1.10) | 94.0% | 87.2% | 76.3% |
+| 0.7 | 0.59 (0.29--0.98) | 98.1% | 94.8% | 87.1% |
+| 1.0 (full weight) | 0.55 (0.32--0.87) | 99.6% | 98.4% | 94.4% |
 
 **Table 6: Bayesian integration --- Statins in HF (power prior)**
 
 | $\alpha$ | HR (95% CrI) | P(HR < 1) | P(HR < 0.90) | P(HR < 0.80) |
 |---|---|---|---|---|
-| 0.0 (RCTs only) | 0.97 (0.54--1.67) | 61.9% | 21.8% | 10.0% |
-| 0.1 | 0.92 (0.46--1.65) | 72.5% | 44.3% | 20.2% |
-| 0.2 | 0.88 (0.53--1.37) | 81.5% | 57.7% | 26.9% |
-| 0.3 | 0.85 (0.57--1.27) | 85.8% | 65.6% | 30.5% |
-| 0.5 | 0.82 (0.60--1.10) | 93.6% | 78.9% | 39.9% |
-| 0.7 | 0.80 (0.62--0.99) | 97.7% | 89.3% | 51.4% |
-| 1.0 (full weight) | 0.78 (0.64--0.94) | 99.3% | 94.6% | 61.7% |
+| 0.0 (RCTs only) | 0.97 (0.58--1.65) | 62.9% | 21.2% | 8.9% |
+| 0.1 | 0.92 (0.53--1.64) | 71.9% | 42.7% | 19.2% |
+| 0.2 | 0.89 (0.53--1.41) | 79.8% | 54.7% | 24.4% |
+| 0.3 | 0.85 (0.55--1.24) | 86.5% | 66.0% | 31.1% |
+| 0.5 | 0.82 (0.59--1.10) | 93.9% | 79.6% | 41.9% |
+| 0.7 | 0.80 (0.62--1.00) | 97.3% | 88.3% | 49.7% |
+| 1.0 (full weight) | 0.78 (0.64--0.93) | 99.3% | 95.7% | 63.3% |
 
 **Fig. 7** Sensitivity analysis of Bayesian integration to the discounting parameter $\alpha$. (A) Magnesium in AMI. (B) Statins in HF. Three posterior probability thresholds are shown: P(effect < 1.0), P(effect < 0.90), and P(effect < 0.80). Horizontal dashed line indicates 95% probability.
 
