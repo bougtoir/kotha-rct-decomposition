@@ -12,7 +12,7 @@
 
 **Methods**: The KOTHA Framework comprises three modules. Module K uses counterfactual power simulation comparing statistical power under actual RCT enrollment versus target-population scenarios. Module T integrates RCT and observational evidence through hierarchical Bayesian meta-analysis with power-prior discounting. Module H provides a structured checklist for guideline committees based on optimal information size (OIS), trial sequential analysis (TSA) boundaries, and the GRADE framework. We illustrated the framework using published data from two well-documented cases of observational-RCT divergence: (1) intravenous magnesium in acute myocardial infarction (12 trials, 1984--1995) and (2) statins in heart failure (5 observational studies, 2 RCTs).
 
-**Results**: In the magnesium case, control event rates declined from 8.9% (pre-thrombolysis era) to 7.2% (ISIS-4), reflecting temporal event dilution. The pre-ISIS-4 meta-analysis yielded OR = 0.54 (95% CI: 0.40--0.75), while the all-trials estimate was OR = 0.56 (0.38--0.83) with $I^2$ = 62%. Bayesian integration with power prior discounting ($\alpha$ = 0.3) yielded OR = 0.73 (95% CrI: 0.28--2.09), P(OR < 1) = 77%. In the statins case, observational studies showed HR = 0.72 (0.64--0.80) while RCTs showed HR = 0.97 (0.90--1.05), with event rate ratio of 0.53 (RCT/observational). Module H classified magnesium as inconclusive with serious imprecision (heterogeneity) and moderate indirectness and statins as inconclusive with serious indirectness, whereas standard GRADE evaluation would be more likely to conclude "no benefit demonstrated."
+**Results**: In the magnesium case, control event rates declined from 8.9% (pre-thrombolysis era) to 7.2% (ISIS-4), reflecting temporal event dilution. The pre-ISIS-4 meta-analysis yielded OR = 0.54 (95% CI: 0.40--0.75), while the all-trials estimate was OR = 0.56 (0.38--0.83) with $I^2$ = 62%. Bayesian integration with power prior discounting ($\alpha$ = 0.3) yielded OR = 0.73 (95% CrI: 0.28--2.09), P(OR < 1) = 77%. In the statins case, observational studies showed HR = 0.72 (0.64--0.80) while RCTs showed HR = 0.97 (0.90--1.05), with event rate ratio of 0.53 (RCT/observational). Module H classified magnesium as inconclusive with serious inconsistency (heterogeneity) and statins as inconclusive with serious indirectness, whereas standard GRADE evaluation would be more likely to conclude "no benefit demonstrated."
 
 **Conclusions**: The KOTHA Framework provides a reproducible, quantitative approach to distinguishing "evidence of no effect" from "no evidence of effect." Empirical illustration using two canonical cases of observational-RCT divergence demonstrates that the framework can identify structural information loss and produce more nuanced evidence assessments than standard approaches.
 
@@ -441,9 +441,9 @@ Fig. 8 presents the comparative GRADE assessment for both cases under standard a
 |---|---|---|---|---|
 | Risk of bias | Low | Low | Low | Low |
 | Inconsistency | High ($I^2$ = 62%) | High ($I^2$ = 62%) | Low ($I^2$ = 0%) | Low ($I^2$ = 0%) |
-| Indirectness | Not assessed | Moderate: event rate decreased by 18% | Not assessed | Serious: event rate decreased by 47% |
-| Imprecision | Serious | Serious (heterogeneity-driven) | Serious | Serious |
-| Overall certainty | Low | Very low | Moderate | Low |
+| Indirectness | Not assessed | Low: event rate decreased by 18% | Not assessed | Serious: event rate decreased by 47% |
+| Imprecision | Not serious (OIS met) | Not serious (OIS met, CI excludes null) | Not serious (OIS met, CI excludes clinically important benefit) | Not serious (OIS met, CI excludes clinically important benefit) |
+| Overall certainty | Low | Low | High | Low |
 | Recommendation | "No benefit demonstrated" | "Inconclusive; conditional recommendation" | "No benefit demonstrated" | "Inconclusive; conditional recommendation" |
 
 The key difference is in the **indirectness** domain: standard GRADE assessment does not typically evaluate whether enrollment-driven event dilution has reduced the informativeness of the evidence. KOTHA-enhanced assessment explicitly quantifies this through the event rate ratio and adjusts the certainty rating accordingly.
