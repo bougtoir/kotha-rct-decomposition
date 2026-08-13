@@ -2,7 +2,7 @@
 running_head: KOTHA Framework for Trial Design
 title: The KOTHA Framework: diagnosing structural information loss in randomized controlled trial meta-analyses to inform trial design
 authors: [To be determined]
-word_count: 2299
+word_count: 2361
 corresponding_author: [To be determined]
 ---
 ## Abstract
@@ -15,7 +15,7 @@ corresponding_author: [To be determined]
 
 **Conclusions**: KOTHA distinguishes "evidence of no effect" from "no evidence of effect". Module H classified magnesium as inconclusive with serious inconsistency (heterogeneity), and statins as inconclusive with serious indirectness.
 
-**Keywords**: randomized controlled trials, meta-analysis, observational studies, trial design, counterfactual simulation, Bayesian evidence synthesis, power analysis, GRADE, magnesium, statins, heart failure
+**Keywords**: randomized controlled trials, meta-analysis, observational studies, trial design, Bayesian evidence synthesis, GRADE
 
 ## Abbreviations
 
@@ -62,7 +62,7 @@ We therefore developed the Knowledge-driven Observational-Trial Harmonization Ap
 
 ### Overview
 
-The KOTHA Framework comprises three interconnected modules (Fig. 1). Module K (Counterfactual Power Simulation) quantifies how enrollment-driven risk-profile shifts reduce statistical power. Module T (Trial-Observational Bayesian Integration) combines RCT and observational evidence with explicit discounting for design-related bias. Module H (Hermeneutic Guideline Interpreter) translates module outputs into a structured GRADE assessment. Each module can be used independently, but the framework is most informative when applied in sequence.
+The KOTHA Framework comprises three interconnected modules (Fig. 1). Module K (Counterfactual Power Simulation) quantifies how enrollment-driven risk-profile shifts reduce statistical power. Module T (Trial-Observational Bayesian Integration) combines RCT and observational evidence with explicit discounting for design-related bias. Module H (Guideline Interpreter) translates module outputs into a structured GRADE assessment. Each module can be used independently, but the framework is most informative when applied in sequence.
 
 ### Module K: Counterfactual power simulation
 
@@ -78,7 +78,7 @@ where $\Phi$ is the standard normal cumulative distribution function. The ratio 
 
 ### Module T: Hierarchical Bayesian evidence integration
 
-When Module K indicates that RCT evidence is informationally insufficient, Module T combines RCT and observational evidence while discounting the observational likelihood for potential design-specific bias. Let $y_i$ denote the reported log effect size from study $i$ with standard error $s_i$. The RCT evidence contributes its full likelihood; the observational evidence contributes a power-prior-discounted likelihood with factor $\alpha \in [0, 1]$ [15], so that $\alpha = 0$ retains only RCTs and $\alpha = 1$ gives observational data full weight. Between-study heterogeneity is modeled with a random-effects distribution $u_i \sim \text{Normal}(0, \tau^2)$. Alternative effect measures such as restricted mean survival time can be substituted when proportional-hazards assumptions are questionable [12-13]. Evidence-based priors have been proposed to anchor historical expectations while limiting prior-data conflict [14]. We also present bias-adjusted normal-approximation analyses as a sensitivity check. Posterior distributions are sampled with an affine-invariant ensemble MCMC [16] using 16 walkers, 1,000 warmup and 4,000 post-warmup iterations per walker, for each $\alpha$ in $(0, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0)$. Convergence was assessed with split-R-hat and effective sample size (ESS) for the population mean log effect and the between-study heterogeneity. Across all discounting factors the minimum ESS was 972 and the maximum split-R-hat was 1.024, indicating satisfactory convergence. We report the full grid to show sensitivity and use $\alpha$ = 0.3 as an illustrative moderate-discounting value without claiming it is universally optimal.
+When Module K indicates that RCT evidence is informationally insufficient, Module T combines RCT and observational evidence while discounting the observational likelihood for potential design-specific bias. Let $y_i$ denote the reported log effect size from study $i$ with standard error $s_i$. The RCT evidence contributes its full likelihood; the observational evidence contributes a power-prior-discounted likelihood with factor $\alpha \in [0, 1]$ [15], so that $\alpha = 0$ retains only RCTs and $\alpha = 1$ gives observational data full weight. Between-study heterogeneity is modeled with a random-effects distribution $u_i \sim \text{Normal}(0, \tau^2)$. Alternative effect measures such as restricted mean survival time can be substituted when proportional-hazards assumptions are questionable [12-13]. Evidence-based priors have been proposed to anchor historical expectations while limiting prior-data conflict [14]. We also present bias-adjusted normal-approximation analyses as a sensitivity check. Posterior distributions are sampled with an affine-invariant ensemble MCMC [16] using 16 walkers, 1,000 warmup and 4,000 post-warmup iterations per walker, for each $\alpha$ in $(0, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0)$. Convergence was assessed with split-R-hat and effective sample size (ESS) for the population mean log effect and the between-study heterogeneity, using accepted thresholds (split-R-hat < 1.05; ESS per parameter > 400). Trace plots for selected chains are provided as Supplementary Figure S1 and showed no obvious non-stationarity. Across all discounting factors the minimum ESS was 972 and the maximum split-R-hat was 1.024, both satisfying the convergence criteria. We report the full grid to show sensitivity and use $\alpha$ = 0.3 as an illustrative moderate-discounting value without claiming it is universally optimal.
 
 ### Module H: Guideline interpretation
 
@@ -243,7 +243,7 @@ Target trial emulation uses observational data to mimic a specific RCT in order 
 
 The framework is reproducible from published aggregate data, follows the ADEMP reporting structure [10], and is illustrated with real, well-documented cases rather than synthetic examples. The modular design allows each component to be used independently.
 
-Limitations should be acknowledged. The cases are retrospective applications; prospective validation against trials whose results are not yet known would be stronger. Module T results are sensitive to the discounting parameter $\alpha$ and to assumptions about residual confounding; we present sensitivity analyses but do not claim a single preferred $\alpha$. The magnesium case involves genuine treatment-effect heterogeneity across thrombolysis eras, which Module K identifies but cannot fully explain. Finally, adoption by guideline groups will require institutional change beyond the method itself.
+Limitations should be acknowledged. The cases are retrospective applications of the framework to published aggregate data; individual patient data would strengthen risk-profile stratification and adjustment for confounders, and ecological bias may affect the representativeness assessment. Prospective validation against trials whose results are not yet known would be stronger. Module T treats the discounting parameter $\alpha$ as a fixed sensitivity parameter and is therefore sensitive to assumptions about residual confounding; we present the full grid of values but do not claim a single preferred $\alpha$. The magnesium case involves genuine treatment-effect heterogeneity across thrombolysis eras, which Module K identifies but cannot fully explain. Finally, adoption by guideline groups will require institutional change beyond the method itself.
 
 ## Conclusions
 
