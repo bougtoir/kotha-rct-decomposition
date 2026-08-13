@@ -949,7 +949,7 @@ def fig1_framework_overview():
         ax.annotate('', xy=(max(min(x, 7.3), 2.7), 2.5), xytext=(x, 3.4),
                     arrowprops=dict(arrowstyle='->', color=C_GREY, lw=1.5))
     
-    fig.savefig(f'{OUTDIR}/fig1_framework_overview.png', dpi=300)
+    fig.savefig(f'{OUTDIR}/fig1_framework_overview.png', dpi=500)
     plt.close()
     print(f"Saved: {OUTDIR}/fig1_framework_overview.png")
 
@@ -996,7 +996,7 @@ def fig2_risk_profile_shift(mg_data):
     ax2.grid(True, alpha=0.3)
     
     fig.tight_layout()
-    fig.savefig(f'{OUTDIR}/fig2_risk_profile_shift.png', dpi=300)
+    fig.savefig(f'{OUTDIR}/fig2_risk_profile_shift.png', dpi=500)
     plt.close()
     print(f"Saved: {OUTDIR}/fig2_risk_profile_shift.png")
 
@@ -1050,7 +1050,7 @@ def fig3_power_curves(mk_results_mg, mk_results_st):
     ax2.grid(True, alpha=0.3)
     
     fig.tight_layout()
-    fig.savefig(f'{OUTDIR}/fig3_power_curves.png', dpi=300)
+    fig.savefig(f'{OUTDIR}/fig3_power_curves.png', dpi=500)
     plt.close()
     print(f"Saved: {OUTDIR}/fig3_power_curves.png")
 
@@ -1160,7 +1160,7 @@ def fig4_forest_plot(mg_data, mt_results_mg):
     ax.legend(handles=handles, loc='lower right', fontsize=9)
     
     fig.tight_layout()
-    fig.savefig(f'{OUTDIR}/fig4_forest_plot_mg.png', dpi=300)
+    fig.savefig(f'{OUTDIR}/fig4_forest_plot_mg.png', dpi=500)
     plt.close()
     print(f"Saved: {OUTDIR}/fig4_forest_plot_mg.png")
 
@@ -1227,7 +1227,7 @@ def fig5_tsa_plot(mh_results_mg):
     ax.grid(True, alpha=0.3)
     
     fig.tight_layout()
-    fig.savefig(f'{OUTDIR}/fig5_tsa_magnesium.png', dpi=300)
+    fig.savefig(f'{OUTDIR}/fig5_tsa_magnesium.png', dpi=500)
     plt.close()
     print(f"Saved: {OUTDIR}/fig5_tsa_magnesium.png")
 
@@ -1341,7 +1341,7 @@ def fig6_forest_statins(statin_obs, statin_rct, mt_results_st):
     ax.legend(handles=handles, loc='lower right', fontsize=9)
     
     fig.tight_layout()
-    fig.savefig(f'{OUTDIR}/fig6_forest_statins.png', dpi=300)
+    fig.savefig(f'{OUTDIR}/fig6_forest_statins.png', dpi=500)
     plt.close()
     print(f"Saved: {OUTDIR}/fig6_forest_statins.png")
 
@@ -1397,7 +1397,7 @@ def fig7_sensitivity_heatmap(mt_results_mg, mt_results_st):
     ax2.text(0.01, 96, '95%', fontsize=8, color=C_GREY)
     
     fig.tight_layout()
-    fig.savefig(f'{OUTDIR}/fig7_sensitivity_analysis.png', dpi=300)
+    fig.savefig(f'{OUTDIR}/fig7_sensitivity_analysis.png', dpi=500)
     plt.close()
     print(f"Saved: {OUTDIR}/fig7_sensitivity_analysis.png")
 
@@ -1528,7 +1528,7 @@ def fig8_module_h_summary(mh_mg, mh_st, mk_mg, mk_st):
                  fontweight='bold', fontsize=14, pad=20)
 
     fig.tight_layout()
-    fig.savefig(f'{OUTDIR}/fig8_module_h_comparison.png', dpi=300)
+    fig.savefig(f'{OUTDIR}/fig8_module_h_comparison.png', dpi=500)
     plt.close()
     print(f"Saved: {OUTDIR}/fig8_module_h_comparison.png")
 
@@ -1567,7 +1567,7 @@ def figS1_trace_mcmc(mt_mg, mt_st):
     fig.suptitle('Supplementary Figure S1: MCMC trace plots by case, parameter and discounting factor',
                  fontweight='bold', fontsize=12)
     fig.tight_layout(h_pad=2.0, w_pad=1.0)
-    fig.savefig(f'{OUTDIR}/figS1_trace_mcmc.png', dpi=300)
+    fig.savefig(f'{OUTDIR}/figS1_trace_mcmc.png', dpi=500)
     plt.close()
     print(f"Saved: {OUTDIR}/figS1_trace_mcmc.png")
 
