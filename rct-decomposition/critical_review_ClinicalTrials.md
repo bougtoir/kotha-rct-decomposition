@@ -27,7 +27,7 @@ Manuscript: "The KOTHA Framework: diagnosing structural information loss in rand
 
 | Item | Severity | Finding | Proposed fix |
 |---|---|---|---|
-| Main-text count | Low | 4 figures + 2 numbered tables = 6 items, satisfying the journal limit. An additional abbreviations table is unnumbered and serves as notation support. | If the journal counts unnumbered tables, convert the abbreviations list to inline text; otherwise leave as is. |
+| Main-text count | Low | 4 figures + 2 numbered tables = 6 items, satisfying the journal limit. The abbreviations section is rendered as a definition list, not a table, so it does not count toward the 6-table/figure limit. | No change. |
 | Supplementary reorganization | Low | Original CCTC Tables 1/3 and Figs. 5/6/7 correctly moved to Supplementary Tables S1/S4 and Supplementary Figs. S2–S4. Trace plots remain S1a/b. | No change. |
 | Figure 4 caption | Low | Lists selected α levels for Bayesian pooled estimates; matches text. | No change. |
 | Table 2 color coding | Low | Uses color for concern level; ensure gray-scale readability or add text labels. | Verify in the editable PPTX that colors are also encoded by wording (e.g., "serious"). |
