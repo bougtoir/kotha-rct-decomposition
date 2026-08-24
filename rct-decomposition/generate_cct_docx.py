@@ -47,7 +47,7 @@ def _rewrite_docx_timestamps(docx_path):
     os.remove(_tmp)
 
 
-def build(input_md, output_docx):
+def build(input_md, output_docx, journal='Contemporary Clinical Trials Communications', strip_brackets=False):
     BASE = os.path.dirname(os.path.abspath(input_md))
 
     doc = Document()
@@ -150,7 +150,7 @@ def build(input_md, output_docx):
         if space_after is not None:
             spacing.set(qn('w:after'), str(space_after))
 
-    def apply_citation_superscript(p_elem):
+    def apply_citation_superscript(p_elem, strip_brackets=False):
         """Convert bracketed citation numbers (e.g. [1], [2-3]) to superscript."""
         CIT_RE = re.compile(r'(\[\d+(?:-\d+)?\])')
         for r in list(p_elem.findall(qn('w:r'))):
@@ -176,11 +176,13 @@ def build(input_md, output_docx):
                     new_rPr = OxmlElement('w:rPr')
                 new_t = OxmlElement('w:t')
                 new_t.set(qn('xml:space'), 'preserve')
-                new_t.text = seg
                 if CIT_RE.match(seg):
                     vert = OxmlElement('w:vertAlign')
                     vert.set(qn('w:val'), 'superscript')
                     new_rPr.append(vert)
+                    new_t.text = seg[1:-1] if strip_brackets else seg
+                else:
+                    new_t.text = seg
                 if len(new_rPr) > 0:
                     new_r.append(new_rPr)
                 new_r.append(new_t)
@@ -266,7 +268,7 @@ def build(input_md, output_docx):
         apply_para_format(p_elem, style=style, align=align)
         for r in p_elem.findall(qn('w:r')):
             set_run_font(r, size=12)
-        apply_citation_superscript(p_elem)
+        apply_citation_superscript(p_elem, strip_brackets=strip_brackets)
         return p_elem
 
     def add_table(headers, rows):
@@ -404,7 +406,7 @@ def build(input_md, output_docx):
         add_para(f"Corresponding author address: {metadata['corresponding_author_address']}")
     if metadata.get('word_count'):
         add_para(f"Word count: {metadata['word_count']}")
-    add_para("Prepared for submission to Contemporary Clinical Trials Communications", italic=True)
+    add_para(f"Prepared for submission to {journal}", italic=True)
     doc.add_page_break()
 
     # ============================================================
@@ -661,5 +663,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Convert CCT markdown to docx')
     parser.add_argument('input_md', nargs='?', default='05_paper_cct.md')
     parser.add_argument('output_docx', nargs='?', default='KOTHA_Framework_CCT.docx')
+    parser.add_argument('--journal', default='Contemporary Clinical Trials Communications')
+    parser.add_argument('--strip-citation-brackets', action='store_true')
     args = parser.parse_args()
-    build(args.input_md, args.output_docx)
+    build(args.input_md, args.output_docx, journal=args.journal, strip_brackets=args.strip_citation_brackets)

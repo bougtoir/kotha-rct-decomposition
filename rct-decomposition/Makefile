@@ -1,4 +1,4 @@
-.PHONY: all validate build generic cctc clean
+.PHONY: all validate build generic cctc clinical_trials clean
 
 all: validate build
 
@@ -18,8 +18,13 @@ cctc:
 	python build_tables_docx.py --src KOTHA_Framework_CCTC.docx --out KOTHA_Framework_CCTC_tables.docx
 	python build_supplementary_tables_docx.py --out KOTHA_Framework_CCTC_supplementary_tables.docx
 
+clinical_trials:
+	python build_cover_letter_clinical_trials.py
+	python build_paper_clinical_trials.py
+
 clean:
 	rm -f 04_paper_rsm.md KOTHA_Framework_RSM.docx
 	rm -f 04_paper_generic.md KOTHA_Framework_generic.docx
 	rm -f 05_paper_cctc.md KOTHA_Framework_CCTC.docx KOTHA_Framework_CCTC_tables.docx KOTHA_Framework_CCTC_figures.pptx KOTHA_Framework_CCTC_supplementary_tables.docx
-	rm -rf validation/figures/*.png validation/results_summary.txt
+	rm -f 05_paper_clinical_trials.md KOTHA_Framework_ClinicalTrials*.docx KOTHA_Framework_ClinicalTrials*.pptx cover_letter_ClinicalTrials.docx submission_package_ClinicalTrials.zip
+	rm -rf ClinicalTrials_figures validation/figures/*.png validation/results_summary.txt

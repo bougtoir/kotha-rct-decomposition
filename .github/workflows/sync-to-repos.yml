@@ -126,6 +126,7 @@ jobs:
           declare -A SUBDIR_MAP
 
           # Problem B fixes (branches with unrelated folders mixed in)
+          SUBDIR_MAP["devin/1774274321-rct-decomposition-paper"]="rct-decomposition"
           SUBDIR_MAP["devin/1778846737-flood-prediction-models"]="flood-prediction-review"
           SUBDIR_MAP["devin/1777462980-spectral-causality-brainstorm"]="spectral-causality-brainstorm"
           SUBDIR_MAP["devin/1777863337-spectral-causality-jmlr"]="spectral-causality-jmlr"
