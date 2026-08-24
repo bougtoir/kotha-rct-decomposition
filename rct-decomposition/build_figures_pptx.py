@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 """Build an editable PPTX with one slide per figure from 05_paper_cct.md."""
 import argparse
+import os
 import re
+import shutil
+import tempfile
+import zipfile
 from pathlib import Path
 from pptx import Presentation
 from pptx.util import Inches, Pt
@@ -9,26 +13,26 @@ from pptx.enum.text import PP_ALIGN
 
 
 def clean_math(latex):
-    """Convert a small subset of LaTeX math to plain Unicode text for PPTX captions."""
+    """Convert a small subset of LaTeX math to plain ASCII text for PPTX captions."""
     text = latex
     replacements = [
         ('\\text{', ''), ('}', ''),
-        ('\\sim', '~'), ('\\cdot', '\u00b7'),
-        ('\\sqrt', '\u221a'), ('\\sum', '\u03a3'),
-        ('\\prod', '\u220f'), ('\\alpha', '\u03b1'),
-        ('\\beta', '\u03b2'), ('\\mu', '\u03bc'),
-        ('\\tau', '\u03c4'), ('\\theta', '\u03b8'),
-        ('\\sigma', '\u03c3'), ('\\delta', '\u03b4'),
-        ('\\rho', '\u03c1'), ('\\Phi', '\u03a6'),
-        ('\\phi', '\u03c6'), ('\\in', '\u2208'),
-        ('\\leq', '\u2264'), ('\\geq', '\u2265'),
-        ('\\neq', '\u2260'), ('\\times', '\u00d7'),
-        ('\\to', '\u2192'), ('\\approx', '\u2248'),
+        ('\\sim', '~'), ('\\cdot', '*'),
+        ('\\sqrt', 'sqrt'), ('\\sum', 'sum'),
+        ('\\prod', 'prod'), ('\\alpha', 'alpha'),
+        ('\\beta', 'beta'), ('\\mu', 'mu'),
+        ('\\tau', 'tau'), ('\\theta', 'theta'),
+        ('\\sigma', 'sigma'), ('\\delta', 'delta'),
+        ('\\rho', 'rho'), ('\\Phi', 'Phi'),
+        ('\\phi', 'phi'), ('\\in', ' in '),
+        ('\\leq', '<='), ('\\geq', '>='),
+        ('\\neq', '!='), ('\\times', 'x'),
+        ('\\to', '->'), ('\\approx', '~'),
         ('\\frac', ''), ('\\left', ''),
         ('\\right', ''), ('\\quad', '  '),
         ('\\hat', ''), ('\\log', 'log'),
         ('\\exp', 'exp'), ('\\mid', '|'),
-        ('^2', '\u00b2'),
+        ('^2', '^2'),
     ]
     for old, new in replacements:
         text = text.replace(old, new)
@@ -36,6 +40,29 @@ def clean_math(latex):
     text = re.sub(r'\^\{([^}]+)\}', r'^\1', text)
     text = text.replace('\\', '')
     return text
+
+
+def _sanitize_pptx(path):
+    """Replace typographic and multibyte characters in PPTX XML with ASCII."""
+    tmp = path + '.tmp'
+    try:
+        with zipfile.ZipFile(path, 'r') as zin, zipfile.ZipFile(tmp, 'w', zipfile.ZIP_DEFLATED) as zout:
+            for info in zin.infolist():
+                data = zin.read(info.filename)
+                if info.filename.endswith('.xml'):
+                    text = data.decode('utf-8')
+                    text = text.replace('\u2039', '').replace('\u203a', '')
+                    text = text.replace('\u2018', "'").replace('\u2019', "'")
+                    text = text.replace('\u201c', '"').replace('\u201d', '"')
+                    text = text.replace('\u2013', '-').replace('\u2014', '-')
+                    text = text.replace('\u00a0', ' ')
+                    data = text.encode('utf-8')
+                zout.writestr(info, data)
+        shutil.move(tmp, path)
+    except Exception:
+        if os.path.exists(tmp):
+            os.remove(tmp)
+        raise
 
 
 def build(figures_md_path, out_path):
@@ -79,6 +106,7 @@ def build(figures_md_path, out_path):
         p2.alignment = PP_ALIGN.LEFT
 
     prs.save(out_path)
+    _sanitize_pptx(out_path)
     print(f'Saved {out_path}')
 
 

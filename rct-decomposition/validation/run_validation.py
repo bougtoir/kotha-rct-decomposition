@@ -161,7 +161,7 @@ def power_analytical(p_control, OR, n_total, alpha=0.05):
     # Schoenfeld formula for log-rank: power based on number of events
     z_alpha = stats.norm.ppf(1 - alpha/2)
     logOR = np.log(OR)
-    # SE of log(OR) ≈ 2/sqrt(D) where D is total events
+    # SE of log(OR) ~ 2/sqrt(D) where D is total events
     se_logOR = 2 / np.sqrt(total_events) if total_events > 0 else np.inf
     z_effect = abs(logOR) / se_logOR
     power = stats.norm.cdf(z_effect - z_alpha)
@@ -380,14 +380,14 @@ def run_module_k_magnesium(mg_data):
         pre_isis['logOR'].values, pre_isis['se'].values
     )
     print(f"\nPre-ISIS-4 meta-analysis (RE): OR = {np.exp(pooled_pre):.2f} "
-          f"(95% CI: {np.exp(pooled_pre - 1.96*se_pre):.2f}-{np.exp(pooled_pre + 1.96*se_pre):.2f}), I²={I2_pre:.0f}%")
+          f"(95% CI: {np.exp(pooled_pre - 1.96*se_pre):.2f}-{np.exp(pooled_pre + 1.96*se_pre):.2f}), I^2={I2_pre:.0f}%")
     
     # All-trials meta-analysis
     pooled_all, se_all, tau2_all, I2_all = random_effects_meta(
         mg_data['logOR'].values, mg_data['se'].values
     )
     print(f"All-trials meta-analysis (RE):   OR = {np.exp(pooled_all):.2f} "
-          f"(95% CI: {np.exp(pooled_all - 1.96*se_all):.2f}-{np.exp(pooled_all + 1.96*se_all):.2f}), I²={I2_all:.0f}%")
+          f"(95% CI: {np.exp(pooled_all - 1.96*se_all):.2f}-{np.exp(pooled_all + 1.96*se_all):.2f}), I^2={I2_all:.0f}%")
     
     # Power analysis across scenarios
     # True effect: use pre-ISIS-4 pooled OR as the "real" effect
@@ -451,14 +451,14 @@ def run_module_k_statins(statin_obs, statin_rct):
         statin_obs['logHR'].values, statin_obs['se'].values
     )
     print(f"Observational meta-analysis (RE): HR = {np.exp(pooled_obs):.2f} "
-          f"(95% CI: {np.exp(pooled_obs - 1.96*se_obs):.2f}-{np.exp(pooled_obs + 1.96*se_obs):.2f}), I²={I2_obs:.0f}%")
+          f"(95% CI: {np.exp(pooled_obs - 1.96*se_obs):.2f}-{np.exp(pooled_obs + 1.96*se_obs):.2f}), I^2={I2_obs:.0f}%")
     
     # RCT pooled effect
     pooled_rct, se_rct, tau2_rct, I2_rct = random_effects_meta(
         statin_rct['logHR'].values, statin_rct['se'].values
     )
     print(f"RCT meta-analysis (RE):           HR = {np.exp(pooled_rct):.2f} "
-          f"(95% CI: {np.exp(pooled_rct - 1.96*se_rct):.2f}-{np.exp(pooled_rct + 1.96*se_rct):.2f}), I²={I2_rct:.0f}%")
+          f"(95% CI: {np.exp(pooled_rct - 1.96*se_rct):.2f}-{np.exp(pooled_rct + 1.96*se_rct):.2f}), I^2={I2_rct:.0f}%")
     
     # Event rates
     # Control-group event probabilities are derived directly from the aggregate
@@ -523,7 +523,7 @@ def run_module_k_statins(statin_obs, statin_rct):
 # MODULE T: Bayesian Hierarchical Meta-Analysis (MCMC)
 # ============================================================
 
-# bayesian_meta_analysis removed — too slow with per-study random effects.
+# bayesian_meta_analysis removed - too slow with per-study random effects.
 # Use power_prior_meta (fast 2-parameter MCMC) and bias_adjusted_normal instead.
 
 def bias_adjusted_normal(logY_rct, se_rct, logY_obs, se_obs, delta_grid):
@@ -666,7 +666,7 @@ def run_module_t_magnesium(mg_data):
     # pre-thrombolysis vs thrombolysis-era as different "designs"
     # OR: treat pre-ISIS-4 as "informative prior" and ISIS-4 as "new RCT"
     
-    # Approach: Power prior — discount the small trials by alpha
+    # Approach: Power prior - discount the small trials by alpha
     # and see how much weight the pre-ISIS-4 evidence should get
     
     pre_isis = mg_data[mg_data['study'] != 'ISIS-4 1995']
@@ -754,7 +754,7 @@ def run_module_h_magnesium(mg_data, mk_results):
     info_fraction_pre = total_events_pre / ois
     
     print(f"\nAssessment 1: Information Sufficiency")
-    print(f"  OIS (for OR = {true_OR:.2f}, α=0.05, power=80%) = {ois:.0f} events")
+    print(f"  OIS (for OR = {true_OR:.2f}, alpha=0.05, power=80%) = {ois:.0f} events")
     print(f"  Total events (all trials): {total_events:.0f}")
     print(f"  Total events (pre-ISIS-4): {total_events_pre:.0f}")
     print(f"  Information fraction (all): {info_fraction:.0%}")
@@ -810,7 +810,7 @@ def run_module_h_magnesium(mg_data, mk_results):
     kotha = kotha_assessment(
         info_fraction, cum_z_re[-1], ci_lo, ci_hi, rate_ratio, mk_results['I2_all']
     )
-    print(f"  → {kotha['classification']}: {kotha['rationale']}")
+    print(f"  -> {kotha['classification']}: {kotha['rationale']}")
     
     return {
         'ois': ois, 'total_events': total_events, 'total_events_pre': total_events_pre,
@@ -879,7 +879,7 @@ def run_module_h_statins(statin_obs, statin_rct, mk_results):
     kotha = kotha_assessment(
         info_fraction, final_z_re, ci_lo, ci_hi, rate_ratio, mk_results['I2_rct']
     )
-    print(f"  → {kotha['classification']}: {kotha['rationale']}")
+    print(f"  -> {kotha['classification']}: {kotha['rationale']}")
     
     return {
         'ois': ois, 'total_events': total_events, 'info_fraction': info_fraction,
@@ -974,7 +974,7 @@ def fig1_framework_overview():
 
 
 def fig2_risk_profile_shift(mg_data):
-    """Fig 2: Risk-profile shift — control event rates across trials."""
+    """Fig 2: Risk-profile shift - control event rates across trials."""
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
     
     # Panel A: Control event rates by year
@@ -1075,7 +1075,7 @@ def fig3_power_curves(mk_results_mg, mk_results_st):
 
 
 def fig4_forest_plot(mg_data, mt_results_mg):
-    """Fig 4: Forest plot — individual studies and integrated estimates."""
+    """Fig 4: Forest plot - individual studies and integrated estimates."""
     mg = mg_data.copy()
     
     # Compute OR and CI for each study
@@ -1116,7 +1116,7 @@ def fig4_forest_plot(mg_data, mt_results_mg):
     for alpha in [0.3, 0.5, 1.0]:
         r = pp_results[alpha]
         pooled_entries.append({
-            'name': f'Bayesian integrated (α={alpha})',
+            'name': f'Bayesian integrated (alpha={alpha})',
             'OR': r['hr_median'], 'ci_lo': r['hr_lo'], 'ci_hi': r['hr_hi'],
             'era': 'bayesian'
         })
@@ -1213,7 +1213,7 @@ def fig5_tsa_plot(mh_results_mg):
     
     # Conventional boundaries
     z_alpha = stats.norm.ppf(0.975)
-    ax.axhline(z_alpha, color=C_GREY, linestyle='--', lw=1, label=f'Conventional α=0.05 (Z={z_alpha:.2f})')
+    ax.axhline(z_alpha, color=C_GREY, linestyle='--', lw=1, label=f'Conventional alpha=0.05 (Z={z_alpha:.2f})')
     ax.axhline(-z_alpha, color=C_GREY, linestyle='--', lw=1)
     
     # OIS line
@@ -1252,7 +1252,7 @@ def fig5_tsa_plot(mh_results_mg):
 
 
 def fig6_forest_statins(statin_obs, statin_rct, mt_results_st):
-    """Fig 6: Forest plot — statins in HF with Bayesian integration."""
+    """Fig 6: Forest plot - statins in HF with Bayesian integration."""
     pp_results = mt_results_st['power_prior']
     
     all_studies = []
@@ -1291,7 +1291,7 @@ def fig6_forest_statins(statin_obs, statin_rct, mt_results_st):
     for alpha in [0.1, 0.3, 0.5]:
         r = pp_results[alpha]
         pooled_entries.append({
-            'name': f'KOTHA integrated (α={alpha})',
+            'name': f'KOTHA integrated (alpha={alpha})',
             'HR': r['hr_median'], 'ci_lo': r['hr_lo'], 'ci_hi': r['hr_hi'],
             'type': 'bayesian'
         })
@@ -1393,7 +1393,7 @@ def fig4_forest_combined(mg_data, mt_results_mg, statin_obs, statin_rct, mt_resu
     for alpha in [0.3, 0.5, 1.0]:
         r = pp_mg[alpha]
         mg_pooled.append({
-            'name': f'Bayesian integrated (α={alpha})',
+            'name': f'Bayesian integrated (alpha={alpha})',
             'OR': r['hr_median'], 'ci_lo': r['hr_lo'], 'ci_hi': r['hr_hi'], 'era': 'bayesian'
         })
 
@@ -1428,7 +1428,7 @@ def fig4_forest_combined(mg_data, mt_results_mg, statin_obs, statin_rct, mt_resu
     for alpha in [0.1, 0.3, 0.5]:
         r = pp_st[alpha]
         st_pooled.append({
-            'name': f'KOTHA integrated (α={alpha})',
+            'name': f'KOTHA integrated (alpha={alpha})',
             'HR': r['hr_median'], 'ci_lo': r['hr_lo'], 'ci_hi': r['hr_hi'], 'type': 'bayesian'
         })
 
@@ -1547,7 +1547,7 @@ def fig4_forest_combined(mg_data, mt_results_mg, statin_obs, statin_rct, mt_resu
 
 
 def fig7_sensitivity_heatmap(mt_results_mg, mt_results_st):
-    """Fig 7: Sensitivity analysis heatmap — P(benefit) by alpha and case."""
+    """Fig 7: Sensitivity analysis heatmap - P(benefit) by alpha and case."""
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
     
     alphas = [0.0, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0]
@@ -1565,7 +1565,7 @@ def fig7_sensitivity_heatmap(mt_results_mg, mt_results_st):
     ]):
         ax1.plot(alphas, metrics_mg[:, i], f'-{marker}', color=color, lw=2, ms=8, label=label)
     
-    ax1.set_xlabel('Discounting parameter α')
+    ax1.set_xlabel('Discounting parameter alpha')
     ax1.set_ylabel('Posterior probability (%)')
     ax1.set_title('A. Magnesium in AMI', fontweight='bold')
     ax1.legend()
@@ -1587,7 +1587,7 @@ def fig7_sensitivity_heatmap(mt_results_mg, mt_results_st):
     ]):
         ax2.plot(alphas, metrics_st[:, i], f'-{marker}', color=color, lw=2, ms=8, label=label)
     
-    ax2.set_xlabel('Discounting parameter α')
+    ax2.set_xlabel('Discounting parameter alpha')
     ax2.set_ylabel('Posterior probability (%)')
     ax2.set_title('B. Statins in Heart Failure', fontweight='bold')
     ax2.legend()
@@ -1649,7 +1649,7 @@ def _imprecision_cell(info_fraction, ci_lo, ci_hi, effect='OR'):
 
 
 def fig8_module_h_summary(mh_mg, mh_st, mk_mg, mk_st):
-    """Fig 8: Module H assessment comparison — standard vs KOTHA-enhanced.
+    """Fig 8: Module H assessment comparison - standard vs KOTHA-enhanced.
 
     Uses the same KOTHA outputs that populate Table 7 so the figure and
     manuscript table remain consistent.
@@ -1740,7 +1740,7 @@ def figS1_trace_mcmc(mt_mg, mt_st):
         ('magnesium', 'Mg AMI, log OR', 'log effect', mt_mg['power_prior'], 'figS1a_trace_mcmc_magnesium.png', 'Supplementary Figure S1a'),
         ('statins', 'Statins HF, log HR', 'log effect', mt_st['power_prior'], 'figS1b_trace_mcmc_statins.png', 'Supplementary Figure S1b'),
     ]
-    param_names = ['log effect', 'log τ']
+    param_names = ['log effect', 'log tau']
 
     for case_key, case_label, _, pp, filename, sup_fig_label in cases:
         n_rows = len(param_names)
@@ -1755,7 +1755,7 @@ def figS1_trace_mcmc(mt_mg, mt_st):
                 chain = pp[alpha]['chain']  # (n_walkers, n_iter, n_params)
                 for w in range(chain.shape[0]):
                     ax.plot(chain[w, :, p], alpha=0.25, linewidth=0.7)
-                ax.set_title(f'{case_label} — {p_name}, α = {alpha}', fontsize=9)
+                ax.set_title(f'{case_label} - {p_name}, alpha = {alpha}', fontsize=9)
                 ax.set_ylabel(p_name, fontsize=8)
                 if p == n_rows - 1:
                     ax.set_xlabel('Iteration (post-warmup)', fontsize=8)
@@ -1791,7 +1791,7 @@ def compute_results():
 
 
 def main():
-    print("KOTHA Framework — Empirical Validation")
+    print("KOTHA Framework - Empirical Validation")
     print("=" * 60)
     
     results = compute_results()
@@ -1822,7 +1822,7 @@ def main():
     
     # Save numerical results summary
     with open(os.path.join(OUTDIR, '..', 'results_summary.txt'), 'w') as f:
-        f.write("KOTHA Framework Validation — Numerical Results Summary\n")
+        f.write("KOTHA Framework Validation - Numerical Results Summary\n")
         f.write("=" * 60 + "\n\n")
         
         f.write("CASE 1: Intravenous Magnesium in AMI\n")
@@ -1846,7 +1846,7 @@ def main():
         f.write("Bayesian integration (power prior):\n")
         for alpha in [0.0, 0.3, 0.5, 1.0]:
             r = mt_mg['power_prior'][alpha]
-            f.write(f"  α={alpha}: OR={r['hr_median']:.2f} ({r['hr_lo']:.2f}-{r['hr_hi']:.2f}), "
+            f.write(f"  alpha={alpha}: OR={r['hr_median']:.2f} ({r['hr_lo']:.2f}-{r['hr_hi']:.2f}), "
                     f"P(OR<1)={r['p_benefit']:.1%}\n")
         
         f.write(f"\nCASE 2: Statins in Heart Failure\n")
@@ -1862,7 +1862,7 @@ def main():
         f.write("Bayesian integration (power prior):\n")
         for alpha in [0.0, 0.3, 0.5, 1.0]:
             r = mt_st['power_prior'][alpha]
-            f.write(f"  α={alpha}: HR={r['hr_median']:.2f} ({r['hr_lo']:.2f}-{r['hr_hi']:.2f}), "
+            f.write(f"  alpha={alpha}: HR={r['hr_median']:.2f} ({r['hr_lo']:.2f}-{r['hr_hi']:.2f}), "
                     f"P(HR<1)={r['p_benefit']:.1%}\n")
     
     print(f"\nResults saved to: {OUTDIR}/../results_summary.txt")

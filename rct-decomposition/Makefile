@@ -17,6 +17,7 @@ cctc:
 	python build_figures_pptx.py --md 05_paper_cctc.md --out KOTHA_Framework_CCTC_figures.pptx
 	python build_tables_docx.py --src KOTHA_Framework_CCTC.docx --out KOTHA_Framework_CCTC_tables.docx
 	python build_supplementary_tables_docx.py --out KOTHA_Framework_CCTC_supplementary_tables.docx
+	python3 sanitize_office_outputs.py KOTHA_Framework_CCTC.docx KOTHA_Framework_CCTC_tables.docx KOTHA_Framework_CCTC_supplementary_tables.docx KOTHA_Framework_CCTC_figures.pptx KOTHA_Framework_CCTC_highlights.docx
 
 clinical_trials:
 	python build_paper_clinical_trials.py

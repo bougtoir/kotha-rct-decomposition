@@ -47,6 +47,37 @@ def _rewrite_docx_timestamps(docx_path):
     os.remove(_tmp)
 
 
+# Map common double-byte/typographic characters to ASCII equivalents.
+_ASCII_TRANS = {
+    ord('“'): '"', ord('”'): '"',
+    ord('‘'): "'", ord('’'): "'",
+    ord('—'): '---', ord('–'): '--', ord('‑'): '-', ord('‒'): '-', ord('‐'): '-',
+    ord('…'): '...', ord('·'): '*', ord('×'): 'x', ord('÷'): '/',
+    ord('≥'): '>=', ord('≤'): '<=', ord('≠'): '!=',
+    ord('≈'): '~', ord('∼'): '~', ord('∈'): ' in ',
+    ord('√'): 'sqrt', ord('²'): '^2', ord('³'): '^3',
+    ord('α'): 'alpha', ord('β'): 'beta', ord('γ'): 'gamma', ord('δ'): 'delta',
+    ord('ε'): 'epsilon', ord('ζ'): 'zeta', ord('η'): 'eta', ord('θ'): 'theta',
+    ord('ι'): 'iota', ord('κ'): 'kappa', ord('λ'): 'lambda', ord('μ'): 'mu',
+    ord('ν'): 'nu', ord('ξ'): 'xi', ord('ο'): 'omicron', ord('π'): 'pi',
+    ord('ρ'): 'rho', ord('σ'): 'sigma', ord('τ'): 'tau', ord('υ'): 'upsilon',
+    ord('φ'): 'phi', ord('χ'): 'chi', ord('ψ'): 'psi', ord('ω'): 'omega',
+    ord('Α'): 'Alpha', ord('Β'): 'Beta', ord('Γ'): 'Gamma', ord('Δ'): 'Delta',
+    ord('Ε'): 'Epsilon', ord('Ζ'): 'Zeta', ord('Η'): 'Eta', ord('Θ'): 'Theta',
+    ord('Ι'): 'Iota', ord('Κ'): 'Kappa', ord('Λ'): 'Lambda', ord('Μ'): 'Mu',
+    ord('Ν'): 'Nu', ord('Ξ'): 'Xi', ord('Ο'): 'Omicron', ord('Π'): 'Pi',
+    ord('Ρ'): 'Rho', ord('Σ'): 'Sigma', ord('Τ'): 'Tau', ord('Υ'): 'Upsilon',
+    ord('Φ'): 'Phi', ord('Χ'): 'Chi', ord('Ψ'): 'Psi', ord('Ω'): 'Omega',
+}
+
+
+def _cleanup_wt_text(doc):
+    """Replace residual double-byte/typographic characters in w:t elements."""
+    for t in doc.element.body.iter(qn('w:t')):
+        if t.text:
+            t.text = t.text.translate(_ASCII_TRANS)
+
+
 def build(input_md, output_docx, journal='Contemporary Clinical Trials Communications', strip_brackets=False,
           inline_figures=True, figure_legends_at_end=False):
     BASE = os.path.dirname(os.path.abspath(input_md))
@@ -220,7 +251,7 @@ def build(input_md, output_docx, journal='Contemporary Clinical Trials Communica
             with open(md_path, 'w', encoding='utf-8') as f:
                 f.write(text + '\n')
             subprocess.run(
-                [PANDOC, '-f', 'markdown', '-t', 'docx', '-o', out_path, md_path],
+                [PANDOC, '-f', 'markdown-smart', '-t', 'docx', '-o', out_path, md_path],
                 check=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
@@ -325,25 +356,28 @@ def build(input_md, output_docx, journal='Contemporary Clinical Trials Communica
         return tbl_elem
 
     def clean_math(text):
-        """Convert a small subset of LaTeX math to Unicode text for captions."""
+        """Convert a small subset of LaTeX math to ASCII text for captions.
+
+        Word equations are reserved for the main text; figure captions are
+        rendered as plain text to avoid double-byte/Unicode characters.
+        """
         replacements = [
             ('\\text{', ''), ('}', ''),
-            ('\\sim', '~'), ('\\cdot', '\u00b7'),
-            ('\\sqrt', '\u221a'), ('\\sum', '\u03a3'),
-            ('\\prod', '\u220f'), ('\\alpha', '\u03b1'),
-            ('\\beta', '\u03b2'), ('\\mu', '\u03bc'),
-            ('\\tau', '\u03c4'), ('\\theta', '\u03b8'),
-            ('\\sigma', '\u03c3'), ('\\delta', '\u03b4'),
-            ('\\rho', '\u03c1'), ('\\Phi', '\u03a6'),
-            ('\\phi', '\u03c6'), ('\\in', '\u2208'),
-            ('\\leq', '\u2264'), ('\\geq', '\u2265'),
-            ('\\neq', '\u2260'), ('\\times', '\u00d7'),
-            ('\\to', '\u2192'), ('\\approx', '\u2248'),
+            ('\\sim', '~'), ('\\cdot', '*'),
+            ('\\sqrt', 'sqrt'), ('\\sum', 'sum'),
+            ('\\prod', 'prod'), ('\\alpha', 'alpha'),
+            ('\\beta', 'beta'), ('\\mu', 'mu'),
+            ('\\tau', 'tau'), ('\\theta', 'theta'),
+            ('\\sigma', 'sigma'), ('\\delta', 'delta'),
+            ('\\rho', 'rho'), ('\\Phi', 'Phi'),
+            ('\\phi', 'phi'), ('\\in', ' in '),
+            ('\\leq', '<='), ('\\geq', '>='),
+            ('\\neq', '!='), ('\\times', 'x'),
+            ('\\to', '->'), ('\\approx', '~'),
             ('\\frac', ''), ('\\left', ''),
             ('\\right', ''), ('\\quad', '  '),
             ('\\hat', ''), ('\\log', 'log'),
             ('\\exp', 'exp'), ('\\mid', '|'),
-            ('^2', '\u00b2'),
         ]
         for old, new in replacements:
             text = text.replace(old, new)
@@ -638,6 +672,9 @@ def build(input_md, output_docx, journal='Contemporary Clinical Trials Communica
             run.font.name = 'Times New Roman'
             run.font.size = Pt(10)
 
+    # Remove residual double-byte/typographic characters before saving
+    _cleanup_wt_text(doc)
+
     # Save
     doc.save(output_docx)
     _rewrite_docx_timestamps(output_docx)
@@ -682,6 +719,7 @@ def build(input_md, output_docx, journal='Contemporary Clinical Trials Communica
             for r in p.runs:
                 r.font.name = 'Times New Roman'
                 r.font.size = Pt(12)
+    _cleanup_wt_text(hdoc)
     hdoc.save(highlights_docx)
     _rewrite_docx_timestamps(highlights_docx)
     print(f'Saved Highlights docx to {highlights_docx}')

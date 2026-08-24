@@ -17,6 +17,8 @@ import subprocess
 import sys
 import zipfile
 
+import sanitize_office_outputs as _san
+
 BASE = os.path.dirname(os.path.abspath(__file__))
 
 CCTC_MD = os.path.join(BASE, '05_paper_cctc.md')
@@ -192,6 +194,8 @@ def _restructure(md):
     md = md.replace('(Table 3)', '(Supplementary Table S4)')
     md = md.replace('(Fig. 6A)', '(Supplementary Fig. S3A)')
     md = md.replace('(Fig. 6B)', '(Supplementary Fig. S3B)')
+    md = md.replace('(Table 2)', '(Table 1)')
+    md = md.replace('(Table 4)', '(Table 2)')
     md = md.replace('Table 4 and Fig. 7', 'Table 4 and Supplementary Fig. S4')
 
     # CCTC supplementary table numbering differs from Clinical Trials numbering:
@@ -314,6 +318,14 @@ def main():
 
     # Cover letter (regenerated after the manuscript so word/figure counts are available)
     _run('build_cover_letter_clinical_trials.py')
+
+    # Remove non-ASCII (especially CJK/full-width) characters from Office XML metadata.
+    # Equation symbols in OMML are preserved; only font/theme/numbering metadata are cleaned.
+    for _path in [OUT_DOCX, OUT_SUB_DOCX, OUT_TABLES_DOCX, OUT_SUPP_DOCX,
+                  OUT_FIGURES_PPTX, OUT_SUPP_FIGURES_PPTX,
+                  os.path.join(BASE, 'cover_letter_ClinicalTrials.docx')]:
+        if os.path.exists(_path):
+            _san.sanitize_file(_path)
 
     # Copy high-resolution figure files for upload
     _copy_submission_figures()
