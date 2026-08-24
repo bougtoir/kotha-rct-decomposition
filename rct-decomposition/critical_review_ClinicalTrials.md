@@ -113,3 +113,20 @@ This review was conducted after the first Clinical Trials build and before final
   3. **Confirm** with the editorial office whether the abbreviations list as bullets is acceptable, or whether a numbered/lettered table would be preferred (and, if a table, which of the 6 main figure/table slots it would displace).
 
 - **No fatal scientific, reproducibility, or journal-limit issue remains.**
+
+---
+
+## 7. Final verification (post-English edit and re-build)
+
+After the final natural-English pass and regeneration (`make cctc` → `make clinical_trials`):
+
+1. **Cross-references and numbering**: All main-text figures (Fig. 1–4) and tables (Table 1–2) are cited before first appearance and placed immediately after the citing paragraph. Supplementary items (Supplementary Tables S1–S4, Supplementary Figs. S1a/b, S2–S4) are also cited in sequential order.
+2. **Citation order**: The 31 references are numbered consecutively by first appearance; no orphan or phantom citations; ranges are collapsed correctly.
+3. **Word equations**: The generated docx files contain 46 `m:oMath` objects and zero raw `$...$` strings in `w:t` elements, confirming LaTeX inline math was converted to Word OMML.
+4. **Double-byte characters**: `sanitize_office_outputs.py` was run on all docx/pptx deliverables; no CJK or full-width characters remain in `word/fontTable.xml`, `word/numbering.xml`, `ppt/theme/theme1.xml`, or `ppt/slideMasters/slideMaster1.xml`.
+5. **Reproducibility**: All numbers derive from `validation/run_validation.py` and public CSVs in `data/`; no hard-coded estimates remain in the manuscript scripts.
+6. **Intro–Results–Discussion alignment**: The three modules (K, T, H), the two illustrative cases, and the design-implications claims introduced in the Introduction are addressed in Methods/Results and collected in Discussion without overreaching.
+7. **Old-version language**: No "previous analysis", "old version", or similar comparative language was found in `05_paper_clinical_trials.md`.
+8. **English naturalness**: The abstract, results, and discussion were rewritten with active, precise phrasing; remaining conditional language ("consistent with", "inconclusive") matches the data.
+
+Status: **Ready for submission pending final author/funding/COI text.**

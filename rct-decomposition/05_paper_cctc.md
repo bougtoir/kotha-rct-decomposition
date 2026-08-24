@@ -3,7 +3,7 @@ running_head: KOTHA Framework for Trial Design
 title: The KOTHA Framework: Diagnosing Structural Information Loss in Randomized Controlled Trial Meta-Analyses to Inform Trial Design
 authors: [To be determined]
 affiliations: [To be determined]
-word_count: 2686
+word_count: 2677
 corresponding_author: [To be determined]
 corresponding_author_address: [To be determined]
 ---
@@ -16,7 +16,7 @@ corresponding_author_address: [To be determined]
 
 ## Abstract
 
-**Background/Aims**: Evidence-based medicine ranks RCTs and meta-analyses highest, yet observational-RCT discordance is usually attributed to confounding. We highlight a structural explanation: trial enrollment progressively excludes higher-risk patients, diluting event rates and statistical information. The Knowledge-driven Observational-Trial Harmonization Approach (KOTHA) Framework diagnoses this structural information loss. We aimed to develop and illustrate KOTHA so that trialists can distinguish structural information loss from residual confounding and inform sample size, eligibility, enrichment, and endpoint decisions in prospective trial design.
+**Background/Aims**: Evidence-based medicine places RCTs and meta-analyses at the top of the evidence hierarchy, yet when observational and RCT evidence disagree the usual explanation is residual confounding. We highlight a structural explanation: trial enrollment progressively excludes higher-risk patients, diluting event rates and statistical information. The Knowledge-driven Observational-Trial Harmonization Approach (KOTHA) Framework diagnoses this structural information loss. We aimed to develop and illustrate KOTHA so that trialists can distinguish structural information loss from residual confounding and inform sample size, eligibility, enrichment, and endpoint decisions in prospective trial design.
 
 **Methods**: KOTHA comprises three modules: Module K quantifies risk-profile shifts and power loss, Module T combines RCT and observational evidence with power-prior discounting, and Module H translates outputs into a GRADE-compatible assessment. We applied it to magnesium in acute myocardial infarction and statins in heart failure.
 
@@ -50,11 +50,11 @@ Evidence-based medicine places RCTs and their meta-analyses at the apex of the e
 
 An alternative structural explanation deserves systematic attention. RCT enrollment criteria, consent processes, and site selection progressively restrict the study population [4-5]. Because clinical events are concentrated in the highest-risk patients---those with comorbidities, advanced disease, or organ dysfunction---their exclusion lowers event rates in the enrolled cohort. If trial protocols do not compensate by increasing sample size, extending follow-up, or enriching high-risk enrollment, the resulting evidence base can become informationally insufficient. We call this phenomenon **structural information loss**, a five-step causal chain: representativeness loss; event concentration in excluded populations; inadequate design compensation; systematic underpowering; and, ultimately, distorted recommendations when "no statistically significant difference" is interpreted as "no effect".
 
-The concepts of optimal information size (OIS) and trial sequential analysis (TSA) provide partial remedies. OIS recognizes that meta-analyses, like individual trials, require a minimum information size to reach reliable conclusions [6-7]. TSA applies sequential monitoring boundaries to cumulative meta-analysis, distinguishing evidence of no effect (futility boundary crossed) from no evidence of effect (boundary not crossed) [8-9]. However, these tools are underused in guideline development, and neither directly quantifies the information loss resulting from enrollment-driven risk-profile shifts.
+The concepts of optimal information size (OIS) and trial sequential analysis (TSA) provide partial remedies. OIS recognizes that meta-analyses, like individual trials, require a minimum information size to reach reliable conclusions [6-7]. TSA applies sequential monitoring boundaries to cumulative meta-analysis, distinguishing evidence of no effect (futility boundary crossed) from no evidence of effect (boundary not crossed) [8-9]. Both are underused in guideline development, however, and neither directly quantifies the information loss produced by enrollment-driven risk-profile shifts.
 
 Several trial design strategies can mitigate event dilution (Table 1), including stratified randomization, prognostic enrichment, event-driven designs, adaptive sample-size re-estimation, and pragmatic or registry-based trials. Existing approaches address these issues separately; to our knowledge, no widely adopted framework tightly links prospective power assessment, retrospective diagnostic evaluation, and structured evidence interpretation in a single reproducible workflow for completed or planned RCTs.
 
-We therefore developed the Knowledge-driven Observational-Trial Harmonization Approach (KOTHA) Framework. It is a three-module system that (1) diagnoses structural information loss through counterfactual power simulation (Module K), (2) integrates discordant evidence through hierarchical Bayesian meta-analysis (Module T), and (3) translates quantitative findings into GRADE-compatible evidence assessment (Module H). This paper describes the framework and illustrates its application to two canonical cases of observational-RCT divergence, with an emphasis on implications for clinical trial design.
+To address this gap we developed the Knowledge-driven Observational-Trial Harmonization Approach (KOTHA). The framework has three modules: Module K diagnoses structural information loss through counterfactual power simulation; Module T integrates discordant evidence through hierarchical Bayesian meta-analysis; and Module H translates quantitative findings into a GRADE-compatible evidence assessment. We describe the framework here and illustrate it with two canonical cases of observational-RCT divergence, focusing on implications for clinical trial design.
 
 **Table 1: Existing approaches to mitigate event dilution in RCTs**
 
@@ -131,7 +131,7 @@ At the ISIS-4 sample size (N = 58,050) and the pre-ISIS-4 pooled effect (OR = 0.
 
 ### Frequentist meta-analysis and trial sequential analysis
 
-Forest plots for magnesium and statins are shown in Fig. 4. Random-effects meta-analysis of the 11 pre-ISIS-4 magnesium trials yielded OR = 0.54 (95% CI: 0.40-0.75) with $I^2$ = 6%. Adding ISIS-4 changed the pooled estimate to OR = 0.56 (0.38-0.83), but heterogeneity increased to $I^2$ = 62% (Fig. 4A). TSA under a fixed-effect accumulation produced a final cumulative $Z$ of 0.80, which did not cross the conventional two-sided boundary for benefit or harm ($|Z|$ = 1.96); under a random-effects accumulation the final $Z$ was -2.90, crossing the lower O'Brien-Fleming boundary of -1.96 (which, because the cumulative information exceeded the optimal information size, equals the conventional two-sided boundary) (Fig. 5). This divergence is consistent with era-dependent treatment-effect heterogeneity, with the ISIS-4 result contributing substantially to that heterogeneity.
+Fig. 4 shows forest plots for magnesium and statins. Random-effects meta-analysis of the 11 pre-ISIS-4 magnesium trials yielded OR = 0.54 (95% CI: 0.40-0.75) with $I^2$ = 6%. Adding ISIS-4 changed the pooled estimate to OR = 0.56 (0.38-0.83), but heterogeneity increased to $I^2$ = 62% (Fig. 4A). Under fixed-effect accumulation the final cumulative $Z$ was 0.80, which did not cross the conventional two-sided boundary for benefit or harm ($|Z|$ = 1.96); under random-effects accumulation the final $Z$ was -2.90, crossing the lower O'Brien-Fleming boundary of -1.96. Because cumulative information exceeded the optimal information size, this boundary equals the conventional two-sided boundary (Fig. 5). This divergence is consistent with era-dependent treatment-effect heterogeneity, with the ISIS-4 result contributing substantially to that heterogeneity.
 
 For statins, observational studies showed a pooled HR of 0.72 (95% CI: 0.64-0.80) with $I^2$ = 82%, whereas the two RCTs (CORONA and GISSI-HF) yielded HR = 0.97 (0.90-1.05) with $I^2$ = 0% (Fig. 4B).
 
@@ -193,7 +193,7 @@ Module H results are summarized in Table 4 and Fig. 7. For magnesium, the OIS fo
 
 ### Principal findings
 
-The KOTHA Framework integrates counterfactual power simulation, Bayesian evidence synthesis, and structured GRADE interpretation to diagnose structural information loss in RCT meta-analyses. In the magnesium case, Module K identified a 18% temporal decline in control event rates from the pre-thrombolysis era to ISIS-4. The divergence between pre-ISIS-4 and all-trials estimates is more consistent with era-dependent treatment effect heterogeneity ($I^2$ = 62%) than with underpowering alone. In the statins case, Module K showed that RCT populations had roughly half the event rate of observational cohorts, and that power for a modest effect (HR = 0.85) dropped from 98% to 83%. Module T demonstrated that even modest borrowing from observational evidence shifted posterior probabilities of benefit substantially, but uncertainty remained. Module H classified magnesium as inconclusive with serious inconsistency (heterogeneity), and statins as inconclusive with serious indirectness, rather than "evidence of no effect."
+The KOTHA Framework integrates counterfactual power simulation, Bayesian evidence synthesis, and structured GRADE interpretation to diagnose structural information loss in RCT meta-analyses. In the magnesium case, Module K identified a 18% temporal decline in control event rates from the pre-thrombolysis era to ISIS-4. The divergence between pre-ISIS-4 and all-trials estimates is more consistent with era-dependent treatment effect heterogeneity ($I^2$ = 62%) than with underpowering alone. In the statins case, Module K showed that RCT populations had roughly half the event rate of observational cohorts, and that power for a modest effect (HR = 0.85) dropped from 98% to 83%. Module T showed that even modest borrowing from observational evidence materially raised the posterior probability of benefit, yet the evidence remained uncertain. Module H classified magnesium as inconclusive with serious inconsistency (heterogeneity), and statins as inconclusive with serious indirectness, rather than "evidence of no effect."
 
 ### Implications for clinical trial design
 
@@ -204,7 +204,7 @@ Module K has direct prospective value. Before a trial is conducted, investigator
 - **Enrichment thresholds**: a minimum proportion of high-risk patients can be prespecified and powered.
 - **Endpoints and follow-up**: when the primary event rate is diluted, composite endpoints or longer follow-up can be evaluated.
 
-In this way, KOTHA moves the design conversation from "what sample size do we need under the planned effect?" to "what sample size do we need under the event rate we will actually observe in the enrolled population?"
+This reframes the design question: instead of asking what sample size is needed under a hypothesized effect, the trialist asks what sample size is needed given the event rate that the enrolled population will actually display.
 
 ### Comparison with existing methods
 
