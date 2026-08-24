@@ -180,6 +180,58 @@ def _abbreviate_references(md):
     return before + '\n'.join(new_lines)
 
 
+def _convert_abbreviations(md):
+    """Convert the Abbreviations markdown table to a bullet list.
+
+    Clinical Trials limits original research to 6 tables/figures total.
+    An unnumbered abbreviations table would still count as a table in Word,
+    so we render it as a definition list instead.
+    """
+    match = re.search(r'(## Abbreviations\n\n)(.*?)(\n\n## 1\. Introduction)', md, re.S)
+    if not match:
+        return md
+    header, table_block, tail = match.group(1), match.group(2), match.group(3)
+    bullets = []
+    for line in table_block.strip().splitlines():
+        line = line.strip()
+        if not line.startswith('|'):
+            continue
+        cells = [c.strip() for c in line.split('|')[1:-1]]
+        if not cells or len(cells) < 2:
+            continue
+        abbr, definition = cells[0], cells[1]
+        # Skip header and separator rows
+        if abbr.lower() in ('abbreviation', '') or definition.lower() == 'definition' or set(abbr) <= {'-'}:
+            continue
+        if abbr:
+            bullets.append(f'* **{abbr}**: {definition}')
+    replacement = header + '\n'.join(bullets) + tail if bullets else header + table_block + tail
+    return md[:match.start()] + replacement + md[match.end():]
+
+
+def _move_fig1_after_first_citation(md):
+    """Move the Figure 1 block to immediately after its first in-text citation.
+
+    The first citation is in the Methods/Overview paragraph; the figure block
+    is therefore placed right after that paragraph and before Module K.
+    """
+    # Extract the Fig. 1 block (caption line + image line)
+    block_re = re.compile(r'\n\n(\*\*Fig\. 1\*\*[^\n]*\n\n!\[Fig\. 1\]\([^\)]+\))\n\n', re.S)
+    m = block_re.search(md)
+    if not m:
+        return md
+    block = m.group(1)
+    md_without = md[:m.start()] + '\n\n' + md[m.end():]
+
+    # Find the first paragraph that cites Fig. 1
+    para_re = re.compile(r'^(The KOTHA Framework comprises.*?\(Fig\. 1\).*?applied in sequence\.)$', re.M)
+    pm = para_re.search(md_without)
+    if not pm:
+        return md_without
+    insert_at = pm.end()
+    return md_without[:insert_at] + '\n\n' + block + md_without[insert_at:]
+
+
 def _restructure(md):
     """Restructure CCTC markdown for Clinical Trials."""
     md = md.replace(HIGHLIGHTS_BLOCK, '')
@@ -203,6 +255,8 @@ def _restructure(md):
     md = md.replace(TABLE3_FIG6_BLOCK, '')
     md = md.replace(FIG7_BLOCK, '')
 
+    md = _convert_abbreviations(md)
+    md = _move_fig1_after_first_citation(md)
     md = _abbreviate_references(md)
 
     # Update main-text word count

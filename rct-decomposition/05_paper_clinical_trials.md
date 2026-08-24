@@ -21,21 +21,19 @@ corresponding_author_address: [To be determined]
 
 ## Abbreviations
 
-| Abbreviation | Definition |
-|---|---|
-| ADEMP | Aims, Data-generating mechanisms, Estimands, Methods, Performance measures |
-| AMI | Acute myocardial infarction |
-| CrI | Credible interval |
-| CI | Confidence interval |
-| GRADE | Grading of Recommendations Assessment, Development and Evaluation |
-| HF | Heart failure |
-| HR | Hazard ratio |
-| KOTHA | Knowledge-driven Observational-Trial Harmonization Approach |
-| MCMC | Markov chain Monte Carlo |
-| OIS | Optimal information size |
-| OR | Odds ratio |
-| RCT | Randomized controlled trial |
-| TSA | Trial sequential analysis |
+* **ADEMP**: Aims, Data-generating mechanisms, Estimands, Methods, Performance measures
+* **AMI**: Acute myocardial infarction
+* **CrI**: Credible interval
+* **CI**: Confidence interval
+* **GRADE**: Grading of Recommendations Assessment, Development and Evaluation
+* **HF**: Heart failure
+* **HR**: Hazard ratio
+* **KOTHA**: Knowledge-driven Observational-Trial Harmonization Approach
+* **MCMC**: Markov chain Monte Carlo
+* **OIS**: Optimal information size
+* **OR**: Odds ratio
+* **RCT**: Randomized controlled trial
+* **TSA**: Trial sequential analysis
 
 ## 1. Introduction
 
@@ -54,6 +52,10 @@ We therefore developed the Knowledge-driven Observational-Trial Harmonization Ap
 ### Overview
 
 The KOTHA Framework comprises three interconnected modules (Fig. 1). Module K (Counterfactual Power Simulation) quantifies how enrollment-driven risk-profile shifts reduce statistical power. Module T (Trial-Observational Bayesian Integration) combines RCT and observational evidence with explicit discounting for design-related bias. Module H (Guideline Interpreter) translates module outputs into a structured GRADE assessment. Each module can be used independently, but the framework is most informative when applied in sequence.
+
+**Fig. 1** Overview of the KOTHA Framework. Module K (Counterfactual Power Simulation) quantifies risk-profile shift and estimates power under counterfactual enrollment scenarios. Module T (Bayesian Evidence Integration) combines RCT and observational evidence using power-prior discounting. Module H (Guideline Interpreter) synthesizes outputs into a structured GRADE-compatible assessment.
+
+![Fig. 1](validation/figures/fig1_framework_overview.png)
 
 ### Module K: Counterfactual power simulation
 
@@ -78,10 +80,6 @@ Module H maps the outputs of Modules K and T onto the GRADE framework [1]. It in
 ### Data sources and statistical analysis
 
 For magnesium in AMI we used study-level event counts extracted from published overviews [17-18]. For statins in heart failure we used aggregate data from five observational cohorts [19-23] and two RCTs [24-25]. We used DerSimonian-Laird random-effects meta-analysis [26] and computed 95% confidence intervals. OIS and TSA were calculated using standard formulas [6-9]. All analyses were performed with the Python code in the public repository.
-
-**Fig. 1** Overview of the KOTHA Framework. Module K (Counterfactual Power Simulation) quantifies risk-profile shift and estimates power under counterfactual enrollment scenarios. Module T (Bayesian Evidence Integration) combines RCT and observational evidence using power-prior discounting. Module H (Guideline Interpreter) synthesizes outputs into a structured GRADE-compatible assessment.
-
-![Fig. 1](validation/figures/fig1_framework_overview.png)
 
 **Table 1: Module H assessment checklist mapped to GRADE domains**
 
