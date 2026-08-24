@@ -3,7 +3,7 @@ running_head: KOTHA Framework for Trial Design
 title: The KOTHA Framework: diagnosing structural information loss in randomized controlled trial meta-analyses to inform trial design
 authors: [To be determined]
 affiliations: [To be determined]
-word_count: 2443
+word_count: 2421
 corresponding_author: [To be determined]
 corresponding_author_address: [To be determined]
 ---
@@ -113,7 +113,7 @@ At the ISIS-4 sample size (N = 58,050) and the pre-ISIS-4 pooled effect (OR = 0.
 
 ### Frequentist meta-analysis and trial sequential analysis
 
-Forest plots for magnesium and statins are shown in Fig. 4. Random-effects meta-analysis of the 11 pre-ISIS-4 magnesium trials yielded OR = 0.54 (95% CI: 0.40-0.75) with $I^2$ = 6%. Adding ISIS-4 changed the pooled estimate to OR = 0.56 (0.38-0.83), but heterogeneity increased to $I^2$ = 62% (Fig. 4A). TSA under a fixed-effect accumulation produced a final cumulative $Z$ of 0.80, below the conventional boundary of 1.96; under a random-effects accumulation the final $Z$ was -2.90, crossing the O'Brien-Fleming boundary of 0.27 (Supplementary Fig. S2). This divergence reflects era-dependent treatment-effect heterogeneity driven by the ISIS-4 result.
+Forest plots for magnesium and statins are shown in Fig. 4. Random-effects meta-analysis of the 11 pre-ISIS-4 magnesium trials yielded OR = 0.54 (95% CI: 0.40-0.75) with $I^2$ = 6%. Adding ISIS-4 changed the pooled estimate to OR = 0.56 (0.38-0.83), but heterogeneity increased to $I^2$ = 62% (Fig. 4A). TSA under a fixed-effect accumulation produced a final cumulative $Z$ of 0.80, which did not cross the conventional two-sided boundary for benefit or harm ($|Z|$ = 1.96); under a random-effects accumulation the final $Z$ was -2.90, crossing the lower O'Brien-Fleming boundary of -0.27 (Supplementary Fig. S2). This divergence reflects era-dependent treatment-effect heterogeneity driven by the ISIS-4 result.
 
 For statins, observational studies showed a pooled HR of 0.72 (95% CI: 0.64-0.80) with $I^2$ = 82%, whereas the two RCTs (CORONA and GISSI-HF) yielded HR = 0.97 (0.90-1.05) with $I^2$ = 0% (Fig. 4B).
 

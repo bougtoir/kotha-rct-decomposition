@@ -47,10 +47,12 @@ def _rewrite_docx_timestamps(docx_path):
     os.remove(_tmp)
 
 
-def build(input_md, output_docx, journal='Contemporary Clinical Trials Communications', strip_brackets=False):
+def build(input_md, output_docx, journal='Contemporary Clinical Trials Communications', strip_brackets=False,
+          inline_figures=True, figure_legends_at_end=False):
     BASE = os.path.dirname(os.path.abspath(input_md))
 
     doc = Document()
+    figure_legends = []
 
     # Fixed document properties for reproducible docx output
     doc.core_properties.created = datetime(2025, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
@@ -353,23 +355,35 @@ def build(input_md, output_docx, journal='Contemporary Clinical Trials Communica
         """Add a figure with caption; caption math is converted to Unicode text."""
         full_path = os.path.join(BASE, img_path) if not os.path.isabs(img_path) else img_path
         caption = re.sub(r'\$([^$]+)\$', lambda m: clean_math(m.group(1)), caption)
-        if os.path.exists(full_path):
+        label = f'Figure {fig_num}'
+
+        if inline_figures and os.path.exists(full_path):
             p = doc.add_paragraph()
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
             run = p.add_run()
             run.add_picture(full_path, width=Inches(5.5))
         else:
-            print(f"  WARNING: Figure not found: {full_path}")
+            if inline_figures:
+                print(f"  WARNING: Figure not found: {full_path}")
+            p = doc.add_paragraph()
+            p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            run = p.add_run(f'[Insert {label}]')
+            run.font.name = 'Times New Roman'
+            run.font.size = Pt(10)
+            run.bold = True
 
-        cap_p = doc.add_paragraph()
-        cap_p.alignment = WD_ALIGN_PARAGRAPH.LEFT
-        run = cap_p.add_run(f'Figure {fig_num}. ')
-        run.bold = True
-        run.font.name = 'Times New Roman'
-        run.font.size = Pt(10)
-        run = cap_p.add_run(caption)
-        run.font.name = 'Times New Roman'
-        run.font.size = Pt(10)
+        if figure_legends_at_end:
+            figure_legends.append((fig_num, caption))
+        else:
+            cap_p = doc.add_paragraph()
+            cap_p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+            run = cap_p.add_run(f'{label}. ')
+            run.bold = True
+            run.font.name = 'Times New Roman'
+            run.font.size = Pt(10)
+            run = cap_p.add_run(caption)
+            run.font.name = 'Times New Roman'
+            run.font.size = Pt(10)
 
     # ============================================================
     # Read and parse front matter for title page
@@ -609,6 +623,21 @@ def build(input_md, output_docx, journal='Contemporary Clinical Trials Communica
     if in_table:
         add_table(table_headers, table_rows)
 
+    # Add collected figure legends at end if requested
+    if figure_legends_at_end:
+        doc.add_page_break()
+        add_heading('Figure Legends', level=2)
+        for fig_num, caption in figure_legends:
+            cap_p = doc.add_paragraph()
+            cap_p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+            run = cap_p.add_run(f'Figure {fig_num}. ')
+            run.bold = True
+            run.font.name = 'Times New Roman'
+            run.font.size = Pt(10)
+            run = cap_p.add_run(caption)
+            run.font.name = 'Times New Roman'
+            run.font.size = Pt(10)
+
     # Save
     doc.save(output_docx)
     _rewrite_docx_timestamps(output_docx)
@@ -665,5 +694,8 @@ if __name__ == '__main__':
     parser.add_argument('output_docx', nargs='?', default='KOTHA_Framework_CCT.docx')
     parser.add_argument('--journal', default='Contemporary Clinical Trials Communications')
     parser.add_argument('--strip-citation-brackets', action='store_true')
+    parser.add_argument('--no-inline-figures', action='store_true')
+    parser.add_argument('--figure-legends-at-end', action='store_true')
     args = parser.parse_args()
-    build(args.input_md, args.output_docx, journal=args.journal, strip_brackets=args.strip_citation_brackets)
+    build(args.input_md, args.output_docx, journal=args.journal, strip_brackets=args.strip_citation_brackets,
+          inline_figures=not args.no_inline_figures, figure_legends_at_end=args.figure_legends_at_end)

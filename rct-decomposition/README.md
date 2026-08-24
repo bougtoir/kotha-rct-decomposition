@@ -2,6 +2,11 @@
 
 This repository contains the empirical validation, figures, and manuscript-generation pipeline for the KOTHA (Knowledge-driven Observational-Trial Harmonization Approach) Framework manuscript.
 
+## Dependencies
+
+- Python 3.x with `emcee`, `python-docx`, `python-pptx`, `numpy`, `pandas`, `scipy`, `matplotlib`, and `lxml`
+- [pandoc](https://pandoc.org/) (the build script searches `~/.local/pandoc/bin/pandoc` and the system `PATH`)
+
 ## One-command builds
 
 ```bash

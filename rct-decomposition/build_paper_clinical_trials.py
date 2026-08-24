@@ -25,6 +25,7 @@ CCTC_SUPP_DOCX = os.path.join(BASE, 'KOTHA_Framework_CCTC_supplementary_tables.d
 
 OUT_MD = os.path.join(BASE, '05_paper_clinical_trials.md')
 OUT_DOCX = os.path.join(BASE, 'KOTHA_Framework_ClinicalTrials.docx')
+OUT_SUB_DOCX = os.path.join(BASE, 'KOTHA_Framework_ClinicalTrials_submission.docx')
 OUT_FIGURES_PPTX = os.path.join(BASE, 'KOTHA_Framework_ClinicalTrials_figures.pptx')
 OUT_TABLES_DOCX = os.path.join(BASE, 'KOTHA_Framework_ClinicalTrials_tables.docx')
 OUT_SUPP_DOCX = os.path.join(BASE, 'KOTHA_Framework_ClinicalTrials_supplementary_tables.docx')
@@ -229,6 +230,7 @@ def _build_submission_package():
     files_to_zip = [
         OUT_MD,
         OUT_DOCX,
+        OUT_SUB_DOCX,
         OUT_TABLES_DOCX,
         OUT_FIGURES_PPTX,
         OUT_SUPP_DOCX,
@@ -266,12 +268,25 @@ def main():
     print(f'Wrote {OUT_MD}')
 
     # Generate main manuscript docx with Sage-style unbracketed superscript citations
+    # (inline figures/tables for editing/reference)
     _run(
         'generate_cct_docx.py',
         OUT_MD,
         OUT_DOCX,
         '--journal', 'Clinical Trials: Journal of the Society for Clinical Trials',
         '--strip-citation-brackets',
+    )
+
+    # Generate a submission docx with placeholders in the text and figure legends at the end,
+    # per Sage/Clinical Trials artwork guidelines (external figures uploaded separately).
+    _run(
+        'generate_cct_docx.py',
+        OUT_MD,
+        OUT_SUB_DOCX,
+        '--journal', 'Clinical Trials: Journal of the Society for Clinical Trials',
+        '--strip-citation-brackets',
+        '--no-inline-figures',
+        '--figure-legends-at-end',
     )
 
     # Editable figures PPTX
@@ -290,7 +305,7 @@ def main():
     _build_submission_package()
 
     print('\nClinical Trials deliverables ready:')
-    for p in [OUT_MD, OUT_DOCX, OUT_TABLES_DOCX, OUT_FIGURES_PPTX, OUT_SUPP_DOCX,
+    for p in [OUT_MD, OUT_DOCX, OUT_SUB_DOCX, OUT_TABLES_DOCX, OUT_FIGURES_PPTX, OUT_SUPP_DOCX,
               os.path.join(BASE, 'submission_package_ClinicalTrials.zip')]:
         print(' -', os.path.basename(p))
 
