@@ -27,6 +27,7 @@ OUT_MD = os.path.join(BASE, '05_paper_clinical_trials.md')
 OUT_DOCX = os.path.join(BASE, 'KOTHA_Framework_ClinicalTrials.docx')
 OUT_SUB_DOCX = os.path.join(BASE, 'KOTHA_Framework_ClinicalTrials_submission.docx')
 OUT_FIGURES_PPTX = os.path.join(BASE, 'KOTHA_Framework_ClinicalTrials_figures.pptx')
+OUT_SUPP_FIGURES_PPTX = os.path.join(BASE, 'KOTHA_Framework_ClinicalTrials_supplementary_figures.pptx')
 OUT_TABLES_DOCX = os.path.join(BASE, 'KOTHA_Framework_ClinicalTrials_tables.docx')
 OUT_SUPP_DOCX = os.path.join(BASE, 'KOTHA_Framework_ClinicalTrials_supplementary_tables.docx')
 SUBMISSION_FIGURES_DIR = os.path.join(BASE, 'ClinicalTrials_figures')
@@ -37,75 +38,6 @@ HIGHLIGHTS_BLOCK = r"""## Highlights
 * Counterfactual power simulation quantifies enrollment-driven event dilution.
 * Power-prior Bayesian synthesis transparently discounts observational evidence.
 * GRADE-compatible output labels evidence as sufficient or insufficient.
-
-"""
-
-OLD_BG = (
-    "**Background**: Evidence-based medicine ranks RCTs and meta-analyses highest, "
-    "yet observational-RCT discordance is usually attributed to confounding. We highlight "
-    "a structural explanation: trial enrollment progressively excludes higher-risk patients, "
-    "diluting event rates and statistical information. The Knowledge-driven "
-    "Observational-Trial Harmonization Approach (KOTHA) Framework diagnoses this structural "
-    "information loss."
-)
-NEW_BG = (
-    "**Background/Aims**: Evidence-based medicine ranks RCTs and meta-analyses highest, "
-    "yet observational-RCT discordance is usually attributed to confounding. We highlight "
-    "a structural explanation: trial enrollment progressively excludes higher-risk patients, "
-    "diluting event rates and statistical information. The Knowledge-driven "
-    "Observational-Trial Harmonization Approach (KOTHA) Framework diagnoses this structural "
-    "information loss. We aimed to develop and illustrate KOTHA so that trialists can "
-    "distinguish structural information loss from residual confounding and improve "
-    "prospective trial design."
-)
-
-TABLE1_BLOCK = r"""**Table 1: Existing approaches to mitigate event dilution in RCTs**
-
-| Approach | Mechanism | Adoption level |
-|---|---|---|
-| Stratified randomization | Risk-based stratification of randomization and analysis | Common for basic strata; rare for event-rate-driven strata |
-| Prognostic enrichment | Intentional enrollment of high-risk patients to increase event rates | Endorsed by FDA and EMA guidance; limited in non-drug trials |
-| Event-driven design | Continue enrollment/follow-up until target event count is reached | Common in cardiology and oncology; rare in other specialties |
-| Adaptive sample size re-estimation | Mid-trial re-estimation of required sample size based on observed event rates | Statistically powerful; regulatory complexity limits adoption |
-| External data-informed design | Use retrospective data to quantify expected event loss and adjust design | Ideal but very rare in practice |
-| Pragmatic / registry-based trials | Broad eligibility, minimal exclusions, real-world enrollment | Growing (e.g., REMAP-CAP, RECOVERY) but not yet standard |
-
-"""
-
-FIG5_BLOCK = r"""**Fig. 5** Trial sequential analysis for magnesium in AMI. The cumulative Z-curve is plotted against cumulative events. Vertical dashed line indicates the optimal information size (OIS). Curved lines show O'Brien-Fleming monitoring boundaries.
-
-![Fig. 5](validation/figures/fig5_tsa_magnesium.png)
-
-"""
-
-TABLE3_FIG6_BLOCK = r"""**Table 3: Bayesian integration results by case and discounting factor (power prior)**
-
-| Case | $\alpha$ | OR/HR (95% CrI) | P(effect < 1) | P(effect < 0.90) | P(effect < 0.80) |
-|---|---|---|---|---|---|
-| Magnesium (OR) | 0.0 (ISIS-4 / RCTs only) | OR 1.05 (0.03--27.97) | 42.8% | 33.4% | 27.0% |
-| Statins (HR) | 0.0 (ISIS-4 / RCTs only) | HR 0.97 (0.58--1.65) | 62.9% | 21.2% | 8.9% |
-| Magnesium (OR) | 0.1 | OR 0.93 (0.15--2.92) | 58.3% | 46.3% | 36.2% |
-| Statins (HR) | 0.1 | HR 0.92 (0.53--1.64) | 71.9% | 42.7% | 19.2% |
-| Magnesium (OR) | 0.2 | OR 0.83 (0.22--1.75) | 71.4% | 58.9% | 46.9% |
-| Statins (HR) | 0.2 | HR 0.89 (0.53--1.41) | 79.8% | 54.7% | 24.4% |
-| Magnesium (OR) | 0.3 | OR 0.74 (0.25--1.43) | 80.7% | 69.6% | 57.4% |
-| Statins (HR) | 0.3 | HR 0.85 (0.55--1.24) | 86.5% | 66.0% | 31.1% |
-| Magnesium (OR) | 0.5 | OR 0.63 (0.28--1.10) | 94.0% | 87.2% | 76.3% |
-| Statins (HR) | 0.5 | HR 0.82 (0.59--1.10) | 93.9% | 79.6% | 41.9% |
-| Magnesium (OR) | 0.7 | OR 0.59 (0.29--0.98) | 98.1% | 94.8% | 87.1% |
-| Statins (HR) | 0.7 | HR 0.80 (0.62--1.00) | 97.3% | 88.3% | 49.7% |
-| Magnesium (OR) | 1.0 (full weight) | OR 0.55 (0.32--0.87) | 99.6% | 98.4% | 94.4% |
-| Statins (HR) | 1.0 (full weight) | HR 0.78 (0.64--0.93) | 99.3% | 95.7% | 63.3% |
-
-**Fig. 6** Sensitivity analysis of Bayesian integration to the discounting parameter $\alpha$. (A) Magnesium in AMI. (B) Statins in HF. Three posterior probability thresholds are shown: P(effect < 1.0), P(effect < 0.90), and P(effect < 0.80). Horizontal dashed line indicates 95% probability.
-
-![Fig. 6](validation/figures/fig7_sensitivity_analysis.png)
-
-"""
-
-FIG7_BLOCK = r"""**Fig. 7** Module H assessment comparison: standard GRADE vs. KOTHA-enhanced evaluation for both illustrative cases. Color coding indicates severity of concern (green = no concern, yellow = moderate, red = serious).
-
-![Fig. 7](validation/figures/fig8_module_h_comparison.png)
 
 """
 
@@ -120,6 +52,24 @@ FIGURE_MAP = {
     'validation/figures/figS1a_trace_mcmc_magnesium.png': 'Figure_S1a_trace_mcmc_magnesium.png',
     'validation/figures/figS1b_trace_mcmc_statins.png': 'Figure_S1b_trace_mcmc_statins.png',
 }
+
+
+def _remove_supplementary_blocks(md):
+    """Remove CCTC blocks that become supplementary material in Clinical Trials.
+
+    Using regex patterns means the build script does not have to hard-code
+    CCTC markdown content (especially data-dependent tables).
+    """
+    patterns = [
+        (r'\n## Highlights\n', r'(?=\n## Abstract)'),
+        (r'\n\*\*Table 1:.*', r'(?=\n## 2\. Methods)'),
+        (r'\n\*\*Fig\. 5\*\*.*', r'(?=\n### Bayesian integration)'),
+        (r'\n\*\*Table 3:.*', r'(?=\n### Module H assessment)'),
+        (r'\n\*\*Fig\. 7\*\*.*', r'(?=\n## 4\. Discussion)'),
+    ]
+    for start, end in patterns:
+        md = re.sub(start + r'.*?' + end, '', md, count=1, flags=re.S)
+    return md
 
 
 def _run(script, *args):
@@ -234,8 +184,7 @@ def _move_fig1_after_first_citation(md):
 
 def _restructure(md):
     """Restructure CCTC markdown for Clinical Trials."""
-    md = md.replace(HIGHLIGHTS_BLOCK, '')
-    md = md.replace(OLD_BG, NEW_BG)
+    md = _remove_supplementary_blocks(md)
 
     # Update in-text references to supplementary items
     md = md.replace('(Table 1)', '(Supplementary Table S1)')
@@ -245,15 +194,17 @@ def _restructure(md):
     md = md.replace('(Fig. 6B)', '(Supplementary Fig. S3B)')
     md = md.replace('Table 4 and Fig. 7', 'Table 4 and Supplementary Fig. S4')
 
+    # CCTC supplementary table numbering differs from Clinical Trials numbering:
+    # in Clinical Trials the existing-approaches table becomes Supplementary Table S1,
+    # so study-level data tables move from S1/S2 to S2/S3.
+    md = md.replace(
+        'Study-level data are provided in Supplementary Table S1 (magnesium in AMI) and Supplementary Table S2 (statins in HF).',
+        'Study-level data are provided in Supplementary Table S2 (magnesium in AMI) and Supplementary Table S3 (statins in HF).'
+    )
+
     # Renumber remaining main-text tables sequentially (Table 2 -> 1, Table 4 -> 2)
     md = re.sub(r'\bTable 2\b', 'Table 1', md)
     md = re.sub(r'\bTable 4\b', 'Table 2', md)
-
-    # Remove moved main-text figure/table blocks
-    md = md.replace(TABLE1_BLOCK, '')
-    md = md.replace(FIG5_BLOCK, '')
-    md = md.replace(TABLE3_FIG6_BLOCK, '')
-    md = md.replace(FIG7_BLOCK, '')
 
     md = _convert_abbreviations(md)
     md = _move_fig1_after_first_citation(md)
@@ -287,6 +238,7 @@ def _build_submission_package():
         OUT_SUB_DOCX,
         OUT_TABLES_DOCX,
         OUT_FIGURES_PPTX,
+        OUT_SUPP_FIGURES_PPTX,
         OUT_SUPP_DOCX,
         os.path.join(BASE, 'cover_letter_ClinicalTrials.docx'),
     ]
@@ -352,6 +304,17 @@ def main():
     # Supplementary tables docx (S1-S4) extracted from CCTC outputs
     _run('build_supplementary_tables_clinical_trials_docx.py')
 
+    # Supplementary figures PPTX (editable, one slide per supplementary figure)
+    _run(
+        'build_supplementary_figures_pptx.py',
+        '--cctc-md', CCTC_MD,
+        '--out', OUT_SUPP_FIGURES_PPTX,
+        '--base-dir', BASE,
+    )
+
+    # Cover letter (regenerated after the manuscript so word/figure counts are available)
+    _run('build_cover_letter_clinical_trials.py')
+
     # Copy high-resolution figure files for upload
     _copy_submission_figures()
 
@@ -359,8 +322,8 @@ def main():
     _build_submission_package()
 
     print('\nClinical Trials deliverables ready:')
-    for p in [OUT_MD, OUT_DOCX, OUT_SUB_DOCX, OUT_TABLES_DOCX, OUT_FIGURES_PPTX, OUT_SUPP_DOCX,
-              os.path.join(BASE, 'submission_package_ClinicalTrials.zip')]:
+    for p in [OUT_MD, OUT_DOCX, OUT_SUB_DOCX, OUT_TABLES_DOCX, OUT_FIGURES_PPTX, OUT_SUPP_FIGURES_PPTX,
+              OUT_SUPP_DOCX, os.path.join(BASE, 'submission_package_ClinicalTrials.zip')]:
         print(' -', os.path.basename(p))
 
 

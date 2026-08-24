@@ -1,7 +1,27 @@
 #!/usr/bin/env python3
 """Generate a Clinical Trials cover letter as a standalone docx."""
+import os
+import re
+from pathlib import Path
+
 from docx import Document
 from docx.shared import Pt
+
+
+def _submission_details():
+    """Read word count and main-text figure/table counts from the generated manuscript."""
+    md_path = Path('05_paper_clinical_trials.md')
+    word_count = '[generated after manuscript build]'
+    fig_count = 4
+    table_count = 2
+    if md_path.exists():
+        text = md_path.read_text(encoding='utf-8')
+        m = re.search(r'^word_count:\s*(\d+)', text, re.MULTILINE)
+        if m:
+            word_count = m.group(1)
+        fig_count = len(set(re.findall(r'\*\*Fig\.\s*(\d+)', text)))
+        table_count = len(set(re.findall(r'\*\*Table\s*(\d+):', text)))
+    return word_count, fig_count, table_count
 
 
 def add_paragraph(doc, text, bold=False, italic=False, style=None):
@@ -31,8 +51,8 @@ def main():
     add_paragraph(doc, '')
 
     title = (
-        '"The KOTHA Framework: diagnosing structural information loss in '
-        'randomized controlled trial meta-analyses to inform trial design"'
+        '"The KOTHA Framework: Diagnosing Structural Information Loss in '
+        'Randomized Controlled Trial Meta-Analyses to Inform Trial Design"'
     )
     opening = (
         f'We are pleased to submit our manuscript, {title}, '
@@ -95,9 +115,21 @@ def main():
     add_paragraph(doc, exclusivity)
     add_paragraph(doc, '')
 
+    add_paragraph(doc, 'Submission details', bold=True)
+    word_count, fig_count, table_count = _submission_details()
+    details = (
+        f'The main text is approximately {word_count} words and contains {fig_count} figures '
+        f'and {table_count} tables. All figures are cited inline and are supplied as separate, '
+        f'high-resolution PNG files and an editable PowerPoint file for upload. All data and '
+        f'analysis code are available in the public repository '
+        f'(https://github.com/bougtoir/kotha-rct-decomposition).'
+    )
+    add_paragraph(doc, details)
+    add_paragraph(doc, '')
+
     add_paragraph(doc, 'Declarations', bold=True)
     add_paragraph(doc, 'Funding: [To be determined]')
-    add_paragraph(doc, 'Competing interests: The authors declare no competing interests.')
+    add_paragraph(doc, 'Competing interests: [To be determined]')
     add_paragraph(doc, '')
 
     add_paragraph(doc, 'Suggested reviewers', bold=True)

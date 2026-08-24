@@ -1,19 +1,19 @@
 ---
 running_head: KOTHA Framework for Trial Design
-title: The KOTHA Framework: diagnosing structural information loss in randomized controlled trial meta-analyses to inform trial design
+title: The KOTHA Framework: Diagnosing Structural Information Loss in Randomized Controlled Trial Meta-Analyses to Inform Trial Design
 authors: [To be determined]
 affiliations: [To be determined]
-word_count: 2421
+word_count: 2687
 corresponding_author: [To be determined]
 corresponding_author_address: [To be determined]
 ---
 ## Abstract
 
-**Background/Aims**: Evidence-based medicine ranks RCTs and meta-analyses highest, yet observational-RCT discordance is usually attributed to confounding. We highlight a structural explanation: trial enrollment progressively excludes higher-risk patients, diluting event rates and statistical information. The Knowledge-driven Observational-Trial Harmonization Approach (KOTHA) Framework diagnoses this structural information loss. We aimed to develop and illustrate KOTHA so that trialists can distinguish structural information loss from residual confounding and improve prospective trial design.
+**Background/Aims**: Evidence-based medicine ranks RCTs and meta-analyses highest, yet observational-RCT discordance is usually attributed to confounding. We highlight a structural explanation: trial enrollment progressively excludes higher-risk patients, diluting event rates and statistical information. The Knowledge-driven Observational-Trial Harmonization Approach (KOTHA) Framework diagnoses this structural information loss. We aimed to develop and illustrate KOTHA so that trialists can distinguish structural information loss from residual confounding and inform sample size, eligibility, enrichment, and endpoint decisions in prospective trial design.
 
 **Methods**: KOTHA comprises three modules: Module K quantifies risk-profile shifts and power loss, Module T combines RCT and observational evidence with power-prior discounting, and Module H translates outputs into a GRADE-compatible assessment. We applied it to magnesium in acute myocardial infarction and statins in heart failure.
 
-**Results**: In the magnesium case, control event rates fell from 8.9% to 7.2%; the pre-ISIS-4 pooled odds ratio (OR) was 0.54 (95% CI: 0.40-0.75) and the all-trials estimate 0.56 (0.38-0.83) with $I^2$ = 62%. In the statins case, observational hazard ratio (HR) was 0.72 (0.64-0.80) versus RCT HR 0.97 (0.90-1.05), with an event-rate ratio of 0.53. Bayesian integration (α = 0.3) yielded OR 0.74 (CrI 0.25-1.43), P(OR < 1) = 81% for magnesium, and HR 0.85 (0.55-1.24), P(HR < 1) = 87% for statins.
+**Results**: In the magnesium case, control event rates fell from 8.9% to 7.2%; the pre-ISIS-4 pooled odds ratio (OR) was 0.54 (95% CI: 0.40-0.75) and the all-trials estimate 0.56 (0.38-0.83) with $I^2$ = 62%. In the statins case, observational hazard ratio (HR) was 0.72 (0.64-0.80) versus RCT HR 0.97 (0.90-1.05), with an event-rate ratio of 0.51. Bayesian integration (α = 0.3) yielded OR 0.74 (CrI 0.25-1.43), P(OR < 1) = 80.7% for magnesium and HR 0.85 (0.55-1.24), P(HR < 1) = 86.5% for statins; both probabilities remained below conventional decision thresholds, leaving conclusions uncertain.
 
 **Conclusions**: KOTHA distinguishes "evidence of no effect" from "no evidence of effect". Module H classified magnesium as inconclusive with serious inconsistency (heterogeneity), and statins as inconclusive with serious indirectness.
 
@@ -43,7 +43,7 @@ An alternative, structural explanation deserves systematic attention. RCT enroll
 
 The concepts of optimal information size (OIS) and trial sequential analysis (TSA) provide partial remedies. OIS recognizes that meta-analyses, like individual trials, require a minimum information size to reach reliable conclusions [6-7]. TSA applies sequential monitoring boundaries to cumulative meta-analysis, distinguishing evidence of no effect (futility boundary crossed) from no evidence of effect (boundary not crossed) [8-9]. However, these tools are underused in guideline development, and neither directly quantifies the information loss attributable to enrollment-driven risk-profile shifts.
 
-A number of trial design strategies can mitigate event dilution (Supplementary Table S1), including stratified randomization, prognostic enrichment, event-driven designs, adaptive sample-size re-estimation, and pragmatic or registry-based trials. Yet no existing framework integrates prospective power assessment, retrospective diagnostic evaluation, and structured evidence interpretation for completed or planned RCTs.
+A number of trial design strategies can mitigate event dilution (Supplementary Table S1), including stratified randomization, prognostic enrichment, event-driven designs, adaptive sample-size re-estimation, and pragmatic or registry-based trials. Existing approaches address these issues separately; to our knowledge, no widely adopted framework tightly links prospective power assessment, retrospective diagnostic evaluation, and structured evidence interpretation in a single reproducible workflow for completed or planned RCTs.
 
 We therefore developed the Knowledge-driven Observational-Trial Harmonization Approach (KOTHA) Framework. It is a three-module system that (1) diagnoses structural information loss through counterfactual power simulation (Module K), (2) integrates discordant evidence through hierarchical Bayesian meta-analysis (Module T), and (3) translates quantitative findings into GRADE-compatible evidence assessment (Module H). This paper describes the framework and illustrates its application to two canonical cases of observational-RCT divergence, with an emphasis on implications for clinical trial design.
 
@@ -59,19 +59,19 @@ The KOTHA Framework comprises three interconnected modules (Fig. 1). Module K (C
 
 ### Module K: Counterfactual power simulation
 
-Module K asks: if the RCTs in a meta-analysis had enrolled patients with the risk profile of the real-world target population, would the combined evidence have been sufficient to detect the effect suggested by observational studies? The simulation component follows the ADEMP reporting structure [10].
+Module K asks: if the RCTs in a meta-analysis had enrolled patients with the risk profile of the real-world target population, would the combined evidence have been sufficient to detect the effect suggested by observational studies? The simulation component follows the ADEMP reporting structure [10]: aims (quantify information loss from enrollment-driven risk-profile shifts), data-generating process (published aggregate event counts and sample sizes), estimands (counterfactual power under S1-S3), methods (Schoenfeld approximation with proportional-hazards data handled via the log-HR/log-OR equivalence under rare events), and performance measures (power across a grid of true effects and required sample size).
 
 We define three enrollment scenarios: S1 (real-world target population, approximated by a representative retrospective cohort or published aggregate event rates); S2 (RCT-enrolled equivalent, defined by applying published eligibility criteria to the retrospective cohort or using observed RCT event rates); and S3 (design-optimized, incorporating prognostic enrichment).
 
-For each scenario, we compute the expected control event rate $p_c$ and treatment event rate $p_t = (p_c \cdot \text{OR}) / (1 - p_c + p_c \cdot \text{OR})$. The total expected number of events is $D = N(p_c + p_t)/2$ for a trial of $N$ patients randomized 1:1. Under the Schoenfeld approximation [11], the standard error of the log-OR is approximately $2/\sqrt{D}$, yielding the power function
+For each scenario, we compute the expected control event rate $p_c$ and treatment event rate $p_t = (p_c \cdot \text{OR}) / (1 - p_c + p_c \cdot \text{OR})$. The total expected number of events is $D = N(p_c + p_t)/2$ for a trial of $N$ patients randomized 1:1. Under the Schoenfeld approximation [11], the standard error of the log relative effect (log-OR or log-HR under proportional hazards) is approximately $2/\sqrt{D}$, yielding the power function
 
-$$\text{Power} = \Phi\left( |\log(\text{OR})| \cdot \sqrt{D} / 2 - z_{\alpha/2} \right)$$
+$$\text{Power} = \Phi\left( |\log(\text{OR or HR})| \cdot \sqrt{D} / 2 - z_{\alpha/2} \right)$$
 
-where $\Phi$ is the standard normal cumulative distribution function. The ratio $\rho = p_c^{(S2)} / p_c^{(S1)}$ quantifies event dilution. Module K reports power across a grid of assumed true effects and computes the sample size required to reach 80% power under each scenario. For the statins case, which reports hazard ratios, the hazard ratio is approximated by an odds ratio under the rare-event assumption and published annual mortality rates are used as approximate event probabilities; this comparison is intended to illustrate the relative power loss across enrollment scenarios rather than to provide exact sample-size estimates for a specific follow-up duration.
+where $\Phi$ is the standard normal cumulative distribution function. The ratio $\rho = p_c^{(S2)} / p_c^{(S1)}$ quantifies event dilution. Module K reports power across a grid of assumed true effects and computes the sample size required to reach 80% power under each scenario. For the statins case, which reports hazard ratios, the hazard ratio is approximated by an odds ratio under the rare-event assumption and crude control event proportions derived from the aggregate data are used as approximate event probabilities; this comparison is intended to illustrate the relative power loss across enrollment scenarios rather than to provide exact sample-size estimates for a specific follow-up duration.
 
 ### Module T: Hierarchical Bayesian evidence integration
 
-When Module K indicates that RCT evidence is informationally insufficient, Module T combines RCT and observational evidence while discounting the observational likelihood for potential design-specific bias. Let $y_i$ denote the reported log effect size from study $i$ with standard error $s_i$. The RCT evidence contributes its full likelihood; the observational evidence contributes a power-prior-discounted likelihood with factor $\alpha \in [0, 1]$ [12], so that $\alpha = 0$ retains only RCTs and $\alpha = 1$ gives observational data full weight. Between-study heterogeneity is modeled with a random-effects distribution $u_i \sim \text{Normal}(0, \tau^2)$. Alternative effect measures such as restricted mean survival time can be substituted when proportional-hazards assumptions are questionable [13-14]. Evidence-based priors have been proposed to anchor historical expectations while limiting prior-data conflict [15]. We also present bias-adjusted normal-approximation analyses as a sensitivity check. Posterior distributions are sampled with an affine-invariant ensemble MCMC [16] using 16 walkers, 1,000 warmup and 4,000 post-warmup iterations per walker, for each $\alpha$ in $(0, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0)$. Convergence was assessed with split-R-hat and effective sample size (ESS) for the population mean log effect and the between-study heterogeneity, using accepted thresholds (split-R-hat < 1.05; ESS per parameter > 400). Trace plots for selected chains are provided as Supplementary Figures S1a (magnesium) and S1b (statins) and showed no obvious non-stationarity. Across all discounting factors the minimum ESS was 972 and the maximum split-R-hat was 1.024, both satisfying the convergence criteria. We report the full grid to show sensitivity and use $\alpha$ = 0.3 as an illustrative moderate-discounting value without claiming it is universally optimal.
+When Module K indicates that RCT evidence is informationally insufficient, Module T combines RCT and observational evidence while discounting the observational likelihood for potential design-specific bias. Let $y_i$ denote the reported log effect size from study $i$ with standard error $s_i$. The RCT evidence contributes its full likelihood; the observational evidence contributes a power-prior-discounted likelihood with factor $\alpha \in [0, 1]$ [12], so that $\alpha = 0$ retains only RCTs and $\alpha = 1$ gives observational data full weight. Between-study heterogeneity is modeled with a random-effects distribution $u_i \sim \text{Normal}(0, \tau^2)$. We used weakly informative priors $\mu \sim N(0, 10^2)$ on the population mean log effect and $\tau \sim \text{Half-Cauchy}(0, 0.5)$ on the between-study standard deviation, with $\tau$ bounded between $10^{-9}$ and $100$ for numerical stability. Alternative effect measures such as restricted mean survival time can be substituted when proportional-hazards assumptions are questionable [13-14]. Evidence-based priors have been proposed to anchor historical expectations while limiting prior-data conflict [15]. We also present bias-adjusted normal-approximation analyses as a sensitivity check. Posterior distributions are sampled with an affine-invariant ensemble MCMC [16] using 16 walkers, 1,000 warmup and 4,000 post-warmup iterations per walker, for each $\alpha$ in $(0, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0)$. Convergence was assessed with split-R-hat and effective sample size (ESS) for the population mean log effect and the between-study heterogeneity, using accepted thresholds (split-R-hat < 1.05; ESS per parameter > 400). Trace plots for selected chains are provided as Supplementary Figures S1a (magnesium) and S1b (statins) and showed no obvious non-stationarity. Across all discounting factors the minimum ESS was 972 and the maximum split-R-hat was 1.024, both satisfying the convergence criteria. We report the full grid to show sensitivity and use $\alpha$ = 0.3 as an illustrative moderate-discounting value without claiming it is universally optimal.
 
 ### Module H: Guideline interpretation
 
@@ -95,7 +95,7 @@ For magnesium in AMI we used study-level event counts extracted from published o
 
 ### Study-level data and risk-profile shift
 
-Study-level data are provided in Supplementary Table S1 (magnesium in AMI) and Supplementary Table S2 (statins in HF). In the magnesium case, control-group mortality fell from a pre-thrombolysis weighted mean of 8.9% to 7.2% in ISIS-4, an event rate ratio of 0.82 (Fig. 2). In the statins case, the RCT-to-observational event rate ratio was 0.53, indicating that the RCT populations had roughly half the mortality event rate of the observational cohorts.
+Study-level data are provided in Supplementary Table S2 (magnesium in AMI) and Supplementary Table S3 (statins in HF). In the magnesium case, control-group mortality fell from a pre-thrombolysis weighted mean of 8.9% to 7.2% in ISIS-4, an event rate ratio of 0.82 (Fig. 2). In the statins case, the RCT-to-observational event rate ratio was 0.51, indicating that the RCT populations had roughly half the mortality event rate of the observational cohorts.
 
 **Fig. 2** Risk-profile shift in the magnesium-in-AMI case. (A) Control-group mortality rates over time, with bubble size proportional to study sample size and colors indicating era. (B) Weighted mean control mortality by era.
 
@@ -103,7 +103,7 @@ Study-level data are provided in Supplementary Table S1 (magnesium in AMI) and S
 
 ### Counterfactual power simulation
 
-At the ISIS-4 sample size (N = 58,050) and the pre-ISIS-4 pooled effect (OR = 0.54), power exceeded 99% under all three event-rate scenarios. For a more modest effect (OR = 0.90), however, power was 95.8% under the pre-thrombolysis rate and 91.5% under the ISIS-4 rate (Fig. 3A). For statins, power to detect the observational effect (HR = 0.72) was 100.0% under the observational event rate and 99.1% under the RCT event rate; for a more modest effect (HR = 0.85), power fell from 84.6% to 58.3%---a 26 percentage-point reduction attributable to event dilution (Fig. 3B).
+At the ISIS-4 sample size (N = 58,050) and the pre-ISIS-4 pooled effect (OR = 0.54), power exceeded 99% under all three event-rate scenarios. For a more modest effect (OR = 0.90), however, power was 95.8% under the pre-thrombolysis rate and 91.5% under the ISIS-4 rate (Fig. 3A). For statins, power to detect the observational effect (HR = 0.72) was 100.0% under the observational event rate and 100.0% under the RCT event rate; for a more modest effect (HR = 0.85), power fell from 98.4% to 83.2%---a 15 percentage-point reduction attributable to event dilution (Fig. 3B).
 
 **Fig. 3** Estimated power by enrollment scenario and true effect size. (A) Magnesium in AMI at the ISIS-4 sample size (N = 58,050). (B) Statins in HF at the combined RCT sample size (N = 9,585). S1 = real-world/observational event rate; S2 = RCT event rate; S3 = intermediate/enriched rate. Horizontal dashed lines indicate 80% power.
 
@@ -111,7 +111,7 @@ At the ISIS-4 sample size (N = 58,050) and the pre-ISIS-4 pooled effect (OR = 0.
 
 ### Frequentist meta-analysis and trial sequential analysis
 
-Forest plots for magnesium and statins are shown in Fig. 4. Random-effects meta-analysis of the 11 pre-ISIS-4 magnesium trials yielded OR = 0.54 (95% CI: 0.40-0.75) with $I^2$ = 6%. Adding ISIS-4 changed the pooled estimate to OR = 0.56 (0.38-0.83), but heterogeneity increased to $I^2$ = 62% (Fig. 4A). TSA under a fixed-effect accumulation produced a final cumulative $Z$ of 0.80, which did not cross the conventional two-sided boundary for benefit or harm ($|Z|$ = 1.96); under a random-effects accumulation the final $Z$ was -2.90, crossing the lower O'Brien-Fleming boundary of -0.27 (Supplementary Fig. S2). This divergence reflects era-dependent treatment-effect heterogeneity driven by the ISIS-4 result.
+Forest plots for magnesium and statins are shown in Fig. 4. Random-effects meta-analysis of the 11 pre-ISIS-4 magnesium trials yielded OR = 0.54 (95% CI: 0.40-0.75) with $I^2$ = 6%. Adding ISIS-4 changed the pooled estimate to OR = 0.56 (0.38-0.83), but heterogeneity increased to $I^2$ = 62% (Fig. 4A). TSA under a fixed-effect accumulation produced a final cumulative $Z$ of 0.80, which did not cross the conventional two-sided boundary for benefit or harm ($|Z|$ = 1.96); under a random-effects accumulation the final $Z$ was -2.90, crossing the lower O'Brien-Fleming boundary of -1.96 (which, because the cumulative information exceeded the optimal information size, equals the conventional two-sided boundary) (Supplementary Fig. S2). This divergence reflects era-dependent treatment-effect heterogeneity driven by the ISIS-4 result.
 
 For statins, observational studies showed a pooled HR of 0.72 (95% CI: 0.64-0.80) with $I^2$ = 82%, whereas the two RCTs (CORONA and GISSI-HF) yielded HR = 0.97 (0.90-1.05) with $I^2$ = 0% (Fig. 4B).
 
@@ -121,11 +121,11 @@ For statins, observational studies showed a pooled HR of 0.72 (95% CI: 0.64-0.80
 
 ### Bayesian integration
 
-Bayesian integration (Supplementary Table S4) showed that for magnesium, with $\alpha$ = 0 (ISIS-4 only), the posterior median OR was 1.05 with 42.8% probability of benefit. With $\alpha$ = 0.3 the posterior shifted to OR = 0.74 (95% CrI: 0.25-1.43), with 81% probability of benefit (Supplementary Fig. S3A). For statins, with $\alpha$ = 0 (RCTs only) the posterior probability of benefit was 62.9% and the probability of a clinically meaningful benefit (HR < 0.90) was 21.2%. With $\alpha$ = 0.3 these probabilities rose to 86.5% and 66.0%, respectively (Supplementary Fig. S3B). Even with moderate borrowing from observational evidence, conclusions remained uncertain.
+Bayesian integration (Supplementary Table S4) showed that for magnesium, with $\alpha$ = 0 (ISIS-4 only), the posterior median OR was 1.05 with 42.8% probability of benefit. With $\alpha$ = 0.3 the posterior shifted to OR = 0.74 (95% CrI: 0.25-1.43), with 80.7% probability of benefit (Supplementary Fig. S3A). For statins, with $\alpha$ = 0 (RCTs only) the posterior probability of benefit was 62.9% and the probability of a clinically meaningful benefit (HR < 0.90) was 21.2%. With $\alpha$ = 0.3 these probabilities rose to 86.5% and 66.0%, respectively (Supplementary Fig. S3B). Even with moderate borrowing from observational evidence, conclusions remained uncertain.
 
 ### Module H assessment
 
-Module H results are summarized in Table 2 and Supplementary Fig. S4. For magnesium, the OIS for the pre-ISIS-4 effect was 85 events and the observed total was 4,617 (information fraction 5426%). The TSA efficacy boundary was crossed under random-effects accumulation, but the pooled estimate was dominated by high between-study heterogeneity ($I^2$ = 62%). The appropriate KOTHA classification is **Inconclusive with serious inconsistency (heterogeneity)** (TSA/CI indicate benefit but the signal is downgraded by serious inconsistency (heterogeneity)). For statins, if the observational effect (HR 0.72) represented the true effect in the target population, the required information size would be 279 events; the RCTs contributed 1,385 events (information fraction 496%). The cumulative $Z$ was -0.74, the efficacy boundary was not crossed, and the event rate ratio was 0.53; the appropriate classification is **Inconclusive with serious indirectness** (OIS reached but no TSA/CI boundary crossed; serious indirectness from enrollment-driven event dilution). In both cases, standard GRADE would be more likely to conclude "no benefit demonstrated," whereas KOTHA explicitly labels the evidence as informationally insufficient.
+Module H results are summarized in Table 2 and Supplementary Fig. S4. For magnesium, the OIS for the pre-ISIS-4 effect was 85 events and the observed total was 4,617 (information fraction 5426%). The TSA efficacy boundary was crossed under random-effects accumulation, but the pooled estimate was dominated by high between-study heterogeneity ($I^2$ = 62%). The appropriate KOTHA classification is **Inconclusive with serious inconsistency (heterogeneity)** (TSA/CI indicate benefit but the signal is downgraded by serious inconsistency (heterogeneity)). For statins, if the observational effect (HR 0.72) represented the true effect in the target population, the required information size would be 279 events; the RCTs contributed 1,385 events (information fraction 496%). The cumulative $Z$ was -0.74, the efficacy boundary was not crossed, and the event rate ratio was 0.51; the appropriate classification is **Inconclusive with serious indirectness** (OIS reached but no TSA/CI boundary crossed; serious indirectness from enrollment-driven event dilution). In both cases, standard GRADE would be more likely to conclude "no benefit demonstrated," whereas KOTHA explicitly labels the evidence as informationally insufficient.
 
 **Table 2: Module H assessment --- Standard GRADE vs. KOTHA-enhanced**
 
@@ -133,7 +133,7 @@ Module H results are summarized in Table 2 and Supplementary Fig. S4. For magnes
 |---|---|---|---|---|
 | Risk of bias | Low | Low | Low | Low |
 | Inconsistency | High ($I^2$ = 62%) | High ($I^2$ = 62%) | Low ($I^2$ = 0%) | Low ($I^2$ = 0%) |
-| Indirectness | Not assessed | Low: event rate decreased by 18% | Not assessed | Serious: event rate decreased by 47% |
+| Indirectness | Not assessed | Low: event rate decreased by 18% | Not assessed | Serious: event rate decreased by 49% |
 | Imprecision | Not serious (OIS met) | Not serious (OIS met, CI excludes null) | Not serious (OIS met, CI excludes clinically important benefit) | Not serious (OIS met, CI excludes clinically important benefit) |
 | Overall certainty | Low | Low | High | Low |
 | Recommendation | "No benefit demonstrated" | "Inconclusive; conditional recommendation" | "No benefit demonstrated" | "Inconclusive; conditional recommendation" |
@@ -142,7 +142,7 @@ Module H results are summarized in Table 2 and Supplementary Fig. S4. For magnes
 
 ### Principal findings
 
-The KOTHA Framework integrates counterfactual power simulation, Bayesian evidence synthesis, and structured GRADE interpretation to diagnose structural information loss in RCT meta-analyses. In the magnesium case, Module K identified a 18% temporal decline in control event rates from the pre-thrombolysis era to ISIS-4. The divergence between pre-ISIS-4 and all-trials estimates is better explained by era-dependent treatment effect heterogeneity ($I^2$ = 62%) than by simple underpowering. In the statins case, Module K showed that RCT populations had roughly half the event rate of observational cohorts, and that power for a modest effect (HR = 0.85) dropped from 85% to 58%. Module T demonstrated that even modest borrowing from observational evidence shifted posterior probabilities of benefit substantially, but uncertainty remained. Module H classified magnesium as inconclusive with serious inconsistency (heterogeneity), and statins as inconclusive with serious indirectness, rather than "evidence of no effect."
+The KOTHA Framework integrates counterfactual power simulation, Bayesian evidence synthesis, and structured GRADE interpretation to diagnose structural information loss in RCT meta-analyses. In the magnesium case, Module K identified a 18% temporal decline in control event rates from the pre-thrombolysis era to ISIS-4. The divergence between pre-ISIS-4 and all-trials estimates is better explained by era-dependent treatment effect heterogeneity ($I^2$ = 62%) than by simple underpowering. In the statins case, Module K showed that RCT populations had roughly half the event rate of observational cohorts, and that power for a modest effect (HR = 0.85) dropped from 98% to 83%. Module T demonstrated that even modest borrowing from observational evidence shifted posterior probabilities of benefit substantially, but uncertainty remained. Module H classified magnesium as inconclusive with serious inconsistency (heterogeneity), and statins as inconclusive with serious indirectness, rather than "evidence of no effect."
 
 ### Implications for clinical trial design
 
@@ -163,11 +163,21 @@ Target trial emulation uses observational data to mimic a specific RCT in order 
 
 The framework is reproducible from published aggregate data, follows the ADEMP reporting structure [10], and is illustrated with real, well-documented cases rather than synthetic examples. The modular design allows each component to be used independently.
 
-Limitations should be acknowledged. The cases are retrospective applications of the framework to published aggregate data; individual patient data would strengthen risk-profile stratification and adjustment for confounders, and ecological bias may affect the representativeness assessment. Prospective validation against trials whose results are not yet known would be stronger. Module T treats the discounting parameter $\alpha$ as a fixed sensitivity parameter and is therefore sensitive to assumptions about residual confounding; we present the full grid of values but do not claim a single preferred $\alpha$. The magnesium case involves genuine treatment-effect heterogeneity across thrombolysis eras, which Module K identifies but cannot fully explain. Finally, adoption by guideline groups will require institutional change beyond the method itself.
+Limitations should be acknowledged:
+
+- The cases are retrospective applications of the framework to published aggregate data; individual patient data would strengthen risk-profile stratification and adjustment for confounders, and ecological bias may affect the representativeness assessment.
+- For statins, the observational and RCT crude event proportions are aggregate study-level values, so the comparison is ecological and may not reflect within-individual risk differences.
+- The hazard-ratio-to-odds-ratio approximation and the use of a crude event proportion (rather than an event rate per person-time) mean Module K estimates relative power loss across enrollment scenarios, not a definitive sample size for a specific follow-up.
+- For statins, the S3 enrichment target is set at the midpoint between the observational and RCT crude proportions as an illustration; other thresholds would yield different power curves.
+- The magnesium case spans the pre-thrombolysis and thrombolysis eras, so temporal changes in standard care, case mix, and outcome ascertainment create treatment-era confounding that cannot be fully controlled with aggregate data.
+- Prospective validation against trials whose results are not yet known would be stronger.
+- Module T treats the discounting parameter $\alpha$ as a fixed sensitivity parameter and is therefore sensitive to assumptions about residual confounding; we present the full grid of values but do not claim a single preferred $\alpha$.
+- The magnesium case involves genuine treatment-effect heterogeneity across thrombolysis eras, which Module K identifies but cannot fully explain.
+- Finally, adoption by guideline groups will require institutional change beyond the method itself.
 
 ## 5. Conclusions
 
-The KOTHA Framework (Knowledge-driven Observational-Trial Harmonization Approach) addresses structural information loss in RCT meta-analyses through counterfactual power simulation, hierarchical Bayesian evidence integration, and structured GRADE-compatible interpretation. Empirical application to magnesium in AMI and statins in heart failure demonstrates that the framework can identify enrollment-driven event dilution, quantify its impact on statistical power, and produce more nuanced evidence assessments than standard approaches.
+The KOTHA Framework (Knowledge-driven Observational-Trial Harmonization Approach) addresses structural information loss in RCT meta-analyses through counterfactual power simulation, hierarchical Bayesian evidence integration, and structured GRADE-compatible interpretation. Empirical application to magnesium in AMI and statins in heart failure demonstrates that the framework can identify enrollment-driven event dilution, quantify its impact on statistical power, and produce more nuanced evidence assessments than standard approaches. By translating these diagnostics into prespecified sample size, eligibility, enrichment, and endpoint decisions, KOTHA offers a reproducible design aid for future clinical trials.
 
 ## Declarations
 
@@ -189,7 +199,7 @@ Not applicable. This manuscript presents a methodological framework and retrospe
 
 ### Declaration of competing interest
 
-The authors declare that they have no competing interests.
+[To be determined]
 
 ### Funding source
 
@@ -205,34 +215,34 @@ The authors declare that they have no competing interests.
 
 ## References
 
-1. Guyatt GH, Oxman AD, Vist GE, et al. GRADE: an emerging consensus on rating quality of evidence and strength of recommendations. BMJ. 2008;336(7650):924-6.
-2. Concato J, Shah N, Horwitz RI. Randomized, controlled trials, observational studies, and the hierarchy of research designs. N. Engl. J. Med. 2000;342(25):1887-92.
-3. Anglemyer A, Horvath HT, Bero L. Healthcare outcomes assessed with observational study designs compared with those assessed in randomized trials. Cochrane Database Syst. Rev. 2014;(4):MR000034.
-4. Kennedy-Martin T, Curtis S, Faries D, et al. A literature review on the representativeness of randomized controlled trial samples and implications for the external validity of trial results. Trials. 2015;16:495.
-5. Rothwell PM. External validity of randomised controlled trials: "to whom do the results of this trial apply?" Lancet. 2005;365(9453):82-93.
-6. Pogue JM, Yusuf S. Cumulating evidence from randomized trials: utilizing sequential monitoring boundaries for cumulative meta-analysis. Control. Clin. Trials. 1997;18(6):580-93.
-7. Wetterslev J, Thorlund K, Brok J, et al. Estimating required information size by quantifying diversity in random-effects model meta-analyses. BMC Med. Res. Methodol. 2009;9:86.
-8. Brok J, Thorlund K, Gluud C, et al. Trial sequential analysis reveals insufficient information size and potentially false positive results in many meta-analyses. J. Clin. Epidemiol. 2008;61(8):763-9.
+1. Guyatt GH, Oxman AD, Vist GE, et al. GRADE: an emerging consensus on rating quality of evidence and strength of recommendations. BMJ 2008; 336(7650): 924-6.
+2. Concato J, Shah N and Horwitz RI. Randomized, controlled trials, observational studies, and the hierarchy of research designs. N Engl J Med 2000; 342(25): 1887-92.
+3. Anglemyer A, Horvath HT and Bero L. Healthcare outcomes assessed with observational study designs compared with those assessed in randomized trials. Cochrane Database Syst Rev 2014; (4): MR000034.
+4. Kennedy-Martin T, Curtis S, Faries D, et al. A literature review on the representativeness of randomized controlled trial samples and implications for the external validity of trial results. Trials 2015; 16: 495.
+5. Rothwell PM. External validity of randomised controlled trials: "to whom do the results of this trial apply?" Lancet 2005; 365(9453): 82-93.
+6. Pogue JM and Yusuf S. Cumulating evidence from randomized trials: utilizing sequential monitoring boundaries for cumulative meta-analysis. Control Clin Trials 1997; 18(6): 580-93.
+7. Wetterslev J, Thorlund K, Brok J, et al. Estimating required information size by quantifying diversity in random-effects model meta-analyses. BMC Med Res Methodol 2009; 9: 86.
+8. Brok J, Thorlund K, Gluud C, et al. Trial sequential analysis reveals insufficient information size and potentially false positive results in many meta-analyses. J Clin Epidemiol 2008; 61(8): 763-9.
 9. Thorlund K, Engstrom J, Wetterslev J, et al. User manual for trial sequential analysis (TSA). Copenhagen Trial Unit, Centre for Clinical Intervention Research; 2011.
-10. Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Stat. Med. 2019;38(11):2074-102.
-11. Schoenfeld DA. Sample-size formula for the proportional-hazards regression model. Biometrics. 1983;39(2):499-503.
-12. Ibrahim JG, Chen MH. Power prior distributions for regression models. Stat. Sci. 2000;15(1):46-60.
-13. McCaw ZR, Yin G, Wei LJ. Using the restricted mean survival time difference as an alternative to the hazard ratio for analyzing clinical cardiovascular studies. Circulation. 2019;140(17):1366-8. doi:10.1161/CIRCULATIONAHA.119.040680.
-14. Boyd AP, Kittelson JM, Gillen DL. Estimation of treatment effect under non-proportional hazards and conditionally independent censoring. Stat. Med. 2012;31(28):3504-15. doi:10.1002/sim.5440.
-15. Sherry AD, Msaouel P, Kupferman GS, et al. Evidence-based prior for estimating the treatment effect of phase III randomized trials in oncology. JCO Precis. Oncol. 2024;8:e2400363. doi:10.1200/PO.24.00363.
-16. Foreman-Mackey D, Hogg DW, Lang D, et al. emcee: the MCMC hammer. Publ. Astron. Soc. Pac. 2013;125(925):306-12.
-17. Teo KK, Yusuf S, Collins R, et al. Effects of intravenous magnesium in suspected acute myocardial infarction: overview of randomised trials. BMJ. 1991;303(6816):1499-503.
-18. Li J, Zhang Q, Zhang M, et al. Intravenous magnesium for acute myocardial infarction. Cochrane Database Syst. Rev. 2007;(2):CD002755.
-19. Anker SD, Clark AL, Winkler R, et al. Statin use and survival in patients with chronic heart failure -- results from two observational studies with 5200 patients. Int. J. Cardiol. 2006;112(2):234-42.
-20. Mozaffarian D, Nye R, Levy WC. Statin therapy is associated with lower mortality among patients with severe heart failure. Am. J. Cardiol. 2004;93(9):1124-9.
-21. Horwich TB, MacLellan WR, Fonarow GC. Statin therapy is associated with improved survival in ischemic and non-ischemic heart failure. J. Am. Coll. Cardiol. 2004;43(4):642-8.
-22. Go AS, Lee WY, Yang J, et al. Statin therapy and risks for death and hospitalization in chronic heart failure. JAMA. 2006;296(17):2105-11.
-23. Foody JM, Shah R, Galusha D, et al. Statins and mortality among elderly patients hospitalized with heart failure. Circulation. 2006;113(8):1086-92.
-24. Kjekshus J, Apetrei E, Barrios V, et al. Rosuvastatin in older patients with systolic heart failure. N. Engl. J. Med. 2007;357(22):2248-61.
-25. GISSI-HF Investigators. Effect of rosuvastatin in patients with chronic heart failure (the GISSI-HF trial): a randomised, double-blind, placebo-controlled trial. Lancet. 2008;372(9645):1231-9.
-26. DerSimonian R, Laird N. Meta-analysis in clinical trials. Control. Clin. Trials. 1986;7(3):177-88.
-27. Hernan MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. Am. J. Epidemiol. 2016;183(8):758-64.
-28. Hernan MA, Wang W, Leaf DE. Target trial emulation: a framework for causal inference from observational data. JAMA. 2022;328(24):2446-7.
-29. Schmidli H, Gsteiger S, Roychoudhury S, et al. Robust meta-analytic-predictive priors in clinical trials with historical control information. Biometrics. 2014;70(4):1023-32.
-30. Verde PE, Ohmann C. Combining randomized and non-randomized evidence in clinical research: a review of methods and applications. Res. Synth. Methods. 2015;6(1):45-62.
-31. Efthimiou O, Mavridis D, Debray TPA, et al. Combining randomized and non-randomized evidence in network meta-analysis. Stat. Med. 2017;36(8):1210-26.
+10. Morris TP, White IR and Crowther MJ. Using simulation studies to evaluate statistical methods. Stat Med 2019; 38(11): 2074-102.
+11. Schoenfeld DA. Sample-size formula for the proportional-hazards regression model. Biometrics 1983; 39(2): 499-503.
+12. Ibrahim JG and Chen MH. Power prior distributions for regression models. Stat Sci 2000; 15(1): 46-60.
+13. McCaw ZR, Yin G and Wei LJ. Using the restricted mean survival time difference as an alternative to the hazard ratio for analyzing clinical cardiovascular studies. Circulation 2019; 140(17): 1366-8. doi:10.1161/CIRCULATIONAHA.119.040680.
+14. Boyd AP, Kittelson JM and Gillen DL. Estimation of treatment effect under non-proportional hazards and conditionally independent censoring. Stat Med 2012; 31(28): 3504-15. doi:10.1002/sim.5440.
+15. Sherry AD, Msaouel P, Kupferman GS, et al. Evidence-based prior for estimating the treatment effect of phase III randomized trials in oncology. JCO Precis Oncol 2024; 8: e2400363. doi:10.1200/PO.24.00363.
+16. Foreman-Mackey D, Hogg DW, Lang D, et al. emcee: the MCMC hammer. Publ Astron Soc Pac 2013; 125(925): 306-12.
+17. Teo KK, Yusuf S, Collins R, et al. Effects of intravenous magnesium in suspected acute myocardial infarction: overview of randomised trials. BMJ 1991; 303(6816): 1499-503.
+18. Li J, Zhang Q, Zhang M, et al. Intravenous magnesium for acute myocardial infarction. Cochrane Database Syst Rev 2007; (2): CD002755.
+19. Anker SD, Clark AL, Winkler R, et al. Statin use and survival in patients with chronic heart failure -- results from two observational studies with 5200 patients. Int J Cardiol 2006; 112(2): 234-42.
+20. Mozaffarian D, Nye R and Levy WC. Statin therapy is associated with lower mortality among patients with severe heart failure. Am J Cardiol 2004; 93(9): 1124-9.
+21. Horwich TB, MacLellan WR and Fonarow GC. Statin therapy is associated with improved survival in ischemic and non-ischemic heart failure. J Am Coll Cardiol 2004; 43(4): 642-8.
+22. Go AS, Lee WY, Yang J, et al. Statin therapy and risks for death and hospitalization in chronic heart failure. JAMA 2006; 296(17): 2105-11.
+23. Foody JM, Shah R, Galusha D, et al. Statins and mortality among elderly patients hospitalized with heart failure. Circulation 2006; 113(8): 1086-92.
+24. Kjekshus J, Apetrei E, Barrios V, et al. Rosuvastatin in older patients with systolic heart failure. N Engl J Med 2007; 357(22): 2248-61.
+25. GISSI-HF Investigators. Effect of rosuvastatin in patients with chronic heart failure (the GISSI-HF trial): a randomised, double-blind, placebo-controlled trial. Lancet 2008; 372(9645): 1231-9.
+26. DerSimonian R and Laird N. Meta-analysis in clinical trials. Control Clin Trials 1986; 7(3): 177-88.
+27. Hernan MA and Robins JM. Using big data to emulate a target trial when a randomized trial is not available. Am J Epidemiol 2016; 183(8): 758-64.
+28. Hernan MA, Wang W and Leaf DE. Target trial emulation: a framework for causal inference from observational data. JAMA 2022; 328(24): 2446-7.
+29. Schmidli H, Gsteiger S, Roychoudhury S, et al. Robust meta-analytic-predictive priors in clinical trials with historical control information. Biometrics 2014; 70(4): 1023-32.
+30. Verde PE and Ohmann C. Combining randomized and non-randomized evidence in clinical research: a review of methods and applications. Res Synth Methods 2015; 6(1): 45-62.
+31. Efthimiou O, Mavridis D, Debray TPA, et al. Combining randomized and non-randomized evidence in network meta-analysis. Stat Med 2017; 36(8): 1210-26.

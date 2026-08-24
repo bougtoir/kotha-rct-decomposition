@@ -25,7 +25,7 @@ CASE 2: Statins in Heart Failure
 ----------------------------------------
 Observational pooled HR: 0.72
 RCT pooled HR: 0.97
-Event rate ratio (RCT/obs): 0.53
+Event rate ratio (RCT/obs): 0.51
 OIS: 279 events
 Total RCT events: 1385
 Information fraction: 496%

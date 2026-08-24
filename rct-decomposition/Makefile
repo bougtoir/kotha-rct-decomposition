@@ -19,7 +19,6 @@ cctc:
 	python build_supplementary_tables_docx.py --out KOTHA_Framework_CCTC_supplementary_tables.docx
 
 clinical_trials:
-	python build_cover_letter_clinical_trials.py
 	python build_paper_clinical_trials.py
 
 clean:

@@ -137,7 +137,13 @@ def _compute_values():
 
     # Module H boundaries
     z_alpha = stats.norm.ppf(0.975)
-    mg_obf = z_alpha / np.sqrt(mh_mg['info_fraction'])
+    # O'Brien-Fleming boundary at the final information fraction. Once the
+    # optimal information size is reached, the OBF boundary equals the conventional
+    # two-sided threshold; before that it is more conservative.
+    if mh_mg['info_fraction'] < 1:
+        mg_obf = z_alpha / np.sqrt(mh_mg['info_fraction'])
+    else:
+        mg_obf = z_alpha
 
     v = {
         # Magnesium case selection / Module K
@@ -515,7 +521,7 @@ def _section_empirical_illustration(v):
         f"the Z-statistic reached significance after the early small trials but was pulled back to {v['mg_z_fe']:.2f} by "
         f"ISIS-4 (below the conventional boundary of {v['mg_z_alpha']:.2f}). Under a random-effects accumulation---the same "
         "model used for the pooled all-trials estimate---the final Z was "
-        f"{v['mg_z_re']:.2f}, crossing both the conventional boundary and the O'Brien-Fleming boundary ({v['mg_obf']:.2f}). This divergence "
+        f"{v['mg_z_re']:.2f}, crossing the O'Brien-Fleming boundary, which because the cumulative information exceeded the optimal information size equals the conventional boundary ({v['mg_obf']:.2f}). This divergence "
         f"is a direct consequence of the high between-study heterogeneity ($I^2$ = {int(round(v['mg_all_i2']))}%) driven by "
         "the ISIS-4 result; it underscores that the magnesium evidence base contains a genuine shift in treatment effect "
         "across eras and should not be summarized by a single pooled estimate.",

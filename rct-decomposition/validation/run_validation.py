@@ -198,7 +198,15 @@ def kotha_assessment(info_fraction, final_z, ci_lo, ci_hi, rate_ratio, i2,
       - inconsistency: bool (I^2 > i2_threshold)
     """
     z_alpha = stats.norm.ppf(0.975)
-    obf_boundary = z_alpha / np.sqrt(info_fraction) if info_fraction > 0 else np.inf
+    # O'Brien-Fleming boundary at the current information fraction. When the
+    # accumulated information is at or beyond the optimal information size, the
+    # boundary has reached the conventional two-sided alpha threshold.
+    if info_fraction <= 0:
+        obf_boundary = np.inf
+    elif info_fraction < 1:
+        obf_boundary = z_alpha / np.sqrt(info_fraction)
+    else:
+        obf_boundary = z_alpha
 
     ci_crosses_null = (ci_lo < 1.0) and (ci_hi > 1.0)
     sig_benefit = (ci_hi < 1.0) or (final_z < -obf_boundary)
@@ -453,21 +461,24 @@ def run_module_k_statins(statin_obs, statin_rct):
           f"(95% CI: {np.exp(pooled_rct - 1.96*se_rct):.2f}-{np.exp(pooled_rct + 1.96*se_rct):.2f}), I²={I2_rct:.0f}%")
     
     # Event rates
-    # Observational studies: higher-risk populations
-    # CORONA: annual mortality ~11.6% (575 deaths / 5011 over ~2.7 years)
-    # GISSI-HF: annual mortality ~9.4% (657 deaths / 4574 over ~3.9 years → ~3.6%/yr... actually more complex)
-    # Observational: much higher event rates (30%+ over study period)
-    
-    # Approximate annual event rates
-    obs_annual_rate = 0.15  # ~15% annual mortality in observational HF cohorts
-    rct_annual_rate = 0.08  # ~8% annual mortality in CORONA/GISSI-HF
-    enriched_rate = 0.12    # moderate enrichment
-    
+    # Control-group event probabilities are derived directly from the aggregate
+    # event counts and sample sizes in the public data files. Because person-time
+    # is not available from published aggregate reports, these are crude event
+    # proportions (not annual mortality rates) and are used as approximate
+    # event probabilities for the power illustration.
+    obs_rate = statin_obs['events'].sum() / statin_obs['N'].sum()
+    rct_rate = statin_rct['events'].sum() / statin_rct['N'].sum()
+    # S3 is a hypothetical enrichment target set at the midpoint between the
+    # observed observational and RCT crude proportions. It represents a design
+    # that halves the risk-profile gap between the enrolled RCT population and
+    # the real-world population.
+    enriched_rate = (obs_rate + rct_rate) / 2.0
+
     print(f"\nEvent rate comparison:")
-    print(f"  S1 (observational cohorts): ~{obs_annual_rate:.0%} annual mortality")
-    print(f"  S2 (RCT-enrolled):          ~{rct_annual_rate:.0%} annual mortality")
-    print(f"  S3 (enriched):              ~{enriched_rate:.0%} annual mortality")
-    print(f"  Event rate ratio S2/S1 = {rct_annual_rate/obs_annual_rate:.2f}")
+    print(f"  S1 (observational cohorts): ~{obs_rate:.1%} (crude event proportion)")
+    print(f"  S2 (RCT-enrolled):          ~{rct_rate:.1%} (crude event proportion)")
+    print(f"  S3 (enriched):              ~{enriched_rate:.1%} (midpoint of S1 and S2)")
+    print(f"  Event rate ratio S2/S1 = {rct_rate/obs_rate:.2f}")
     
     # Combined RCT N
     N_rct = statin_rct['N'].sum()
@@ -481,28 +492,30 @@ def run_module_k_statins(statin_obs, statin_rct):
     print("-" * 45)
     
     for OR in OR_grid:
-        p1, _ = power_analytical(obs_annual_rate, OR, N_rct)
-        p2, _ = power_analytical(rct_annual_rate, OR, N_rct)
+        p1, _ = power_analytical(obs_rate, OR, N_rct)
+        p2, _ = power_analytical(rct_rate, OR, N_rct)
         p3, _ = power_analytical(enriched_rate, OR, N_rct)
         power_results['OR'].append(OR)
         power_results['S1'].append(p1)
         power_results['S2'].append(p2)
         power_results['S3'].append(p3)
         print(f"{OR:<10.2f} {p1:>10.1%} {p2:>10.1%} {p3:>10.1%}")
-    
-    p1_true, _ = power_analytical(obs_annual_rate, true_HR, N_rct)
-    p2_true, _ = power_analytical(rct_annual_rate, true_HR, N_rct)
-    
+
+    p1_true, _ = power_analytical(obs_rate, true_HR, N_rct)
+    p2_true, _ = power_analytical(rct_rate, true_HR, N_rct)
+    p3_true, _ = power_analytical(enriched_rate, true_HR, N_rct)
+
     print(f"\nAt observational pooled HR = {true_HR:.2f}:")
-    print(f"  S1 (obs rate {obs_annual_rate:.0%}): power = {p1_true:.1%}")
-    print(f"  S2 (RCT rate {rct_annual_rate:.0%}): power = {p2_true:.1%}")
-    
+    print(f"  S1 (obs rate {obs_rate:.0%}): power = {p1_true:.1%}")
+    print(f"  S2 (RCT rate {rct_rate:.0%}): power = {p2_true:.1%}")
+    print(f"  S3 (enriched rate {enriched_rate:.0%}): power = {p3_true:.1%}")
+
     return {
         'pooled_obs': pooled_obs, 'se_obs': se_obs, 'I2_obs': I2_obs,
         'pooled_rct': pooled_rct, 'se_rct': se_rct, 'I2_rct': I2_rct,
         'power_results': power_results,
         'true_HR': true_HR, 'N_rct': N_rct,
-        'obs_rate': obs_annual_rate, 'rct_rate': rct_annual_rate,
+        'obs_rate': obs_rate, 'rct_rate': rct_rate, 's3_rate': enriched_rate,
     }
 
 
@@ -781,8 +794,14 @@ def run_module_h_magnesium(mg_data, mk_results):
     print(f"  Final cumulative Z (random-effects): {cum_z_re[-1]:.2f}")
     
     z_alpha = stats.norm.ppf(0.975)
-    # O'Brien-Fleming boundary at information fraction
-    obf_boundary = z_alpha / np.sqrt(info_fraction) if info_fraction > 0 else np.inf
+    # O'Brien-Fleming boundary at information fraction; when info_fraction >= 1
+    # the boundary has reached the conventional two-sided threshold.
+    if info_fraction <= 0:
+        obf_boundary = np.inf
+    elif info_fraction < 1:
+        obf_boundary = z_alpha / np.sqrt(info_fraction)
+    else:
+        obf_boundary = z_alpha
     print(f"  O'Brien-Fleming boundary at {info_fraction:.0%} information: Z = {obf_boundary:.2f}")
     print(f"  Conventional boundary: Z = {z_alpha:.2f}")
     
