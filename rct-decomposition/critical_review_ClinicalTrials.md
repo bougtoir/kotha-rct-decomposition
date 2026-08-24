@@ -59,7 +59,7 @@ This review was conducted after the first Clinical Trials build and before final
 | 4.2 | No hard-coded results | **High** | `validation/run_validation.py` previously contained hard-coded annual mortality rates (`obs_annual_rate = 0.15`, `rct_annual_rate = 0.08`) for the statins power illustration. | Removed hard-coded rates; statin control event rates are now computed directly from the aggregate event counts and sample sizes in `data/statins_hf_obs.csv` and `data/statins_hf_rct.csv`. The S3 enrichment scenario is also derived from these data. | **Fixed** |
 | 4.3 | Build pipeline | Low | `make clinical_trials` reuses committed CCTC outputs and regenerates all Clinical Trials deliverables without re-running MCMC. | Verified end-to-end. README updated to list all generated files including `KOTHA_Framework_ClinicalTrials_supplementary_figures.pptx` and to note the `make all` / `make clinical_trials` distinction. | **Fixed** |
 | 4.4 | Dependency on pandoc | Low | `generate_cct_docx.py` searches `~/.local/pandoc/bin/pandoc` and PATH, but a fresh clone may not have pandoc. | README already documents pandoc requirement with a download link. The current build environment includes pandoc, so the generated docx files are reproducible. | **Documented** |
-| 4.5 | Clean-clone reproducibility | **High** | Required before submission per internal policy: public repo code + stated data alone must regenerate the manuscript. | Will be verified after pushing to `bougtoir/wip` and syncing to `bougtoir/kotha-rct-decomposition`; clone the public `main` branch and run `make clinical_trials` to confirm matching deliverables. | **Pending** |
+| 4.5 | Clean-clone reproducibility | **High** | Required before submission per internal policy: public repo code + stated data alone must regenerate the manuscript. | Pushed to `bougtoir/wip` and synced to `bougtoir/kotha-rct-decomposition`; clean clone passed `make clinical_trials` and produced identical `05_paper_clinical_trials.md` and matching DOCX/PPTX textual content. | **Fixed** |
 
 ---
 
@@ -108,7 +108,7 @@ This review was conducted after the first Clinical Trials build and before final
   5. Added editable supplementary figures PPTX.
 
 - **Outstanding before final submission:**
-  1. **Clean-clone reproducibility check** from `bougtoir/kotha-rct-decomposition` (to be done after this push).
+  1. **Clean-clone reproducibility check** from `bougtoir/kotha-rct-decomposition` — completed after push; `make clinical_trials` regenerated identical `05_paper_clinical_trials.md` and matching DOCX/PPTX textual content.
   2. **Author/funding/COI placeholders** in title page and cover letter require final text from the authors.
   3. **Confirm** with the editorial office whether the abbreviations list as bullets is acceptable, or whether a numbered/lettered table would be preferred (and, if a table, which of the 6 main figure/table slots it would displace).
 
