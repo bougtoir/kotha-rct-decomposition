@@ -12,10 +12,14 @@ This repository contains the empirical validation, figures, and manuscript-gener
 ```bash
 make all              # run validation and generate the RSM-target manuscript
 make clinical_trials  # generate the Clinical Trials submission package
+make jbs              # generate the Journal of Biopharmaceutical Statistics submission package
 ```
 
 `make clinical_trials` reuses the pre-computed CCTC outputs and produces:
 `05_paper_clinical_trials.md`, `KOTHA_Framework_ClinicalTrials.docx`, `KOTHA_Framework_ClinicalTrials_tables.docx`, `KOTHA_Framework_ClinicalTrials_figures.pptx`, `KOTHA_Framework_ClinicalTrials_supplementary_figures.pptx`, `KOTHA_Framework_ClinicalTrials_supplementary_tables.docx`, `cover_letter_ClinicalTrials.docx`, and `submission_package_ClinicalTrials.zip`.
+
+`make jbs` reuses the pre-computed CCTC outputs and produces:
+`05_paper_jbs.md`, `KOTHA_Framework_JBS.docx` (inline figures/tables), `KOTHA_Framework_JBS_submission.docx` (legends only, for separate figure upload), `KOTHA_Framework_JBS_tables.docx`, `KOTHA_Framework_JBS_figures.pptx`, `KOTHA_Framework_JBS_supplementary_figures.pptx`, `KOTHA_Framework_JBS_supplementary_tables.docx`, `cover_letter_JBS.docx`, `JBS_figures/` high-resolution PNGs, and `submission_package_JBS.zip`.
 
 ## Pipeline steps
 
@@ -28,4 +32,4 @@ make clinical_trials  # generate the Clinical Trials submission package
 
 ## Reproducibility principle
 
-No study-level counts, effect estimates, or summary statistics are hard-coded in the manuscript source. All numbers in `04_paper_rsm.md`, `05_paper_clinical_trials.md`, and the generated Word documents are produced by `build_paper.py` / `build_paper_cct.py` / `build_paper_clinical_trials.py` from the CSVs and the analysis code. Edit `paper_template.md` for prose; rerun `make all` or `make clinical_trials` to refresh all numbers, tables, figures, and supplementary files.
+No study-level counts, effect estimates, or summary statistics are hard-coded in the manuscript source. All numbers in `04_paper_rsm.md`, `05_paper_cctc.md`, `05_paper_clinical_trials.md`, `05_paper_jbs.md`, and the generated Word documents are produced by `build_paper.py` / `build_paper_cct.py` / `build_paper_clinical_trials.py` / `build_paper_jbs.py` from the CSVs and the analysis code. Edit `paper_template.md` for prose; rerun `make all`, `make clinical_trials`, or `make jbs` to refresh all numbers, tables, figures, and supplementary files.

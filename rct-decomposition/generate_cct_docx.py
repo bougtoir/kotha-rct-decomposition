@@ -79,7 +79,8 @@ def _cleanup_wt_text(doc):
 
 
 def build(input_md, output_docx, journal='Contemporary Clinical Trials Communications', strip_brackets=False,
-          inline_figures=True, figure_legends_at_end=False):
+          inline_figures=True, figure_legends_at_end=False, citation_superscript=True,
+          reference_brackets=False):
     BASE = os.path.dirname(os.path.abspath(input_md))
 
     doc = Document()
@@ -183,8 +184,8 @@ def build(input_md, output_docx, journal='Contemporary Clinical Trials Communica
         if space_after is not None:
             spacing.set(qn('w:after'), str(space_after))
 
-    def apply_citation_superscript(p_elem, strip_brackets=False):
-        """Convert bracketed citation numbers (e.g. [1], [2-3]) to superscript."""
+    def apply_citation_superscript(p_elem, strip_brackets=False, superscript=True):
+        """Convert bracketed citation numbers (e.g. [1], [2-3]) to superscript or plain brackets."""
         CIT_RE = re.compile(r'(\[\d+(?:-\d+)?\])')
         for r in list(p_elem.findall(qn('w:r'))):
             # Only process text runs; skip math, drawing, or other special runs
@@ -210,9 +211,10 @@ def build(input_md, output_docx, journal='Contemporary Clinical Trials Communica
                 new_t = OxmlElement('w:t')
                 new_t.set(qn('xml:space'), 'preserve')
                 if CIT_RE.match(seg):
-                    vert = OxmlElement('w:vertAlign')
-                    vert.set(qn('w:val'), 'superscript')
-                    new_rPr.append(vert)
+                    if superscript:
+                        vert = OxmlElement('w:vertAlign')
+                        vert.set(qn('w:val'), 'superscript')
+                        new_rPr.append(vert)
                     new_t.text = seg[1:-1] if strip_brackets else seg
                 else:
                     new_t.text = seg
@@ -301,7 +303,7 @@ def build(input_md, output_docx, journal='Contemporary Clinical Trials Communica
         apply_para_format(p_elem, style=style, align=align)
         for r in p_elem.findall(qn('w:r')):
             set_run_font(r, size=12)
-        apply_citation_superscript(p_elem, strip_brackets=strip_brackets)
+        apply_citation_superscript(p_elem, strip_brackets=strip_brackets, superscript=citation_superscript)
         return p_elem
 
     def add_table(headers, rows):
@@ -637,7 +639,8 @@ def build(input_md, output_docx, journal='Contemporary Clinical Trials Communica
             # References (number + plain text, no markdown formatting)
             if current_section == 'References':
                 p = doc.add_paragraph()
-                run = p.add_run(f'{num}. {text}')
+                ref_prefix = f'[{num}]' if reference_brackets else f'{num}.'
+                run = p.add_run(f'{ref_prefix} {text}')
                 run.font.name = 'Times New Roman'
                 run.font.size = Pt(10)
                 i += 1
@@ -732,8 +735,11 @@ if __name__ == '__main__':
     parser.add_argument('output_docx', nargs='?', default='KOTHA_Framework_CCT.docx')
     parser.add_argument('--journal', default='Contemporary Clinical Trials Communications')
     parser.add_argument('--strip-citation-brackets', action='store_true')
+    parser.add_argument('--no-citation-superscript', action='store_true', help='Keep bracketed citations as plain text (e.g. [1])')
+    parser.add_argument('--reference-brackets', action='store_true', help='Use [1] style for the reference list')
     parser.add_argument('--no-inline-figures', action='store_true')
     parser.add_argument('--figure-legends-at-end', action='store_true')
     args = parser.parse_args()
     build(args.input_md, args.output_docx, journal=args.journal, strip_brackets=args.strip_citation_brackets,
-          inline_figures=not args.no_inline_figures, figure_legends_at_end=args.figure_legends_at_end)
+          inline_figures=not args.no_inline_figures, figure_legends_at_end=args.figure_legends_at_end,
+          citation_superscript=not args.no_citation_superscript, reference_brackets=args.reference_brackets)
