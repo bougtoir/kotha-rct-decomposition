@@ -24,6 +24,12 @@ from scipy.special import expit, logit
 import warnings
 warnings.filterwarnings('ignore')
 
+from simulation_study import (
+    run_simulation_study,
+    plot_simulation_results,
+    save_simulation_summary,
+)
+
 # ============================================================
 # Color palette (colorblind-friendly, Okabe-Ito)
 # ============================================================
@@ -1783,10 +1789,12 @@ def compute_results():
     mt_st = run_module_t_statins(statin_obs, statin_rct)
     mh_mg = run_module_h_magnesium(mk_mg['mg_data'], mk_mg)
     mh_st = run_module_h_statins(statin_obs, statin_rct, mk_st)
+    sim = run_simulation_study()
     return {
         'mk_mg': mk_mg, 'mk_st': mk_st,
         'mt_mg': mt_mg, 'mt_st': mt_st,
         'mh_mg': mh_mg, 'mh_st': mh_st,
+        'sim': sim,
     }
 
 
@@ -1815,6 +1823,13 @@ def main():
     fig7_sensitivity_heatmap(mt_mg, mt_st)
     fig8_module_h_summary(mh_mg, mh_st, mk_mg, mk_st)
     figS1_trace_mcmc(mt_mg, mt_st)
+
+    print("\n" + "=" * 60)
+    print("SIMULATION STUDY")
+    print("=" * 60)
+    sim = results['sim']
+    plot_simulation_results(sim)
+    save_simulation_summary(sim)
     
     print("\n" + "=" * 60)
     print("VALIDATION COMPLETE")

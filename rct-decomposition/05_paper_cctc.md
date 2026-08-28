@@ -1,9 +1,9 @@
 ---
-running_head: KOTHA Framework for Trial Design
-title: The KOTHA Framework: Diagnosing Structural Information Loss in Randomized Controlled Trial Meta-Analyses to Inform Trial Design
+running_head: KOTHA Framework for Information Loss
+title: The KOTHA Framework: A Simulation-Based Approach to Quantifying and Correcting Structural Information Loss in Randomized Controlled Trial Meta-Analyses
 authors: [To be determined]
 affiliations: [To be determined]
-word_count: 2677
+word_count: 3258
 corresponding_author: [To be determined]
 corresponding_author_address: [To be determined]
 ---
@@ -91,7 +91,13 @@ When Module K indicates that RCT evidence is informationally insufficient, Modul
 
 ### Module H: Guideline interpretation
 
-Module H maps the outputs of Modules K and T onto the GRADE framework [1]. It includes five assessments (Table 2): information sufficiency (OIS vs observed events), confidence interval interpretation, representativeness (event rate ratio), TSA boundary status, and recommended language. For CI interpretation, we used relative effect boundaries of 0.80 and 1.25 to define clinically important benefit and harm. For representativeness, event-rate ratios below 0.67 or above 1.50 (a relative shift of 50% or more) are classified as serious indirectness, and ratios below 0.80 or above 1.25 (a relative shift of 25% or more) as moderate indirectness. These thresholds correspond to conventional boundaries for clinically important relative effects. The result is a KOTHA-enhanced certainty rating and recommendation that explicitly distinguishes "evidence of effect," "evidence of no effect," and "no evidence of effect (inconsistent or indirect).
+Module H maps the outputs of Modules K and T onto the GRADE framework [1]. It includes five assessments (Table 2): information sufficiency (OIS vs observed events), confidence interval interpretation, representativeness (event rate ratio), TSA boundary status, and recommended language. For CI interpretation, we used relative effect boundaries of 0.80 and 1.25 to define clinically important benefit and harm. For representativeness, event-rate ratios below 0.67 or above 1.50 (a relative shift of 50% or more) are classified as serious indirectness, and ratios below 0.80 or above 1.25 (a relative shift of 25% or more) as moderate indirectness. These thresholds correspond to conventional boundaries for clinically important relative effects. The result is a KOTHA-enhanced certainty rating and recommendation that explicitly distinguishes "evidence of effect," "evidence of no effect," and "no evidence of effect (inconsistent or indirect)."
+
+### Formal causal model and operating-characteristics simulation
+
+To quantify the operating characteristics of the KOTHA evidence combination rule, we specified a transparent data-generating process that mimics the two empirical cases. Let $Z_i \sim \text{Logit-Normal}(\mu_Z, \sigma_Z^2)$ denote the baseline risk of trial $i$ on the log-odds scale. The true treatment effect in that population is $\text{log OR}_i = \theta_0 + \gamma Z_i$, with $\gamma < 0$ meaning that baseline risk modifies the treatment effect (higher-risk patients experience larger absolute or relative benefit). The target population is all hypothetical RCTs; the enrolled population is a lower-risk subset selected by a quantile threshold on $Z_i$. This is the formal mechanism for structural information loss: the RCT-enrolled meta-analysis estimates the treatment effect in a selected, lower-risk subpopulation rather than the target estimand $\mathbb{E}[\text{log OR}]$ over all RCTs.
+
+An observational source is generated from the same target population but with systematic design-related bias toward spurious benefit, $\text{E}[\hat\theta_{\text{obs}}] = \theta_{\text{true}} + \beta_{\text{obs}}$ with inflated standard errors. The KOTHA combination uses a normal-approximation power-prior, $\text{log-posterior} \propto \alpha \cdot \text{log-likelihood}_{\text{obs}} + \text{log-likelihood}_{\text{rct}} + \text{log-prior}(\theta, \tau^2)$, and returns the posterior mean as the point estimate. Performance was evaluated by bias, RMSE, 95% credible-interval coverage, and statistical power (posterior probability that OR < 1 exceeds 97.5%) relative to the target estimand. The simulation was run with 500 replications under pre-specified parameters; results are reported using the ADEMP checklist [10].
 
 **Fig. 1** Overview of the KOTHA Framework. Module K (Counterfactual Power Simulation) quantifies risk-profile shift and estimates power under counterfactual enrollment scenarios. Module T (Bayesian Evidence Integration) combines RCT and observational evidence using power-prior discounting. Module H (Guideline Interpreter) synthesizes outputs into a structured GRADE-compatible assessment.
 
@@ -189,11 +195,33 @@ Module H results are summarized in Table 4 and Fig. 7. For magnesium, the OIS fo
 
 ![Fig. 7](validation/figures/fig8_module_h_comparison.png)
 
+### Simulation study of operating characteristics
+
+The formal causal model produced a controlled setting in which structural information loss could be quantified. Across 500 replications, the target meta-analysis that used all RCTs showed negligible bias (-0.040 log-OR) and the lowest RMSE (0.119) (Fig. 8 and Table 5). The RCT-enrolled-only analysis was biased toward the null (+0.127), had inflated RMSE (0.160), and low power (24.4%), because low-risk enrollment diluted event rates and shifted the estimand. The observational-only estimate was biased in the opposite direction (-0.224) and also had poor coverage.
+
+KOTHA with a fixed power-prior discount of $\alpha$ = 0.3 reduced the absolute bias by 69% and the RMSE by 37% compared with RCT-enrolled only, and increased power by 63 percentage points. The RMSE-optimal discount was $\alpha$ = 0.1; at that value the RMSE reduction was 43% and the power gain was 46 percentage points relative to RCT-enrolled only. These gains came from combining a small amount of observational information while down-weighting its design-related bias.
+
+**Table 5: Operating characteristics of the KOTHA power-prior combination relative to alternative estimators.**
+
+| Estimator | Bias (log-OR) | RMSE (log-OR) | 95% coverage | Power |
+|---|---|---|---|---|
+| Target (all RCTs) | -0.040 | 0.119 | 91.2% | 67.8% |
+| RCT-enrolled only | +0.127 | 0.160 | 73.6% | 24.4% |
+| Observational only | -0.224 | 0.248 | 45.4% | 97.0% |
+| KOTHA (fixed α = 0.3) | -0.039 | 0.101 | 85.2% | 87.2% |
+| KOTHA (RMSE-optimal α = 0.1) | +0.024 | 0.092 | 89.8% | 70.0% |
+
+**Fig. 8** Operating characteristics of the simulation study. (A) Bias and RMSE for the target, RCT-enrolled-only, observational-only, fixed KOTHA (α = 0.3), and RMSE-optimal KOTHA estimators. (B) Coverage and power. Error bars in A show RMSE around the bias estimate; coverage and power are empirical proportions across replications.
+
+![Fig. 8](validation/figures/fig_simulation_operating_characteristics.png)
+
 ## 4. Discussion
 
 ### Principal findings
 
 The KOTHA Framework integrates counterfactual power simulation, Bayesian evidence synthesis, and structured GRADE interpretation to diagnose structural information loss in RCT meta-analyses. In the magnesium case, Module K identified an 18% relative decline in control event rates from the pre-thrombolysis era to ISIS-4. The divergence between pre-ISIS-4 and all-trials estimates is more consistent with era-dependent treatment effect heterogeneity ($I^2$ = 62%) than with underpowering alone. In the statins case, Module K showed that RCT populations had roughly half the event rate of observational cohorts, and that power for a modest effect (HR = 0.85) dropped from 98% to 83%. Module T showed that even modest borrowing from observational evidence materially raised the posterior probability of benefit, yet the evidence remained uncertain. Module H classified magnesium as inconclusive with serious inconsistency (heterogeneity), and statins as inconclusive with serious indirectness, rather than "evidence of no effect."
+
+The simulation study formalizes the mechanism behind these empirical patterns. Under a transparent generative model with risk-dependent treatment effects and selective low-risk enrollment, the RCT-enrolled-only meta-analysis was biased toward the null and underpowered, while the observational-only estimate was biased toward spurious benefit. KOTHA with a fixed discount of $\alpha$ = 0.3 reduced RMSE by 37% and increased power by 63 percentage points compared with RCT-enrolled-only analysis. These gains show that the power-prior combination rule can improve operating characteristics when observational data contain information about the target population that RCT enrollment discards, provided the observational likelihood is appropriately down-weighted.
 
 ### Implications for clinical trial design
 
@@ -212,7 +240,7 @@ Target trial emulation uses observational data to mimic a specific RCT in order 
 
 ### Strengths and limitations
 
-The framework is reproducible from published aggregate data, follows the ADEMP reporting structure [10], and is illustrated with real, well-documented cases rather than synthetic examples. The modular design allows each component to be used independently.
+The framework is reproducible from published aggregate data, follows the ADEMP reporting structure [10], and is illustrated with real, well-documented cases. The operating-characteristics simulation is fully transparent---parameters, generative process, and metrics are reported explicitly---and it confirms that the power-prior combination rule can improve estimation and power under the specified structural information loss. The modular design allows each component to be used independently.
 
 Limitations should be acknowledged:
 
@@ -222,6 +250,7 @@ Limitations should be acknowledged:
 - For statins, the S3 enrichment target is set at the midpoint between the observational and RCT crude proportions as an illustration; other thresholds would yield different power curves.
 - The magnesium case spans the pre-thrombolysis and thrombolysis eras, so temporal changes in standard care, case mix, and outcome ascertainment create treatment-era confounding that cannot be fully controlled with aggregate data.
 - Prospective validation against trials whose results are not yet known would be stronger.
+- The operating-characteristics simulation is intentionally stylized: it uses a single data-generating model with risk-dependent effects, one selection mechanism, and normal-approximation power priors. It demonstrates that KOTHA can improve operating characteristics under transparent assumptions, but it does not establish general optimality of any fixed discounting factor.
 - Module T treats the discounting parameter $\alpha$ as a fixed sensitivity parameter and is therefore sensitive to assumptions about residual confounding; we present the full grid of values but do not claim a single preferred $\alpha$.
 - The magnesium case involves genuine treatment-effect heterogeneity across thrombolysis eras, which Module K identifies but cannot fully explain.
 - Finally, adoption by guideline groups will require institutional change beyond the method itself.

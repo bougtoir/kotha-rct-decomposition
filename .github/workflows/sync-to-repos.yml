@@ -102,6 +102,7 @@ jobs:
           # ── Other research projects ──
           # REMOVED: karoshi-who-analysis (no unique content vs master)
           BRANCH_MAP["devin/1777547587-pwv-vitaldb-analysis"]="pwv-vitaldb-analysis"
+          BRANCH_MAP["devin/1787930215-kotha-additional-analysis"]="kotha-rct-decomposition"
           BRANCH_MAP["devin/1777594452-buddhist-food-map"]="buddhist-food-map"
           BRANCH_MAP["devin/1777594554-khmer-inscription-analysis"]="khmer-inscription-analysis"
           BRANCH_MAP["devin/1777601123-khmer-civic-summary"]="khmer-civic-summary"
@@ -152,6 +153,7 @@ jobs:
           SUBDIR_MAP["devin/1777594452-buddhist-food-map"]="buddhist_food_lexicon_map"
           SUBDIR_MAP["devin/1777594554-khmer-inscription-analysis"]="khmer_inscription_analysis"
           SUBDIR_MAP["devin/1777547587-pwv-vitaldb-analysis"]="pwv_vitaldb_analysis"
+          SUBDIR_MAP["devin/1787930215-kotha-additional-analysis"]="rct-decomposition"
           SUBDIR_MAP["devin/1776768797-gdp-tempo-paper"]="gdp_tempo_paper"
 
           OWNER="bougtoir"

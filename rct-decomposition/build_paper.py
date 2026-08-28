@@ -268,6 +268,57 @@ def _compute_values():
         'mg_pp_rows': mg_pp_rows,
         'st_pp_rows': st_pp_rows,
     }
+
+    # Simulation study values (Module K + T operating characteristics)
+    sim = results['sim']
+    metrics = sim['metrics']
+    fixed_alpha = 0.3
+    fixed_key = f'KOTHA alpha={fixed_alpha:.1f}'
+    opt_key = f"KOTHA alpha={sim['optimal_alpha']:.1f}"
+    enrolled = metrics['RCT enrolled only']
+    kotha_fixed = metrics[fixed_key]
+    kotha_opt = metrics[opt_key]
+
+    def _reduction(new, base, absolute=False):
+        if base == 0:
+            return 0.0
+        if absolute:
+            return (1 - abs(new) / abs(base)) * 100
+        return (1 - new / base) * 100
+
+    sim.update({
+        'sim_fixed_alpha': fixed_alpha,
+        'sim_fixed_key': fixed_key,
+        'sim_optimal_alpha': sim['optimal_alpha'],
+        'sim_optimal_key': opt_key,
+        'sim_target_bias': metrics['Target (all RCTs)']['bias'],
+        'sim_target_rmse': metrics['Target (all RCTs)']['rmse'],
+        'sim_target_coverage': metrics['Target (all RCTs)']['coverage'] * 100,
+        'sim_target_power': metrics['Target (all RCTs)']['power'] * 100,
+        'sim_enrolled_bias': enrolled['bias'],
+        'sim_enrolled_rmse': enrolled['rmse'],
+        'sim_enrolled_coverage': enrolled['coverage'] * 100,
+        'sim_enrolled_power': enrolled['power'] * 100,
+        'sim_obs_bias': metrics['Observational only']['bias'],
+        'sim_obs_rmse': metrics['Observational only']['rmse'],
+        'sim_obs_coverage': metrics['Observational only']['coverage'] * 100,
+        'sim_obs_power': metrics['Observational only']['power'] * 100,
+        'sim_kotha_fixed_bias': kotha_fixed['bias'],
+        'sim_kotha_fixed_rmse': kotha_fixed['rmse'],
+        'sim_kotha_fixed_coverage': kotha_fixed['coverage'] * 100,
+        'sim_kotha_fixed_power': kotha_fixed['power'] * 100,
+        'sim_kotha_opt_bias': kotha_opt['bias'],
+        'sim_kotha_opt_rmse': kotha_opt['rmse'],
+        'sim_kotha_opt_coverage': kotha_opt['coverage'] * 100,
+        'sim_kotha_opt_power': kotha_opt['power'] * 100,
+        'sim_rmse_reduction_fixed_pct': _reduction(kotha_fixed['rmse'], enrolled['rmse']),
+        'sim_bias_reduction_fixed_pct': _reduction(kotha_fixed['bias'], enrolled['bias'], absolute=True),
+        'sim_power_gain_fixed_pp': (kotha_fixed['power'] - enrolled['power']) * 100,
+        'sim_rmse_reduction_opt_pct': _reduction(kotha_opt['rmse'], enrolled['rmse']),
+        'sim_bias_reduction_opt_pct': _reduction(kotha_opt['bias'], enrolled['bias'], absolute=True),
+        'sim_power_gain_opt_pp': (kotha_opt['power'] - enrolled['power']) * 100,
+    })
+    v.update(sim)
     return v
 
 
@@ -364,6 +415,44 @@ def _table_7(v):
         f"| Imprecision | Not serious (OIS met) | Not serious (OIS met, CI excludes null) | Not serious (OIS met, CI excludes clinically important benefit) | Not serious (OIS met, CI excludes clinically important benefit) |",
         f"| Overall certainty | Low | Low | High | Low |",
         f"| Recommendation | \"No benefit demonstrated\" | \"{mg_rec}\" | \"No benefit demonstrated\" | \"{st_rec}\" |",
+    ]
+    return "\n".join(lines)
+
+
+def _simulation_table(v):
+    def _row(label, bias, rmse, coverage, power):
+        return (
+            f"| {label} | {bias:+.3f} | {rmse:.3f} | "
+            f"{coverage:.1f}% | {power:.1f}% |"
+        )
+    lines = [
+        "| Estimator | Bias (log-OR) | RMSE (log-OR) | 95% coverage | Power |",
+        "|---|---|---|---|---|",
+        _row(
+            "Target (all RCTs)",
+            v['sim_target_bias'], v['sim_target_rmse'],
+            v['sim_target_coverage'], v['sim_target_power'],
+        ),
+        _row(
+            "RCT-enrolled only",
+            v['sim_enrolled_bias'], v['sim_enrolled_rmse'],
+            v['sim_enrolled_coverage'], v['sim_enrolled_power'],
+        ),
+        _row(
+            "Observational only",
+            v['sim_obs_bias'], v['sim_obs_rmse'],
+            v['sim_obs_coverage'], v['sim_obs_power'],
+        ),
+        _row(
+            f"KOTHA (fixed α = {v['sim_fixed_alpha']:.1f})",
+            v['sim_kotha_fixed_bias'], v['sim_kotha_fixed_rmse'],
+            v['sim_kotha_fixed_coverage'], v['sim_kotha_fixed_power'],
+        ),
+        _row(
+            f"KOTHA (RMSE-optimal α = {v['sim_optimal_alpha']:.1f})",
+            v['sim_kotha_opt_bias'], v['sim_kotha_opt_rmse'],
+            v['sim_kotha_opt_coverage'], v['sim_kotha_opt_power'],
+        ),
     ]
     return "\n".join(lines)
 
